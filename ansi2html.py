@@ -8,6 +8,7 @@
 #    http://github.com/ralphbean/ansi2html/
 
 # Is there a good Python meme off of which to model this?
+#   Yes!  templating!
 
 headerPart1 = """
 <html>
