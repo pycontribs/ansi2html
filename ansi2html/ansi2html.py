@@ -15,9 +15,17 @@ import subprocess as sp
 import chardet
 
 class Ansi2HTMLConverter(object):
+    """ Convert Ansi color codes to CSS+HTML 
+
+    Example:
+    >>> conv = Ansi2HTMLConverter()
+    >>> ansi = " ".join(sys.stdin.readlines())
+    >>> html = conv.convert(ansi)
+    """
+
     def __init__(self, 
                  template='ansi2html.templates.default',
-                 dark_bg=False,
+                 dark_bg=True,
                  font_size='large'):
         self._template = template
         self.dark_bg = dark_bg
@@ -57,9 +65,3 @@ class Ansi2HTMLConverter(object):
         return self.template().generate(**self.prepare(ansi)).render('html')
 
 if __name__ == '__main__':
-    conv = Ansi2HTMLConverter()
-    ansi = " ".join(sys.stdin.readlines())
-    html = conv.convert(ansi)
-    print "done"
-    print html
-
