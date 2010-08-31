@@ -21,16 +21,3 @@ setup(
     packages=['ansi2html'],
     scripts=['ansi2html'],
 )
-
-from distutils.core import setup
-
-setup(name='ansi2html',
-      version='0.2',
-      description="Python Wrapper for pixelbeat.org's ansi2html.sh"
-      author='Ralph Bean',
-      author_email='ralph.bean@gmail.com',
-      url='http://github.com/ralphbean/ansi2html/'
-      packages=['ansi2html',],
-      scripts=['ansi2html'],
-     )
-
