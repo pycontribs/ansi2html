@@ -60,5 +60,3 @@ class Ansi2HTMLConverter(object):
 
     def convert(self, ansi):
         return self.template().generate(**self.prepare(ansi)).render('html')
-
-if __name__ == '__main__':
