@@ -10,6 +10,7 @@
 import sys
 import re
 from genshi.template import TemplateLoader, loader
+from genshi import HTML
 import subprocess as sp
 import chardet
 
@@ -29,7 +30,7 @@ class Ansi2HTMLConverter(object):
         # For now, make heavy use of pixelbeat's amazing script.
         p = sp.Popen(['./ansi2html.sh'],
                      stdout=sp.PIPE, stdin=sp.PIPE, shell=True)
-        body = p.communicate(ansi)[0].decode('utf-8')
+        body = HTML(p.communicate(ansi)[0].decode('utf-8'))
 
         self._attrs = {
             'dark_bg' : self.dark_bg,
