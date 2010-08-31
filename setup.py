@@ -19,5 +19,5 @@ setup(
         "genshi",
     ],
     packages=['ansi2html'],
-    package_data={ 'ansi2html' : [ 'templates/*' ], },
+    package_data={ 'ansi2html' : [ 'ansi2html.sh', 'templates/*' ], },
 )
