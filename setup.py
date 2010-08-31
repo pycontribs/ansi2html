@@ -10,7 +10,7 @@ except ImportError:
 setup(
     name='ansi2html',
     version='0.2',
-    description="Python Wrapper for pixelbeat.org's ansi2html.sh"
+    description="Python Wrapper for pixelbeat.org's ansi2html.sh",
     long_description=open('README.md').read(),
     author='Ralph Bean',
     author_email='ralph.bean@gmail.com',
