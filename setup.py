@@ -19,5 +19,5 @@ setup(
         "genshi",
     ],
     packages=['ansi2html'],
-    scripts=['ansi2html'],
+    scripts=['ansi2html.py'],
 )
