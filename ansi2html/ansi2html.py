@@ -7,12 +7,9 @@
 # Python author:
 #    http://github.com/ralphbean/ansi2html/
 
-import sys
-import re
 from genshi.template import TemplateLoader, loader
 from genshi import HTML
 import subprocess as sp
-import chardet
 
 class Ansi2HTMLConverter(object):
     """ Convert Ansi color codes to CSS+HTML 
