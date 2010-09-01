@@ -23,7 +23,7 @@ class Ansi2HTMLConverter(object):
     def __init__(self, 
                  template='ansi2html.templates.default',
                  dark_bg=True,
-                 font_size='large'):
+                 font_size='normal'):
         self._template = template
         self.dark_bg = dark_bg
         self.font_size = font_size
