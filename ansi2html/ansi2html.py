@@ -29,12 +29,15 @@ class Ansi2HTMLConverter(object):
         self.font_size = font_size
         self._attrs = None
 
+        from ansi2html import __file__
+        self.base = "/".join(__file__.split('/')[:-1])
+
     def prepare(self, ansi):
         """ Load the contents of 'ansi' into this object """
 
         # For now, make heavy use of pixelbeat's amazing script.
-        p = sp.Popen(['./ansi2html.sh'],
-                     stdout=sp.PIPE, stdin=sp.PIPE, shell=True)
+        cmd = "%s/ansi2html.sh" % self.base
+        p = sp.Popen([cmd], stdout=sp.PIPE, stdin=sp.PIPE, shell=True)
         body = HTML(p.communicate(ansi)[0].decode('utf-8'))
 
         self._attrs = {
