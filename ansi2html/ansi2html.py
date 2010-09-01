@@ -36,7 +36,7 @@ class Ansi2HTMLConverter(object):
         """ Load the contents of 'ansi' into this object """
 
         # For now, make heavy use of pixelbeat's amazing script.
-        cmd = ["/bin/sh", "%s/ansi2html.sh" % self.base]
+        cmd = ["%s/ansi2html.sh" % self.base]
         p = sp.Popen(cmd, stdout=sp.PIPE, stdin=sp.PIPE, shell=True)
         body = HTML(p.communicate(ansi)[0].decode('utf-8'))
 
