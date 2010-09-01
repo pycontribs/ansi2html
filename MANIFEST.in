@@ -1,2 +1,3 @@
 include README.md
 include ansi2html/templates/*
+include ansi2html/ansi2html.sh
