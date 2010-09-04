@@ -41,6 +41,14 @@ class Ansi2HTMLConverter(object):
         # Reworked from an example
         # by BlackJack @ python-forum.de
         # http://python.sandtner.org/viewtopic.php?p=16273#16273
+        specials = {
+            '&' : '&amp;',
+            '<' : '&lt;',
+            '>' : '&gt;',
+        }
+        for pattern, sub in specials.iteritems():
+            ansi = ansi.replace(pattern, sub)
+        
         last_end = 0
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end:match.start()]
