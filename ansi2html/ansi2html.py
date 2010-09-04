@@ -10,6 +10,7 @@
 from genshi.template import TemplateLoader, loader
 from genshi import HTML
 import subprocess as sp
+import re
 
 class Ansi2HTMLConverter(object):
     """ Convert Ansi color codes to CSS+HTML 
@@ -29,16 +30,46 @@ class Ansi2HTMLConverter(object):
         self.font_size = font_size
         self._attrs = None
 
-        from ansi2html import __file__
-        self.base = "/".join(__file__.split('/')[:-1])
+        self.ansi_codes_prog = re.compile( '\033\\[' '([\\d;]*)' '([a-zA-z])')
+
+    def apply_regex(self, ansi):
+        parts = self._apply_regex(ansi)
+        parts = [part for part in parts]
+        return "".join(parts)
+
+    def _apply_regex(self, ansi):
+        # Reworked from an example
+        # by BlackJack @ python-forum.de
+        # http://python.sandtner.org/viewtopic.php?p=16273#16273
+        last_end = 0
+        for match in self.ansi_codes_prog.finditer(ansi):
+            yield ansi[last_end:match.start()]
+            last_end = match.end()
+        
+            params, command = match.groups()
+
+            if command not in 'mM':
+                continue
+
+            try:
+                params = map(int, params.split(';'))
+            except ValueError:
+                params = [0]
+
+            if params == [0]:
+                yield '</span>'
+                continue
+            
+            css_classes = " ".join(["ansi%i" % p for p in params])
+            yield '<span class="%s">' % css_classes
+
+        yield ansi[last_end:]
+
 
     def prepare(self, ansi):
         """ Load the contents of 'ansi' into this object """
 
-        # For now, make heavy use of pixelbeat's amazing script.
-        cmd = ["%s/ansi2html.sh" % self.base]
-        p = sp.Popen(cmd, stdout=sp.PIPE, stdin=sp.PIPE, shell=True)
-        body = HTML(p.communicate(ansi)[0], encoding="us-ascii")
+        body = HTML(self.apply_regex(ansi), encoding='us-ascii')
 
         self._attrs = {
             'dark_bg' : self.dark_bg,

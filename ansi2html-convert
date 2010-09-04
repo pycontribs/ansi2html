@@ -5,7 +5,8 @@ from ansi2html import Ansi2HTMLConverter
 
 if __name__ == '__main__':
     conv = Ansi2HTMLConverter()
-    ansi = " ".join(sys.stdin.readlines())
+    lines = sys.stdin.readlines()
+    ansi = "".join(lines)
     html = conv.convert(ansi)
     print html
 
