@@ -46,8 +46,9 @@ class Ansi2HTMLConverter(object):
             '<' : '&lt;',
             '>' : '&gt;',
         }
-        for pattern, sub in specials.iteritems():
-            ansi = ansi.replace(pattern, sub)
+        patterns = ['&', '<', '>']
+        for pattern in patterns:
+            ansi = ansi.replace(pattern, specials[pattern])
         
         last_end = 0
         for match in self.ansi_codes_prog.finditer(ansi):
