@@ -15,7 +15,7 @@ f.close()
 
 setup(
     name='ansi2html',
-    version='0.5.01',
+    version='0.5.02',
     description="Convert text with ansi color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
