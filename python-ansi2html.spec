@@ -57,6 +57,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Sep 7 2010 Ralph bean <ralph.bean@gmail.com> - 0.5.02-1
+* Tue Sep 7 2010 Ralph bean <ralph.bean@gmail.com> - 0.5.1-1
 - Initial RPM packaging
 
