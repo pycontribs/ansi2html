@@ -2,7 +2,7 @@
 %define __python_ver 2.3
 %endif
 %define python python%{?__python_ver}
-%define __python /usr/bin/%{python}
+%define __python %{python}
 
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
