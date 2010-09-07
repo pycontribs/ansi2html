@@ -7,7 +7,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:		ansi2html
-Version:	0.5.02
+Version:	0.5.1
 Release:	1%{?dist}
 Summary:	Python module that converts text with ansi color to HTML
 
