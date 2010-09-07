@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 #Convert ANSI (terminal) colours and attributes to HTML
 
 # Author of original sh script:
