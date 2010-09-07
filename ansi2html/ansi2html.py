@@ -1,13 +1,18 @@
-#Convert ANSI (terminal) colours and attributes to HTML
-
-# Author of original sh script:
-#    http://www.pixelbeat.org/docs/terminal_colours/
-# Python author:
-#    http://github.com/ralphbean/ansi2html/
+##Convert ANSI (terminal) colours and attributes to HTML
+##
+## Ralph Bean <ralph.bean@gmail.com>
+##
+## Inspired by and developed off of the work by pixelbeat and blackjack.
+##
+## This software may be freely redistributed under the terms of the GNU
+## general public license.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 from genshi.template import TemplateLoader, loader
 from genshi import HTML
-import subprocess as sp
 import re
 
 class Ansi2HTMLConverter(object):
@@ -36,9 +41,6 @@ class Ansi2HTMLConverter(object):
         return "".join(parts)
 
     def _apply_regex(self, ansi):
-        # Reworked from an example
-        # by BlackJack @ python-forum.de
-        # http://python.sandtner.org/viewtopic.php?p=16273#16273
         specials = {
             '&' : '&amp;',
             '<' : '&lt;',
