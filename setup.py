@@ -8,12 +8,16 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+f = open('README.rst')
+long_description = f.read().strip()
+long_description = long_description.split('split here', 1)[1]
+f.close()
 
 setup(
     name='ansi2html',
     version='0.5.0',
-    description="Python Wrapper for pixelbeat.org's ansi2html.sh",
-    long_description=open('README.rst').read(),
+    description="Convert text with ansi color codes to HTML",
+    long_description=long_description,
     author='Ralph Bean',
     author_email='ralph.bean@gmail.com',
     url='http://github.com/ralphbean/ansi2html/',
