@@ -12,6 +12,11 @@ Convert text with ansi color codes to HTML
 
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 
+Example
+-------
+>>> conv = Ansi2HTMLConverter()
+>>> ansi = " ".join(sys.stdin.readlines())
+>>> html = conv.convert(ansi)
 
 Get this project:
 -----------------
