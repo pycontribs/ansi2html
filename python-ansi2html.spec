@@ -52,7 +52,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Wed Sep 15 2010 Ralph Bean <ralph.bean@gmail.com> - 0.5.1-2
+* Wed Sep 15 2010 Ralph Bean <ralph.bean@gmail.com> - 0.5.2-1
 - Updated spec based on comments from Mark McKinstry
 * Tue Sep 7 2010 Ralph Bean <ralph.bean@gmail.com> - 0.5.1-1
 - Initial RPM packaging

@@ -5,7 +5,7 @@ ansi2html
 
 .. comment: split here
 
-Convert text with ansi color codes to HTML
+Convert text with ANSI color codes to HTML
 
 .. _pixelbeat: http://www.pixelbeat.org/docs/terminal_colours/
 .. _blackjack: http://www.koders.com/python/fid5D57DD37184B558819D0EE22FCFD67F53078B2A3.aspx
