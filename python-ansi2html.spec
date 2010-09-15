@@ -3,7 +3,7 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
-Name:		ansi2html
+Name:		python-ansi2html
 Version:	0.5.2
 Release:	1%{?dist}
 Summary:	Python module that converts text with ANSI color to HTML
@@ -43,8 +43,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE README.rst
 %if 0%{?fedora} >= 9 || 0%{?rhel} >= 6
-%dir %{python_sitelib}/%{name}*.egg-info
-%{python_sitelib}/%{name}*.egg-info/*
+%dir %{python_sitelib}/%{srcname}*.egg-info
+%{python_sitelib}/%{srcname}*.egg-info/*
 %endif
 
 %{python_sitelib}/%{name}/*.py*
