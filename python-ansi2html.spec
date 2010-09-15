@@ -1,15 +1,12 @@
-%if 0%{?rhel} == 3
-%define __python_ver 2.3
+%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
-%define python python%{?__python_ver}
-%define __python %{python}
-
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name:		ansi2html
 Version:	0.5.1
 Release:	1%{?dist}
-Summary:	Python module that converts text with ansi color to HTML
+Summary:	Python module that converts text with ANSI color to HTML
 
 Group:		Development/Libraries
 License:	GPLv3+
@@ -22,7 +19,7 @@ BuildRequires:	python,python-setuptools
 Requires:	python,python-genshi
 
 %description
-The ansi2html module can convert text with ansi color codes to HTML.
+The ansi2html module can convert text with ANSI color codes to HTML.
 
 
 %prep
@@ -34,29 +31,29 @@ The ansi2html module can convert text with ansi color codes to HTML.
 
 
 %install
-test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install --prefix=/usr --root=$RPM_BUILD_ROOT
+rm -rf %{buildroot}
+%{__python} setup.py install --skip-build --root=%{buildroot}
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 
 %files
 %defattr(-,root,root,-)
-%if "%{python_version}" >= "2.5"
+%doc LICENSE README.rst
+%if 0%{?fedora} >= 9 || 0%{?rhel} >= 6
 %dir %{python_sitelib}/%{name}*.egg-info
 %{python_sitelib}/%{name}*.egg-info/*
 %endif
 
-%dir %{python_sitelib}/%{name}
 %{python_sitelib}/%{name}/*.py*
-
-%dir %{python_sitelib}/%{name}/templates
 %{python_sitelib}/%{name}/templates/*.html
 
 
 %changelog
-* Tue Sep 7 2010 Ralph bean <ralph.bean@gmail.com> - 0.5.1-1
+* Wed Sep 15 2010 Ralph Bean <ralph.bean@gmail.com> - 0.5.1-2
+- Updated spec based on comments from Mark McKinstry
+* Tue Sep 7 2010 Ralph Bean <ralph.bean@gmail.com> - 0.5.1-1
 - Initial RPM packaging
 
