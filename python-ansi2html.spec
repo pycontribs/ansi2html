@@ -3,6 +3,8 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
 
+%global srcname ansi2html
+
 Name:		python-ansi2html
 Version:	0.5.2
 Release:	1%{?dist}
@@ -12,7 +14,7 @@ Group:		Development/Libraries
 License:	GPLv3+
 URL:		http://github.com/ralphbean/ansi2html
 Source0:	http://pypi.python.org/packages/source/a/ansi2html/ansi2html-%{version}.tar.gz
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{srcname}-%{version}-%{release}-XXXXXX)
 BuildArch:	noarch
 
 BuildRequires:	python,python-setuptools
@@ -23,7 +25,7 @@ The ansi2html module can convert text with ANSI color codes to HTML.
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n %{srcname}-%{version}
 
 
 %build
@@ -47,8 +49,8 @@ rm -rf %{buildroot}
 %{python_sitelib}/%{srcname}*.egg-info/*
 %endif
 
-%{python_sitelib}/%{name}/*.py*
-%{python_sitelib}/%{name}/templates/*.html
+%{python_sitelib}/%{srcname}/*.py*
+%{python_sitelib}/%{srcname}/templates/*.html
 
 
 %changelog
