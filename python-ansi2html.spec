@@ -4,7 +4,7 @@
 %endif
 
 Name:		ansi2html
-Version:	0.5.1
+Version:	0.5.2
 Release:	1%{?dist}
 Summary:	Python module that converts text with ANSI color to HTML
 
