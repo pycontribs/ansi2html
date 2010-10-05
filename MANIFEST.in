@@ -1,3 +1,4 @@
 include README.rst
 include LICENSE
+include pylint.output
 include ansi2html/templates/*
