@@ -1,0 +1,126 @@
+************* Module ansi2html
+C:  1: Missing docstring
+W:  1: Relative import 'ansi2html', should be 'ansi2html.ansi2html'
+************* Module ansi2html.ansi2html
+C:  1: Missing docstring
+C: 38:Ansi2HTMLConverter.apply_regex: Missing docstring
+C: 43:Ansi2HTMLConverter._apply_regex: Missing docstring
+W: 64:Ansi2HTMLConverter._apply_regex: Used builtin function 'map'
+C:104:Ansi2HTMLConverter.convert: Missing docstring
+
+
+Report
+======
+53 statements analysed.
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |NC       |NC         |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |NC       |NC         |
++-------------------------+------+---------+-----------+
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |56     |60.87 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|docstring |18     |19.57 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|comment   |12     |13.04 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|empty     |6      |6.52  |NC       |NC         |
++----------+-------+------+---------+-----------+
+
+
+
+External dependencies
+---------------------
+::
+
+    ansi2html 
+      \-ansi2html 
+        \-Ansi2HTMLConverter (ansi2html)
+    genshi 
+      \-HTML (ansi2html.ansi2html)
+      \-template 
+        \-TemplateLoader (ansi2html.ansi2html)
+        \-loader (ansi2html.ansi2html)
+
+
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |2      |NC         |NC         |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |1      |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |7      |NC         |NC         |57.14       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |0      |NC         |NC         |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |5      |NC       |NC         |
++-----------+-------+---------+-----------+
+|refactor   |0      |NC       |NC         |
++-----------+-------+---------+-----------+
+|warning    |2      |NC       |NC         |
++-----------+-------+---------+-----------+
+|error      |0      |NC       |NC         |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++--------------------+------+--------+---------+-----------+
+|module              |error |warning |refactor |convention |
++====================+======+========+=========+===========+
+|ansi2html.ansi2html |0.00  |50.00   |0.00     |80.00      |
++--------------------+------+--------+---------+-----------+
+|ansi2html           |0.00  |50.00   |0.00     |20.00      |
++--------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------+------------+
+|message id |occurrences |
++===========+============+
+|C0111      |5           |
++-----------+------------+
+|W0403      |1           |
++-----------+------------+
+|W0141      |1           |
++-----------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 8.68/10
+
