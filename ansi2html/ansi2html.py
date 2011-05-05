@@ -31,10 +31,8 @@ class Ansi2HTMLConverter(object):
     """
 
     def __init__(self,
-                 template='ansi2html.templates.full',
                  dark_bg=True,
                  font_size='normal'):
-        self._template = template
         self.dark_bg = dark_bg
         self.font_size = font_size
         self._attrs = None
@@ -81,7 +79,7 @@ class Ansi2HTMLConverter(object):
         yield ansi[last_end:]
 
 
-    def prepare(self, ansi):
+    def prepare(self, ansi=''):
         """ Load the contents of 'ansi' into this object """
 
         body = self.apply_regex(ansi)
@@ -100,9 +98,20 @@ class Ansi2HTMLConverter(object):
             raise Exception, "Method .prepare not yet called."
         return self._attrs
 
-    def template(self):
+    def template(self, full):
         """ Load the template """
-        return lookup.get_template(self._template)
+        tmpl = 'ansi2html.templates.full'
+        if not full:
+            tmpl = 'ansi2html.templates.fragment'
+        return lookup.get_template(tmpl)
 
-    def convert(self, ansi):
-        return self.template().render(**self.prepare(ansi))
+    def convert(self, ansi, full=True):
+        return self.template(full).render(**self.prepare(ansi))
+
+    def produce_headers(self):
+        return lookup.get_template(
+            'ansi2html.templates.header'
+        ).render(
+            **self.prepare()
+        )
+
