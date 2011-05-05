@@ -11,9 +11,15 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from genshi.template import TemplateLoader, loader
-from genshi import HTML
+from mako.template import Template
 import re
+
+from tw2.core.dottedtemplatelookup import DottedTemplateLookup
+lookup = DottedTemplateLookup(input_encoding='utf-8',
+                              output_encoding='utf-8',
+                              imports=[],
+                              default_filters=[])
+
 
 class Ansi2HTMLConverter(object):
     """ Convert Ansi color codes to CSS+HTML
@@ -25,7 +31,7 @@ class Ansi2HTMLConverter(object):
     """
 
     def __init__(self,
-                 template='ansi2html.templates.default',
+                 template='ansi2html.templates.full',
                  dark_bg=True,
                  font_size='normal'):
         self._template = template
@@ -78,7 +84,7 @@ class Ansi2HTMLConverter(object):
     def prepare(self, ansi):
         """ Load the contents of 'ansi' into this object """
 
-        body = HTML(self.apply_regex(ansi), encoding='us-ascii')
+        body = self.apply_regex(ansi)
 
         self._attrs = {
             'dark_bg' : self.dark_bg,
@@ -96,10 +102,7 @@ class Ansi2HTMLConverter(object):
 
     def template(self):
         """ Load the template """
-        toks = self._template.split('.')
-        name, path, fname = toks[0], "/".join(toks[1:-1]), toks[-1] + '.html'
-        tmpl = TemplateLoader([loader.package(name, path)]).load(fname)
-        return tmpl
+        return lookup.get_template(self._template)
 
     def convert(self, ansi):
-        return self.template().generate(**self.prepare(ansi)).render('html')
+        return self.template().render(**self.prepare(ansi))

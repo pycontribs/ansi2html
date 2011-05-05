@@ -23,7 +23,8 @@ setup(
     url='http://github.com/ralphbean/ansi2html/',
     license='GPL',
     install_requires=[
-        "genshi",
+        "mako",
+        "tw2.core", # for dottedtemplatelookup... for realsies.
     ],
     packages=['ansi2html'],
     package_data={ 'ansi2html' : [ 'ansi2html.sh', 'templates/*' ], },

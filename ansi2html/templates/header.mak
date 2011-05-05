@@ -1,31 +1,29 @@
-<head xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/">
 <style type="text/css">
 
-.body_foreground { 
-<py:choose test="dark_bg">
-    <py:when test="True"> color : #AAAAAA; </py:when>
-    <py:when test="False"> color : #000000; </py:when>
-</py:choose>
+.body_foreground {
+% if dark_bg:
+	color : #AAAAAA;
+% else:
+	color : #000000;
+% endif
 }
+
 .body_background {
-<py:choose test="dark_bg">
-    <py:when test="True"> background-color : #000000; </py:when>
-    <py:when test="False"> background-color : #AAAAAA; </py:when>
-</py:choose>
+% if dark_bg:
+	background-color : #000000;
+% else:
+	background-color : #AAAAAA;
+% endif
 }
 
 .body_foreground &gt; .bold,.bold &gt; .body_foreground, body.body_foreground &gt; pre &gt; .bold {
-<py:choose test="dark_bg">
-    <py:when test="True">
-        color : #FFFFFF;
-        font-weight : normal;
-    </py:when>
-    <py:when test="False">
-        color : #000000;
-        font-weight : bold;
-    </py:when>
-</py:choose>
+% if dark_bg:
+	color : #FFFFFF;
+	font-weight : normal;
+% else:
+	color : #000000;
+	font-weight : bold;
+% endif
 }
 
 .ansi1 { font-weight : bold; }
@@ -52,4 +50,3 @@
 .ansi47 { background-color: #F5F1DE; }
 
 </style>
-</head>
