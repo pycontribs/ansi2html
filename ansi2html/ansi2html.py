@@ -16,7 +16,7 @@ from genshi import HTML
 import re
 
 class Ansi2HTMLConverter(object):
-    """ Convert Ansi color codes to CSS+HTML 
+    """ Convert Ansi color codes to CSS+HTML
 
     Example:
     >>> conv = Ansi2HTMLConverter()
@@ -24,7 +24,7 @@ class Ansi2HTMLConverter(object):
     >>> html = conv.convert(ansi)
     """
 
-    def __init__(self, 
+    def __init__(self,
                  template='ansi2html.templates.default',
                  dark_bg=True,
                  font_size='normal'):
@@ -49,12 +49,12 @@ class Ansi2HTMLConverter(object):
         patterns = ['&', '<', '>']
         for pattern in patterns:
             ansi = ansi.replace(pattern, specials[pattern])
-        
+
         last_end = 0
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end:match.start()]
             last_end = match.end()
-        
+
             params, command = match.groups()
 
             if command not in 'mM':
@@ -68,7 +68,7 @@ class Ansi2HTMLConverter(object):
             if params == [0]:
                 yield '</span>'
                 continue
-            
+
             css_classes = " ".join(["ansi%i" % p for p in params])
             yield '<span class="%s">' % css_classes
 
