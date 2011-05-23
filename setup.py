@@ -15,7 +15,7 @@ f.close()
 
 setup(
     name='ansi2html',
-    version='0.6.2',
+    version='0.6.3',
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
@@ -27,5 +27,6 @@ setup(
         "tw2.core", # for dottedtemplatelookup... for realsies.
     ],
     packages=['ansi2html'],
-    package_data={ 'ansi2html' : [ 'ansi2html.sh', 'templates/*' ], },
+    include_package_data=True,
+    zip_safe=False,
 )
