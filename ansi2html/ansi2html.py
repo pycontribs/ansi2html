@@ -87,7 +87,7 @@ class Ansi2HTMLConverter(object):
         self._attrs = {
             'dark_bg' : self.dark_bg,
             'font_size' : self.font_size,
-            'body' : body
+            'body' : body.decode('utf-8')
         }
 
         return self._attrs
@@ -106,12 +106,12 @@ class Ansi2HTMLConverter(object):
         return lookup.get_template(tmpl)
 
     def convert(self, ansi, full=True):
-        return self.template(full).render(**self.prepare(ansi))
+        return self.template(full).render_unicode(**self.prepare(ansi))
 
     def produce_headers(self):
         return lookup.get_template(
             'ansi2html.templates.header'
-        ).render(
+        ).render_unicode(
             **self.prepare()
         )
 
