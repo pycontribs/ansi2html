@@ -24,6 +24,7 @@ Example - Shell Usage
 ---------------------
 
 ::
+ $ ls --color=always | ansi2html > directories.html
  $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
  $ task burndown | ansi2html > burndown.html
 
