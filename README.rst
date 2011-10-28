@@ -12,11 +12,19 @@ Convert text with ANSI color codes to HTML
 
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 
-Example
--------
+Example - Python API
+--------------------
+
+>>> from ansi2html import Ansi2HTMLConverter
 >>> conv = Ansi2HTMLConverter()
 >>> ansi = " ".join(sys.stdin.readlines())
 >>> html = conv.convert(ansi)
+
+Example - Shell Usage
+---------------------
+
+::
+ $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
 
 Get this project:
 -----------------

@@ -13,6 +13,7 @@
 
 from mako.template import Template
 import re
+import sys
 
 from tw2.core.dottedtemplatelookup import DottedTemplateLookup
 lookup = DottedTemplateLookup(input_encoding='utf-8',
@@ -115,3 +116,8 @@ class Ansi2HTMLConverter(object):
             **self.prepare()
         )
 
+def main():
+    conv = Ansi2HTMLConverter()
+    ansi = " ".join(sys.stdin.readlines())
+    html = conv.convert(ansi)
+    print html
