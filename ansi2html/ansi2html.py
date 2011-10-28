@@ -70,11 +70,15 @@ class Ansi2HTMLConverter(object):
             except ValueError:
                 params = [0]
 
+            # Special control codes.  Mutate into an explicit-color css class.
+            if params[0] in [38, 48]:
+                params = ["%i-%i" % (params[0], params[2])] + params[3:]
+
             if params == [0]:
                 yield '</span>'
                 continue
 
-            css_classes = " ".join(["ansi%i" % p for p in params])
+            css_classes = " ".join(["ansi%s" % str(p) for p in params])
             yield '<span class="%s">' % css_classes
 
         yield ansi[last_end:]

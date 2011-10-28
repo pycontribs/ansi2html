@@ -49,4 +49,15 @@
 .ansi46 { background-color: #00aaaa; }
 .ansi47 { background-color: #F5F1DE; }
 
+<!-- Define the explicit color codes (obnoxious) -->
+<%def name="index(r, g, b)">${str(16 + (r * 36) + (g * 6) + b)}</%def>
+<%def name="color(r, g, b)">${"#%.2x%.2x%.2x" % (r* 42, g*42, b*42)}</%def>
+% for green in range(0, 6):
+	% for red in range(0, 6):
+		% for blue in range(0, 6):
+.ansi38-${index(red, green, blue)} { color: ${color(red, green, blue)}; }
+.ansi48-${index(red, green, blue)} { background: ${color(red, green, blue)}; }
+		% endfor
+	% endfor
+% endfor
 </style>

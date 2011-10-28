@@ -25,6 +25,7 @@ Example - Shell Usage
 
 ::
  $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
+ $ task burndown | ansi2html > burndown.html
 
 Get this project:
 -----------------
