@@ -60,4 +60,10 @@
 		% endfor
 	% endfor
 % endfor
+<%def name="level(grey)">${"#%.2x%.2x%.2x" % (((grey*10)+8,)*3)}</%def>
+<%def name="index2(grey)">${str(232 + grey)}</%def>
+% for grey in range(0, 24):
+.ansi38-${index2(grey)} { color: ${level(grey)}; }
+.ansi48-${index2(grey)} { background: ${level(grey)}; }
+% endfor
 </style>
