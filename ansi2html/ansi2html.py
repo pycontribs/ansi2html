@@ -14,6 +14,7 @@
 from mako.template import Template
 import re
 import sys
+import optparse
 
 from tw2.core.dottedtemplatelookup import DottedTemplateLookup
 lookup = DottedTemplateLookup(input_encoding='utf-8',
@@ -121,6 +122,15 @@ class Ansi2HTMLConverter(object):
         )
 
 def main():
+    """
+    $ ls --color=always | ansi2html > directories.html
+    $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
+    $ task burndown | ansi2html > burndown.html
+    """
+
+    parser = optparse.OptionParser(usage=main.__doc__)
+    parser.parse_args()
+
     conv = Ansi2HTMLConverter()
     ansi = " ".join(sys.stdin.readlines())
     html = conv.convert(ansi)
