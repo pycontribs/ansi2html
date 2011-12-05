@@ -129,9 +129,30 @@ def main():
     """
 
     parser = optparse.OptionParser(usage=main.__doc__)
-    parser.parse_args()
+    parser.add_option(
+        "-p", "--partial", dest="partial",
+        default=False, action="store_true",
+        help="Process lines as them come in.  No headers are produced.")
+    parser.add_option(
+        "-H", "--headers", dest="headers",
+        default=False, action="store_true",
+        help="Just produce the <style> tag.")
+    opts, args = parser.parse_args()
 
     conv = Ansi2HTMLConverter()
-    ansi = " ".join(sys.stdin.readlines())
-    html = conv.convert(ansi)
-    print html
+
+    # Produce only the headers and quit
+    if opts.headers:
+        print conv.produce_headers()
+        return
+
+    # Process input line-by-line.  Produce no headers.
+    if opts.partial:
+        # FIXME:  I don't know how to stop!
+        while True:
+            line = sys.stdin.readline()
+            print conv.convert(ansi=line, full=False)[:-1],  # Strip newlines
+        return
+
+    # Otherwise, just process the whole thing in one go
+    print conv.convert(" ".join(sys.stdin.readlines()))
