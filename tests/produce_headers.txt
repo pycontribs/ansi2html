@@ -1,5 +1,4 @@
-<html>
-<head><style type="text/css">
+<style type="text/css">
 
 .body_foreground {
 	color : #AAAAAA;
@@ -523,42 +522,3 @@
 .ansi38-255 { color: #eeeeee; }
 .ansi48-255 { background: #eeeeee; }
 </style>
-</head>
-<body class="body_foreground body_background" style="font-size: normal;" >
-<pre>
-<span class="ansi40"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi40"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi41"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi41"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi42"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi42"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi43"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi43"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi44"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi44"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi45"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi45"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi46"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi46"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi47"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-<span class="ansi1"><span class="ansi47"><span class="ansi30"> black <span class="ansi31"> red <span class="ansi32"> green <span class="ansi33"> yellow <span class="ansi34"> blue <span class="ansi35"> magenta<span class="ansi36"> cyan <span class="ansi37"> white </span>
-
-</pre>
-</body>
-
-</html>
