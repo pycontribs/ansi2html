@@ -8,18 +8,17 @@ _here = dirname (abspath (__file__))
 
 class TestAnsi2HTML (unittest.TestCase):
 
-    def setUp(self):
+    def test_conversion (self):
         with open (join (_here, "ansicolor.txt"), "rb") as input:
-            self.input = "\n".join (input.readlines ())
+            test_data = "\n".join (input.readlines ())
 
         with open (join (_here, "ansicolor.html"), "rb") as output:
-            self.output = output.readlines ()
+            expected_data = output.readlines ()
 
-    def test_conversion (self):
-        html = Ansi2HTMLConverter ().convert (self.input).split ("\n")
+        html = Ansi2HTMLConverter ().convert (test_data).split ("\n")
 
-        for idx in xrange (len (self.output)):
-            expected = self.output[idx].strip ()
+        for idx in xrange (len (expected_data)):
+            expected = expected_data[idx].strip ()
             actual = html[idx].strip ()
             self.assertEqual (expected, actual)
 
@@ -33,6 +32,20 @@ class TestAnsi2HTML (unittest.TestCase):
                     u'<span class="ansi35">b<span class="ansi36">o' +
                     u'<span class="ansi37">w</span>')
         self.assertEqual (expected, html)
+
+
+    def test_produce_headers (self):
+        conv = Ansi2HTMLConverter ()
+        headers = conv.produce_headers ().split ("\n")
+
+        inputfile = join (_here, "produce_headers.txt")
+        with open (inputfile, "rb") as produce_headers:
+            expected_data = produce_headers.readlines ()
+
+        for idx in xrange (len (expected_data)):
+            expected = expected_data[idx].strip ()
+            actual = headers[idx].strip ()
+            self.assertEqual (expected, actual)
 
 
 if __name__ == '__main__':

@@ -49,7 +49,7 @@
 .ansi46 { background-color: #00aaaa; }
 .ansi47 { background-color: #F5F1DE; }
 
-<!-- Define the explicit color codes (obnoxious) -->
+/* Define the explicit color codes (obnoxious) */
 <%def name="index(r, g, b)">${str(16 + (r * 36) + (g * 6) + b)}</%def>
 <%def name="color(r, g, b)">${"#%.2x%.2x%.2x" % (r* 42, g*42, b*42)}</%def>
 % for green in range(0, 6):
