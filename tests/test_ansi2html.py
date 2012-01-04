@@ -26,17 +26,13 @@ class TestAnsi2HTML (unittest.TestCase):
     def test_partial (self):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
 
-        conv = Ansi2HTMLConverter ()
-        attrs = conv.prepare (cgi.escape (rainbow))
-
+        html = Ansi2HTMLConverter ().convert (rainbow, full=False).strip ()
         expected = (u'<span class="ansi1"><span class="ansi40">' +
                     u'<span class="ansi31">r<span class="ansi32">a' +
                     u'<span class="ansi33">i<span class="ansi34">n' +
                     u'<span class="ansi35">b<span class="ansi36">o' +
-                    u'<span class="ansi37">w</span>\n')
-        self.assertEqual (expected, attrs["body"])
-        self.assertEqual ("normal", attrs["font_size"])
-        self.assertTrue (attrs["dark_bg"])
+                    u'<span class="ansi37">w</span>')
+        self.assertEqual (expected, html)
 
 
 if __name__ == '__main__':
