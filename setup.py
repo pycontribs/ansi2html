@@ -22,10 +22,7 @@ setup(
     author_email='ralph.bean@gmail.com',
     url='http://github.com/ralphbean/ansi2html/',
     license='GPL',
-    install_requires=[
-        "mako",
-        "tw2.core", # for dottedtemplatelookup... for realsies.
-    ],
+    install_requires=[],
     packages=['ansi2html'],
     include_package_data=True,
     zip_safe=False,

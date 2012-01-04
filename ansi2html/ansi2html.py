@@ -11,17 +11,18 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from mako.template import Template
+# from mako.template import Template
+import cgi
 import re
 import sys
 import optparse
+from .style import template as style_template
 
-from tw2.core.dottedtemplatelookup import DottedTemplateLookup
-lookup = DottedTemplateLookup(input_encoding='utf-8',
-                              output_encoding='utf-8',
-                              imports=[],
-                              default_filters=[])
-
+_template = (
+    u'<html>\n<head><style type="text/css">{style}</style>\n</head>\n' +
+    u'<body class="body_foreground body_background" ' +
+    u'style="font-size: {font_size};" >\n' +
+    u'<pre>\n{content}\n</pre>\n</body>\n\n</html>\n')
 
 class Ansi2HTMLConverter(object):
     """ Convert Ansi color codes to CSS+HTML
@@ -104,22 +105,23 @@ class Ansi2HTMLConverter(object):
             raise Exception, "Method .prepare not yet called."
         return self._attrs
 
-    def template(self, full):
-        """ Load the template """
-        tmpl = 'ansi2html.templates.full'
+    def convert (self, ansi, full=True):
+        attrs = self.prepare(ansi)
         if not full:
-            tmpl = 'ansi2html.templates.fragment'
-        return lookup.get_template(tmpl)
-
-    def convert(self, ansi, full=True):
-        return self.template(full).render_unicode(**self.prepare(ansi))
+            return attrs["body"]
+        else:
+            return _template.format (
+                style = cgi.escape (style_template (self.dark_bg)),
+                font_size = self.font_size,
+                content = attrs["body"])
 
     def produce_headers(self):
-        return lookup.get_template(
-            'ansi2html.templates.header'
-        ).render_unicode(
-            **self.prepare()
-        )
+        pass
+        # return lookup.get_template(
+        #     'ansi2html.templates.header'
+        # ).render_unicode(
+        #     **self.prepare()
+        # )
 
 def main():
     """
@@ -156,3 +158,4 @@ def main():
 
     # Otherwise, just process the whole thing in one go
     print conv.convert(" ".join(sys.stdin.readlines()))
+
