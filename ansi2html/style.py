@@ -60,6 +60,8 @@ def template (dark_bg = True):
 .ansi47 { background-color: #F5F1DE; }
 """ ]
 
+    css.append ("/* Define the explicit color codes (obnoxious) */\n\n")
+
     def index (r, g, b):
         return str(16 + (r * 36) + (g * 6) + b)
 

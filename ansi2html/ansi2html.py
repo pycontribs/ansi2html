@@ -116,12 +116,8 @@ class Ansi2HTMLConverter(object):
                 content = attrs["body"])
 
     def produce_headers(self):
-        pass
-        # return lookup.get_template(
-        #     'ansi2html.templates.header'
-        # ).render_unicode(
-        #     **self.prepare()
-        # )
+        return '<style type="text/css">{style}</style>\n'.format (
+            style = cgi.escape (style_template (self.dark_bg)))
 
 def main():
     """
