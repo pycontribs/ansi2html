@@ -24,6 +24,7 @@ _template = (
     u'style="font-size: {font_size};" >\n' +
     u'<pre>\n{content}\n</pre>\n</body>\n\n</html>\n')
 
+
 class Ansi2HTMLConverter(object):
     """ Convert Ansi color codes to CSS+HTML
 
@@ -40,7 +41,7 @@ class Ansi2HTMLConverter(object):
         self.font_size = font_size
         self._attrs = None
 
-        self.ansi_codes_prog = re.compile( '\033\\[' '([\\d;]*)' '([a-zA-z])')
+        self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
 
     def apply_regex(self, ansi):
         parts = self._apply_regex(ansi)
@@ -49,9 +50,9 @@ class Ansi2HTMLConverter(object):
 
     def _apply_regex(self, ansi):
         specials = {
-            '&' : '&amp;',
-            '<' : '&lt;',
-            '>' : '&gt;',
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
         }
         patterns = ['&', '<', '>']
         for pattern in patterns:
@@ -85,16 +86,15 @@ class Ansi2HTMLConverter(object):
 
         yield ansi[last_end:]
 
-
     def prepare(self, ansi=''):
         """ Load the contents of 'ansi' into this object """
 
         body = self.apply_regex(ansi)
 
         self._attrs = {
-            'dark_bg' : self.dark_bg,
-            'font_size' : self.font_size,
-            'body' : body.decode('utf-8')
+            'dark_bg': self.dark_bg,
+            'font_size': self.font_size,
+            'body': body.decode('utf-8')
         }
 
         return self._attrs
@@ -102,22 +102,25 @@ class Ansi2HTMLConverter(object):
     def attrs(self):
         """ Prepare attributes for the template """
         if not self._attrs:
-            raise Exception, "Method .prepare not yet called."
+            raise Exception("Method .prepare not yet called.")
         return self._attrs
 
-    def convert (self, ansi, full=True):
+    def convert(self, ansi, full=True):
         attrs = self.prepare(ansi)
         if not full:
             return attrs["body"]
         else:
-            return _template.format (
-                style = cgi.escape (style_template (self.dark_bg)),
-                font_size = self.font_size,
-                content = attrs["body"])
+            return _template.format(
+                style=cgi.escape(style_template(self.dark_bg)),
+                font_size=self.font_size,
+                content=attrs["body"]
+            )
 
     def produce_headers(self):
-        return '<style type="text/css">{style}</style>\n'.format (
-            style = cgi.escape (style_template (self.dark_bg)))
+        return '<style type="text/css">{style}</style>\n'.format(
+            style=cgi.escape(style_template(self.dark_bg))
+        )
+
 
 def main():
     """
@@ -154,4 +157,3 @@ def main():
 
     # Otherwise, just process the whole thing in one go
     print conv.convert(" ".join(sys.stdin.readlines()))
-

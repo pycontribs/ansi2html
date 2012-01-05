@@ -20,20 +20,21 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
-def template (dark_bg = True):
-    css = [ """
+
+def template(dark_bg=True):
+    css = ["""
 
 .body_foreground {
-	color : """ + ("#AAAAAA" if dark_bg else "#000000") + """;
+    color : """ + ("#AAAAAA" if dark_bg else "#000000") + """;
 }
 
 .body_background {
-	background-color : """ + ("#000000" if dark_bg else "#AAAAAA") + """;
+    background-color : """ + ("#000000" if dark_bg else "#AAAAAA") + """;
 }
 
 .body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold {
-	color : """ + ("#FFFFFF" if dark_bg else "#000000") + """;
-	font-weight : """ + ("normal" if dark_bg else "bold") + """;
+    color : """ + ("#FFFFFF" if dark_bg else "#000000") + """;
+    font-weight : """ + ("normal" if dark_bg else "bold") + """;
 }
 
 .ansi1 { font-weight : bold; }
@@ -58,38 +59,42 @@ def template (dark_bg = True):
 .ansi45 { background-color: #E850A8; }
 .ansi46 { background-color: #00aaaa; }
 .ansi47 { background-color: #F5F1DE; }
-""" ]
+"""]
 
-    css.append ("/* Define the explicit color codes (obnoxious) */\n\n")
+    css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
-    def index (r, g, b):
+    def index(r, g, b):
         return str(16 + (r * 36) + (g * 6) + b)
 
-    def color (r, g, b):
-        return "#%.2x%.2x%.2x" % (r* 42, g*42, b*42)
+    def color(r, g, b):
+        return "#%.2x%.2x%.2x" % (r * 42, g * 42, b * 42)
 
     for green in range(0, 6):
         for red in range(0, 6):
             for blue in range(0, 6):
-                css.append (".ansi38-%s { color: %s; }" % (
-                        index (red, green, blue),
-                        color (red, green, blue)))
-                css.append (".ansi48-%s { background: %s; }" % (
-                        index (red, green, blue),
-                        color (red, green, blue)))
+                css.append(".ansi38-%s { color: %s; }" % (
+                    index(red, green, blue),
+                    color(red, green, blue)
+                ))
+                css.append(".ansi48-%s { background: %s; }" % (
+                    index(red, green, blue),
+                    color(red, green, blue)
+                ))
 
-    def level (grey):
-        return "#%.2x%.2x%.2x" % (((grey*10)+8,)*3)
+    def level(grey):
+        return "#%.2x%.2x%.2x" % (((grey * 10) + 8,) * 3)
 
-    def index2 (grey):
+    def index2(grey):
         return str(232 + grey)
 
-    css.append ("\n")
+    css.append("\n")
 
     for grey in range(0, 24):
-        css.append (".ansi38-%s { color: %s; }" % (
-            index2 (grey), level (grey)))
-        css.append (".ansi48-%s { background: %s; }" % (
-            index2 (grey), level (grey)))
+        css.append(".ansi38-%s { color: %s; }" % (
+            index2(grey), level(grey)
+        ))
+        css.append(".ansi48-%s { background: %s; }" % (
+            index2(grey), level(grey)
+        ))
 
-    return "\n".join (css) + "\n"
+    return "\n".join(css) + "\n"
