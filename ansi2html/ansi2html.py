@@ -11,7 +11,6 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import cgi
 import re
 import sys
 import optparse
@@ -110,14 +109,14 @@ class Ansi2HTMLConverter(object):
             return attrs["body"]
         else:
             return _template.format(
-                style=cgi.escape(style_template(self.dark_bg)),
+                style=style_template(self.dark_bg),
                 font_size=self.font_size,
                 content=attrs["body"]
             )
 
     def produce_headers(self):
         return '<style type="text/css">{style}</style>\n'.format(
-            style=cgi.escape(style_template(self.dark_bg))
+            style=style_template(self.dark_bg)
         )
 
 
