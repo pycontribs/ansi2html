@@ -56,7 +56,9 @@ class Ansi2HTMLConverter(object):
         for pattern in patterns:
             ansi = ansi.replace(pattern, specials[pattern])
 
-        last_end = 0
+        # n_open is a count of the number of open tags
+        # last_end is the index of the last end of a code we've seen
+        n_open, last_end = 0, 0
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end:match.start()]
             last_end = match.end()
@@ -76,9 +78,14 @@ class Ansi2HTMLConverter(object):
                 params = ["%i-%i" % (params[0], params[2])] + params[3:]
 
             if params == [0]:
-                yield '</span>'
+                # If the control code 0 is present, close all tags we've
+                # opened so far.  i.e. reset all attributes
+                yield '</span>' * n_open
+                n_open = 0
                 continue
 
+            # Count how many tags we're opening
+            n_open += 1
             css_classes = " ".join(["ansi%s" % str(p) for p in params])
             yield '<span class="%s">' % css_classes
 
