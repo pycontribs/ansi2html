@@ -11,7 +11,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
     def test_conversion(self):
         with open(join(_here, "ansicolor.txt"), "rb") as input:
-            test_data = "\n".join(input.readlines())
+            test_data = "".join(input.readlines())
 
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = output.readlines()
@@ -31,7 +31,8 @@ class TestAnsi2HTML(unittest.TestCase):
                     u'<span class="ansi31">r<span class="ansi32">a' +
                     u'<span class="ansi33">i<span class="ansi34">n' +
                     u'<span class="ansi35">b<span class="ansi36">o' +
-                    u'<span class="ansi37">w</span>')
+                    u'<span class="ansi37">w' +
+                    u'</span>'*9)
         self.assertEqual(expected, html)
 
     def test_produce_headers(self):
