@@ -23,7 +23,7 @@ setup(
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
-    author_email='ralph.bean@gmail.com',
+    author_email='rbean@redhat.com',
     url='http://github.com/ralphbean/ansi2html/',
     license='GPL',
     install_requires=[],

@@ -1,7 +1,7 @@
 ansi2html
 =========
 
-:Author: Ralph Bean <ralph.bean@gmail.com>
+:Author: Ralph Bean <rbean@redhat.com>
 
 .. comment: split here
 

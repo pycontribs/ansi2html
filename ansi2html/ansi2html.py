@@ -1,6 +1,6 @@
 ##Convert ANSI (terminal) colours and attributes to HTML
 ##
-## Ralph Bean <ralph.bean@gmail.com>
+## Ralph Bean <rbean@redhat.com>
 ##
 ## Inspired by and developed off of the work by pixelbeat and blackjack.
 ##
