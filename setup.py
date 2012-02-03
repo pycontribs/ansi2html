@@ -25,7 +25,7 @@ setup(
     author='Ralph Bean',
     author_email='rbean@redhat.com',
     url='http://github.com/ralphbean/ansi2html/',
-    license='GPL',
+    license='GPLv3+',
     install_requires=[],
     tests_require=['nose'],
     test_suite='nose.collector',

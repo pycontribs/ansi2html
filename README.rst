@@ -35,4 +35,7 @@ Source:  http://github.com/ralphbean/ansi2html/
 
 pypi:    http://pypi.python.org/pypi/ansi2html/
 
+License
+-------
 
+``ansi2html`` is licensed GPLv3+.
