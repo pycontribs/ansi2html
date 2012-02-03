@@ -5,7 +5,7 @@ ansi2html
 
 .. comment: split here
 
-.. figure::  http://secure.travis-ci.org/ralphbean/ansi2html.png
+.. image::  http://secure.travis-ci.org/ralphbean/ansi2html.png
 
 Convert text with ANSI color codes to HTML
 
