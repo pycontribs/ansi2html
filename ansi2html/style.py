@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 #    This file is part of ansi2html.
 #    Copyright (C) 2012  Kuno Woudt <kuno@frob.nl>
 #
