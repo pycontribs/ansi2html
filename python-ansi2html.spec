@@ -15,7 +15,7 @@ Source0:	http://pypi.python.org/packages/source/a/ansi2html/ansi2html-%{version}
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{srcname}-%{version}-%{release}-XXXXXX)
 BuildArch:	noarch
 
-BuildRequires:	python,python-setuptools
+BuildRequires:	python,python-setuptools,python-nose
 Requires:	python
 
 %description
@@ -24,6 +24,10 @@ The ansi2html module can convert text with ANSI color codes to HTML.
 
 %prep
 %setup -q -n %{srcname}-%{version}
+
+
+%check
+%{__python} setup.py test
 
 
 %build
