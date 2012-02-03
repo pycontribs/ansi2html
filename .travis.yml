@@ -1,11 +1,11 @@
 rvm:
     - 1.9.3
 before_script:
-    - python setup.py develop
+    - sudo python setup.py develop
 env:
     - SKIP_COVERAGE=1 SKIP_INSTALL=1
 script:
-    - python setup.py test
+    - sudo python setup.py test
 notifications:
     email: true
     irc:
