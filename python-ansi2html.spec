@@ -4,7 +4,7 @@
 %global srcname ansi2html
 
 Name:		python-ansi2html
-Version:	0.8.2
+Version:	0.8.3
 Release:	1%{?dist}
 Summary:	Python module that converts text with ANSI color to HTML
 
@@ -51,6 +51,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Feb 3, 2012 Ralph Bean <rbean@redhat.com> - 0.8.3-1
+- Included tests in %check section.
+- More concise file ownership declarations.
+- Resolved license ambiguity in upstream.
+- Removed shebang from non-executable file.
 * Mon Jan 30 2012 Ralph Bean <rbean@redhat.com> - 0.8.2-1
 - Updated ansi2html version to latest 0.8.2.
 - Added _bindir entry for the ansi2html console-script.
