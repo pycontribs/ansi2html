@@ -46,9 +46,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %doc LICENSE README.rst
-%dir %{python_sitelib}/%{srcname}*.egg-info
-%{python_sitelib}/%{srcname}*.egg-info/*
-%{python_sitelib}/%{srcname}/*.py*
+%{python_sitelib}/*
 %{_bindir}/ansi2html
 
 
