@@ -5,14 +5,14 @@ ansi2html
 
 .. comment: split here
 
+.. figure::  http://secure.travis-ci.org/ralphbean/ansi2html.png
+
 Convert text with ANSI color codes to HTML
 
 .. _pixelbeat: http://www.pixelbeat.org/docs/terminal_colours/
 .. _blackjack: http://www.koders.com/python/fid5D57DD37184B558819D0EE22FCFD67F53078B2A3.aspx
 
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
-
-.. image::  http://secure.travis-ci.org/ralphbean/ansi2html.png
 
 Example - Python API
 --------------------
