@@ -12,6 +12,8 @@ Convert text with ANSI color codes to HTML
 
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 
+.. image::  http://secure.travis-ci.org/ralphbean/ansi2html.png
+
 Example - Python API
 --------------------
 
