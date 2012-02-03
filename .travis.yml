@@ -1,7 +1,7 @@
 rvm:
     - 1.9.3
 before_script:
-    - sudo python setup.py develop
+    - python setup.py develop
 env:
     - SKIP_COVERAGE=1 SKIP_INSTALL=1
 script:
