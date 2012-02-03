@@ -51,8 +51,8 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Fri Feb 3, 2012 Ralph Bean <rbean@redhat.com> - 0.8.3-1
-- Included tests in %check section.
+* Fri Feb 3 2012 Ralph Bean <rbean@redhat.com> - 0.8.3-1
+- Included tests in check section.
 - More concise file ownership declarations.
 - Resolved license ambiguity in upstream.
 - Removed shebang from non-executable file.
