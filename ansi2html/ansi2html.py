@@ -168,4 +168,4 @@ def main():
         return
 
     # Otherwise, just process the whole thing in one go
-    print conv.convert(" ".join(sys.stdin.readlines()))
+    print conv.convert(" ".join(sys.stdin.readlines())).encode('utf-8')
