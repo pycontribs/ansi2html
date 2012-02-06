@@ -30,6 +30,10 @@ _template = (
     u'<pre>\n{content}\n</pre>\n</body>\n\n</html>\n')
 
 
+class CursorMoveUp(object):
+    pass
+
+
 class Ansi2HTMLConverter(object):
     """ Convert Ansi color codes to CSS+HTML
 
@@ -50,6 +54,7 @@ class Ansi2HTMLConverter(object):
 
     def apply_regex(self, ansi):
         parts = self._apply_regex(ansi)
+        parts = self._collapse_cursor(parts)
         parts = [part for part in parts]
         return "".join(parts)
 
@@ -72,7 +77,12 @@ class Ansi2HTMLConverter(object):
 
             params, command = match.groups()
 
-            if command not in 'mM':
+            if command not in 'mMA':
+                continue
+
+            # Special cursor-moving code.  The only supported one.
+            if command == 'A':
+                yield CursorMoveUp
                 continue
 
             try:
@@ -97,6 +107,29 @@ class Ansi2HTMLConverter(object):
             yield '<span class="%s">' % css_classes
 
         yield ansi[last_end:]
+
+    def _collapse_cursor(self, parts):
+        """ Act on any CursorMoveUp commands by deleting preceding tokens """
+
+        final_parts = []
+        for part in parts:
+
+            # Throw out empty string tokens ("")
+            if not part:
+                continue
+
+            # Go back, deleting every token in the last 'line'
+            if part == CursorMoveUp:
+                final_parts.pop()
+                while '\n' not in final_parts[-1]:
+                    final_parts.pop()
+
+                continue
+
+            # Otherwise, just pass this token forward
+            final_parts.append(part)
+
+        return final_parts
 
     def prepare(self, ansi=''):
         """ Load the contents of 'ansi' into this object """
