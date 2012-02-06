@@ -23,11 +23,17 @@ import sys
 import optparse
 from .style import template as style_template
 
-_template = (
-    u'<html>\n<head><style type="text/css">{style}</style>\n</head>\n' +
-    u'<body class="body_foreground body_background" ' +
-    u'style="font-size: {font_size};" >\n' +
-    u'<pre>\n{content}\n</pre>\n</body>\n\n</html>\n')
+_template = u"""<html>
+<head><style type="text/css">{style}</style>
+</head>
+<body class="body_foreground body_background" style="font-size: {font_size};" >
+<pre>
+{content}
+</pre>
+</body>
+
+</html>
+"""
 
 
 class CursorMoveUp(object):
