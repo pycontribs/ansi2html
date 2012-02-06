@@ -150,9 +150,21 @@ def main():
         "-H", "--headers", dest="headers",
         default=False, action="store_true",
         help="Just produce the <style> tag.")
+    parser.add_option(
+        "-f", '--font-size', dest='font_size',
+        default="normal",
+        help="Set the global font size in the output.")
+    parser.add_option(
+        "-l", '--light-background', dest='light_background',
+        default=False, action="store_true",
+        help="Set output to 'light background' mode.")
+
     opts, args = parser.parse_args()
 
-    conv = Ansi2HTMLConverter()
+    conv = Ansi2HTMLConverter(
+        dark_bg=not opts.light_background,
+        font_size=opts.font_size,
+    )
 
     # Produce only the headers and quit
     if opts.headers:
