@@ -19,7 +19,7 @@ import logging
 
 setup(
     name='ansi2html',
-    version='0.8.7',
+    version='0.8.8',
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
