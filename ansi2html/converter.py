@@ -17,13 +17,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
+from __future__ import print_function
 
 import re
 import sys
 import optparse
 from .style import template as style_template
+import six
+from six.moves import map
+from six.moves import zip
 
-_template = u"""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +40,7 @@ _template = u"""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "
 </body>
 
 </html>
-"""
+""")
 
 
 class CursorMoveUp(object):
@@ -95,7 +99,7 @@ class Ansi2HTMLConverter(object):
                 continue
 
             try:
-                params = map(int, params.split(';'))
+                params = list(map(int, params.split(';')))
             except ValueError:
                 params = [0]
 
@@ -148,7 +152,7 @@ class Ansi2HTMLConverter(object):
         self._attrs = {
             'dark_bg': self.dark_bg,
             'font_size': self.font_size,
-            'body': body.decode('utf-8')
+            'body': body,
         }
 
         return self._attrs
@@ -210,7 +214,7 @@ def main():
 
     # Produce only the headers and quit
     if opts.headers:
-        print conv.produce_headers()
+        print(conv.produce_headers())
         return
 
     # Process input line-by-line.  Produce no headers.
@@ -218,8 +222,9 @@ def main():
         # FIXME:  I don't know how to stop!
         while True:
             line = sys.stdin.readline()
-            print conv.convert(ansi=line, full=False)[:-1],  # Strip newlines
+            # Strip newlines
+            print(conv.convert(ansi=line, full=False)[:-1], end=' ')
         return
 
     # Otherwise, just process the whole thing in one go
-    print conv.convert(" ".join(sys.stdin.readlines())).encode('utf-8')
+    print(conv.convert(" ".join(sys.stdin.readlines())))

@@ -26,7 +26,9 @@ setup(
     author_email='rbean@redhat.com',
     url='http://github.com/ralphbean/ansi2html/',
     license='GPLv3+',
-    install_requires=[],
+    install_requires=[
+        'six',  # For python3 support
+    ],
     tests_require=['nose'],
     test_suite='nose.collector',
     packages=['ansi2html'],
@@ -34,6 +36,6 @@ setup(
     zip_safe=False,
     entry_points="""
     [console_scripts]
-    ansi2html = ansi2html.ansi2html:main
+    ansi2html = ansi2html.converter:main
     """
 )
