@@ -11,6 +11,18 @@ _here = dirname(abspath(__file__))
 
 class TestAnsi2HTML(unittest.TestCase):
 
+    def test_linkify(self):
+        ansi = "http://threebean.org"
+        target = '<a href="http://threebean.org">http://threebean.org</a>'
+        html = Ansi2HTMLConverter(linkify=True).convert(ansi)
+        assert(target in html)
+
+    def test_not_linkify(self):
+        ansi = "http://threebean.org"
+        target = '<a href="http://threebean.org">http://threebean.org</a>'
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert(target not in html)
+
     def test_conversion(self):
         with open(join(_here, "ansicolor.txt"), "rb") as input:
             test_data = "".join(read_to_unicode(input))

@@ -43,6 +43,13 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 """)
 
 
+def linkify(line):
+    for match in re.findall(r'https?:\/\/\S+', line):
+        line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
+
+    return line
+
+
 class CursorMoveUp(object):
     pass
 
@@ -58,9 +65,11 @@ class Ansi2HTMLConverter(object):
 
     def __init__(self,
                  dark_bg=True,
-                 font_size='normal'):
+                 font_size='normal',
+                 linkify=False):
         self.dark_bg = dark_bg
         self.font_size = font_size
+        self.linkify = linkify
         self._attrs = None
 
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
@@ -68,7 +77,11 @@ class Ansi2HTMLConverter(object):
     def apply_regex(self, ansi):
         parts = self._apply_regex(ansi)
         parts = self._collapse_cursor(parts)
-        parts = [part for part in parts]
+        parts = list(parts)
+
+        if self.linkify:
+            parts = [linkify(part) for part in parts]
+
         return "".join(parts)
 
     def _apply_regex(self, ansi):
@@ -204,12 +217,17 @@ def main():
         "-l", '--light-background', dest='light_background',
         default=False, action="store_true",
         help="Set output to 'light background' mode.")
+    parser.add_option(
+        "-i", '--linkify', dest='linkify',
+        default=False, action="store_true",
+        help="Transform URLs into <a> links.")
 
     opts, args = parser.parse_args()
 
     conv = Ansi2HTMLConverter(
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
+        linkify=opts.linkify,
     )
 
     # Produce only the headers and quit
