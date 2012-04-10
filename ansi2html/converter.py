@@ -217,12 +217,17 @@ def main():
         "-l", '--light-background', dest='light_background',
         default=False, action="store_true",
         help="Set output to 'light background' mode.")
+    parser.add_option(
+        "-i", '--linkify', dest='linkify',
+        default=False, action="store_true",
+        help="Transform URLs into <a> links.")
 
     opts, args = parser.parse_args()
 
     conv = Ansi2HTMLConverter(
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
+        linkify=opts.linkify,
     )
 
     # Produce only the headers and quit
