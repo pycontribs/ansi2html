@@ -31,6 +31,10 @@ Example - Shell Usage
  $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
  $ task burndown | ansi2html > burndown.html
 
+See the list of full options with::
+
+ $ ansi2html --help
+
 Get this project:
 -----------------
 Source:  http://github.com/ralphbean/ansi2html/
