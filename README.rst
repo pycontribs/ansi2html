@@ -37,6 +37,11 @@ See the list of full options with::
 
 Get this project:
 -----------------
+
+::
+
+ $ sudo yum install python-ansi2html
+
 Source:  http://github.com/ralphbean/ansi2html/
 
 pypi:    http://pypi.python.org/pypi/ansi2html/
