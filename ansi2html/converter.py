@@ -30,7 +30,7 @@ from six.moves import zip
 _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset={output_encoding}">
 <style type="text/css">{style}</style>
 </head>
 <body class="body_foreground body_background" style="font-size: {font_size};" >
@@ -66,10 +66,13 @@ class Ansi2HTMLConverter(object):
     def __init__(self,
                  dark_bg=True,
                  font_size='normal',
-                 linkify=False):
+                 linkify=False,
+                 output_encoding='utf-8',
+                ):
         self.dark_bg = dark_bg
         self.font_size = font_size
         self.linkify = linkify
+        self.output_encoding = output_encoding
         self._attrs = None
 
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
@@ -184,7 +187,8 @@ class Ansi2HTMLConverter(object):
             return _template.format(
                 style=style_template(self.dark_bg),
                 font_size=self.font_size,
-                content=attrs["body"]
+                content=attrs["body"],
+                output_encoding=self.output_encoding,
             )
 
     def produce_headers(self):
@@ -221,6 +225,10 @@ def main():
         "-i", '--linkify', dest='linkify',
         default=False, action="store_true",
         help="Transform URLs into <a> links.")
+    parser.add_option(
+        '--output-encoding', dest='output_encoding',
+        default='utf-8',
+        help="Output encoding")
 
     opts, args = parser.parse_args()
 
@@ -228,6 +236,7 @@ def main():
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
         linkify=opts.linkify,
+        output_encoding=opts.output_encoding,
     )
 
     # Produce only the headers and quit
@@ -245,4 +254,6 @@ def main():
         return
 
     # Otherwise, just process the whole thing in one go
-    print(conv.convert(" ".join(sys.stdin.readlines())))
+    print(conv.convert(
+        " ".join(sys.stdin.readlines())
+    ).encode(opts.output_encoding))
