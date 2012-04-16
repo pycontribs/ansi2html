@@ -246,11 +246,11 @@ def main():
 
     # Process input line-by-line.  Produce no headers.
     if opts.partial:
-        # FIXME:  I don't know how to stop!
-        while True:
-            line = sys.stdin.readline()
+        line = sys.stdin.readline()
+        while line:
             # Strip newlines
             print(conv.convert(ansi=line, full=False)[:-1], end=' ')
+            line = sys.stdin.readline()
         return
 
     # Otherwise, just process the whole thing in one go
