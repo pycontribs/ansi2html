@@ -67,11 +67,13 @@ class Ansi2HTMLConverter(object):
                  dark_bg=True,
                  font_size='normal',
                  linkify=False,
+                 escaped=True,
                  output_encoding='utf-8',
                 ):
         self.dark_bg = dark_bg
         self.font_size = font_size
         self.linkify = linkify
+        self.escaped = escaped
         self.output_encoding = output_encoding
         self._attrs = None
 
@@ -88,14 +90,15 @@ class Ansi2HTMLConverter(object):
         return "".join(parts)
 
     def _apply_regex(self, ansi):
-        specials = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-        }
-        patterns = ['&', '<', '>']
-        for pattern in patterns:
-            ansi = ansi.replace(pattern, specials[pattern])
+        if self.escaped:
+            specials = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+            }
+            patterns = ['&', '<', '>']
+            for pattern in patterns:
+                ansi = ansi.replace(pattern, specials[pattern])
 
         # n_open is a count of the number of open tags
         # last_end is the index of the last end of a code we've seen
@@ -226,6 +229,10 @@ def main():
         default=False, action="store_true",
         help="Transform URLs into <a> links.")
     parser.add_option(
+        "-u", '--unescape', dest='escaped',
+        default=True, action="store_false",
+        help="Don't escape xml tags found in the input.")
+    parser.add_option(
         '--output-encoding', dest='output_encoding',
         default='utf-8',
         help="Output encoding")
@@ -236,6 +243,7 @@ def main():
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
         linkify=opts.linkify,
+        escaped=opts.escaped,
         output_encoding=opts.output_encoding,
     )
 

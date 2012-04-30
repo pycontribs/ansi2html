@@ -62,6 +62,23 @@ class TestAnsi2HTML(unittest.TestCase):
             actual = headers[idx].strip()
             self.assertEqual(expected, actual)
 
+    def test_escaped_implicit(self):
+        test = "<p>awesome</p>"
+        expected = "&lt;p&gt;awesome&lt;/p&gt;"
+        html = Ansi2HTMLConverter().convert(test, full=False)
+        self.assertEqual(expected, html)
+
+    def test_escaped_explicit(self):
+        test = "<p>awesome</p>"
+        expected = "&lt;p&gt;awesome&lt;/p&gt;"
+        html = Ansi2HTMLConverter(escaped=True).convert(test, full=False)
+        self.assertEqual(expected, html)
+
+    def test_unescaped(self):
+        test = "<p>awesome</p>"
+        expected = "<p>awesome</p>"
+        html = Ansi2HTMLConverter(escaped=False).convert(test, full=False)
+        self.assertEqual(expected, html)
 
 if __name__ == '__main__':
     unittest.main()
