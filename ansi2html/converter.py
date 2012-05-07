@@ -22,6 +22,9 @@ from __future__ import print_function
 import re
 import sys
 import optparse
+
+from collections import OrderedDict
+
 from .style import template as style_template
 import six
 from six.moves import map
@@ -91,14 +94,13 @@ class Ansi2HTMLConverter(object):
 
     def _apply_regex(self, ansi):
         if self.escaped:
-            specials = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-            }
-            patterns = ['&', '<', '>']
-            for pattern in patterns:
-                ansi = ansi.replace(pattern, specials[pattern])
+            specials = OrderedDict([
+                ('&', '&amp;'),
+                ('<', '&lt;'),
+                ('>', '&gt;'),
+            ])
+            for pattern, special in specials.items():
+                ansi = ansi.replace(pattern, special)
 
         # n_open is a count of the number of open tags
         # last_end is the index of the last end of a code we've seen
