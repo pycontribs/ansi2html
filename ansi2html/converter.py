@@ -23,7 +23,10 @@ import re
 import sys
 import optparse
 
-from collections import OrderedDict
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 from .style import template as style_template
 import six

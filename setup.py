@@ -7,6 +7,8 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+import sys
+
 f = open('README.rst')
 long_description = f.read().strip()
 long_description = long_description.split('split here', 1)[1]
@@ -16,6 +18,13 @@ f.close()
 # logging here in order to get tests to pass smoothly on python 2.7.
 import multiprocessing
 import logging
+
+requires = [
+    'six',  # For python3 support
+]
+
+if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+    requires.append("ordereddict")
 
 setup(
     name='ansi2html',
@@ -41,9 +50,7 @@ setup(
         "Topic :: Text Processing :: Markup",
         "Topic :: Text Processing :: Markup :: HTML",
     ],
-    install_requires=[
-        'six',  # For python3 support
-    ],
+    install_requires=requires,
     tests_require=['nose'],
     test_suite='nose.collector',
     packages=['ansi2html'],
