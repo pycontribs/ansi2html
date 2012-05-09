@@ -17,16 +17,26 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
+from __future__ import print_function
 
 import re
 import sys
 import optparse
-from .style import template as style_template
 
-_template = u"""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+
+from .style import template as style_template
+import six
+from six.moves import map
+from six.moves import zip
+
+_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset={output_encoding}">
 <style type="text/css">{style}</style>
 </head>
 <body class="body_foreground body_background" style="font-size: {font_size};" >
@@ -36,7 +46,14 @@ _template = u"""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "
 </body>
 
 </html>
-"""
+""")
+
+
+def linkify(line):
+    for match in re.findall(r'https?:\/\/\S+', line):
+        line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
+
+    return line
 
 
 class CursorMoveUp(object):
@@ -54,9 +71,18 @@ class Ansi2HTMLConverter(object):
 
     def __init__(self,
                  dark_bg=True,
-                 font_size='normal'):
+                 font_size='normal',
+                 linkify=False,
+                 escaped=True,
+                 markup_lines=False,
+                 output_encoding='utf-8',
+                ):
         self.dark_bg = dark_bg
         self.font_size = font_size
+        self.linkify = linkify
+        self.escaped = escaped
+        self.markup_lines = markup_lines
+        self.output_encoding = output_encoding
         self._attrs = None
 
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
@@ -64,18 +90,30 @@ class Ansi2HTMLConverter(object):
     def apply_regex(self, ansi):
         parts = self._apply_regex(ansi)
         parts = self._collapse_cursor(parts)
-        parts = [part for part in parts]
-        return "".join(parts)
+        parts = list(parts)
+
+        if self.linkify:
+            parts = [linkify(part) for part in parts]
+
+        combined = "".join(parts)
+
+        if self.markup_lines:
+            combined = "\n".join([
+                """<span id="line-%i">%s</span>""" % (i, line)
+                for i, line in enumerate(combined.split('\n'))
+            ])
+
+        return combined
 
     def _apply_regex(self, ansi):
-        specials = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-        }
-        patterns = ['&', '<', '>']
-        for pattern in patterns:
-            ansi = ansi.replace(pattern, specials[pattern])
+        if self.escaped:
+            specials = OrderedDict([
+                ('&', '&amp;'),
+                ('<', '&lt;'),
+                ('>', '&gt;'),
+            ])
+            for pattern, special in specials.items():
+                ansi = ansi.replace(pattern, special)
 
         # n_open is a count of the number of open tags
         # last_end is the index of the last end of a code we've seen
@@ -95,7 +133,7 @@ class Ansi2HTMLConverter(object):
                 continue
 
             try:
-                params = map(int, params.split(';'))
+                params = list(map(int, params.split(';')))
             except ValueError:
                 params = [0]
 
@@ -148,7 +186,7 @@ class Ansi2HTMLConverter(object):
         self._attrs = {
             'dark_bg': self.dark_bg,
             'font_size': self.font_size,
-            'body': body.decode('utf-8')
+            'body': body,
         }
 
         return self._attrs
@@ -167,7 +205,8 @@ class Ansi2HTMLConverter(object):
             return _template.format(
                 style=style_template(self.dark_bg),
                 font_size=self.font_size,
-                content=attrs["body"]
+                content=attrs["body"],
+                output_encoding=self.output_encoding,
             )
 
     def produce_headers(self):
@@ -200,26 +239,49 @@ def main():
         "-l", '--light-background', dest='light_background',
         default=False, action="store_true",
         help="Set output to 'light background' mode.")
+    parser.add_option(
+        "-i", '--linkify', dest='linkify',
+        default=False, action="store_true",
+        help="Transform URLs into <a> links.")
+    parser.add_option(
+        "-u", '--unescape', dest='escaped',
+        default=True, action="store_false",
+        help="Don't escape xml tags found in the input.")
+    parser.add_option(
+        "-m", '--markup-lines', dest="markup_lines",
+        default=False, action="store_true",
+        help="Surround lines with <span id='line-n'>...</span>.")
+    parser.add_option(
+        '--output-encoding', dest='output_encoding',
+        default='utf-8',
+        help="Output encoding")
 
     opts, args = parser.parse_args()
 
     conv = Ansi2HTMLConverter(
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
+        linkify=opts.linkify,
+        escaped=opts.escaped,
+        markup_lines=opts.markup_lines,
+        output_encoding=opts.output_encoding,
     )
 
     # Produce only the headers and quit
     if opts.headers:
-        print conv.produce_headers()
+        print(conv.produce_headers())
         return
 
     # Process input line-by-line.  Produce no headers.
     if opts.partial:
-        # FIXME:  I don't know how to stop!
-        while True:
+        line = sys.stdin.readline()
+        while line:
+            # Strip newlines
+            print(conv.convert(ansi=line, full=False)[:-1], end=' ')
             line = sys.stdin.readline()
-            print conv.convert(ansi=line, full=False)[:-1],  # Strip newlines
         return
 
     # Otherwise, just process the whole thing in one go
-    print conv.convert(" ".join(sys.stdin.readlines())).encode('utf-8')
+    print(conv.convert(
+        " ".join(sys.stdin.readlines())
+    ).encode(opts.output_encoding))
