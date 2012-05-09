@@ -80,5 +80,17 @@ class TestAnsi2HTML(unittest.TestCase):
         html = Ansi2HTMLConverter(escaped=False).convert(test, full=False)
         self.assertEqual(expected, html)
 
+    def test_markup_lines(self):
+        test = "  wat  \n "
+        expected = '<span id="line-0">  wat  </span>\n<span id="line-1"> </span>'
+        html = Ansi2HTMLConverter(markup_lines=True).convert(test, full=False)
+        self.assertEqual(expected, html)
+
+    def test_no_markup_lines(self):
+        test = "  wat  \n "
+        expected = test
+        html = Ansi2HTMLConverter().convert(test, full=False)
+        self.assertEqual(expected, html)
+
 if __name__ == '__main__':
     unittest.main()

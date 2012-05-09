@@ -74,12 +74,14 @@ class Ansi2HTMLConverter(object):
                  font_size='normal',
                  linkify=False,
                  escaped=True,
+                 markup_lines=False,
                  output_encoding='utf-8',
                 ):
         self.dark_bg = dark_bg
         self.font_size = font_size
         self.linkify = linkify
         self.escaped = escaped
+        self.markup_lines = markup_lines
         self.output_encoding = output_encoding
         self._attrs = None
 
@@ -93,7 +95,15 @@ class Ansi2HTMLConverter(object):
         if self.linkify:
             parts = [linkify(part) for part in parts]
 
-        return "".join(parts)
+        combined = "".join(parts)
+
+        if self.markup_lines:
+            combined = "\n".join([
+                """<span id="line-%i">%s</span>""" % (i, line)
+                for i, line in enumerate(combined.split('\n'))
+            ])
+
+        return combined
 
     def _apply_regex(self, ansi):
         if self.escaped:
@@ -238,6 +248,10 @@ def main():
         default=True, action="store_false",
         help="Don't escape xml tags found in the input.")
     parser.add_option(
+        "-m", '--markup-lines', dest="markup_lines",
+        default=False, action="store_true",
+        help="Surround lines with <span id='line-n'>...</span>.")
+    parser.add_option(
         '--output-encoding', dest='output_encoding',
         default='utf-8',
         help="Output encoding")
@@ -249,6 +263,7 @@ def main():
         font_size=opts.font_size,
         linkify=opts.linkify,
         escaped=opts.escaped,
+        markup_lines=opts.markup_lines,
         output_encoding=opts.output_encoding,
     )
 
