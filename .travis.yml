@@ -8,4 +8,6 @@ script: python setup.py test
 notifications:
     email: true
     irc:
-        - "irc.freenode.net#foss-rit"
+        - "irc.freenode.net#rit-foss"
+    on_success: change
+    on_failure: always
