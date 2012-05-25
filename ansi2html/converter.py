@@ -293,7 +293,8 @@ def main():
         line = sys.stdin.readline()
         while line:
             # Strip newlines
-            print(conv.convert(ansi=line, full=False)[:-1], end=' ')
+            print(conv.convert(ansi=line, full=False)[:-1],
+                  end='\n' if opts.inline else ' ')
             line = sys.stdin.readline()
         return
 
