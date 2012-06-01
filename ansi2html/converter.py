@@ -159,7 +159,8 @@ class Ansi2HTMLConverter(object):
             css_classes = ["ansi%s" % str(p) for p in params]
 
             if self.inline:
-                style = [self.styles[klass].kw for klass in css_classes]
+                style = [self.styles[klass].kw for klass in css_classes if
+                         klass in self.styles]
                 yield '<span style="%s">' % "; ".join(style)
             else:
                 yield '<span class="%s">' % " ".join(css_classes)
