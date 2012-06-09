@@ -35,6 +35,7 @@ class TestAnsi2HTML(unittest.TestCase):
         for idx in range(len(expected_data)):
             expected = expected_data[idx].strip()
             actual = html[idx].strip()
+            print actual
             self.assertEqual(expected, actual)
 
     def test_partial(self):
