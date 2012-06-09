@@ -35,6 +35,7 @@ class TestAnsi2HTML(unittest.TestCase):
         for idx in range(len(expected_data)):
             expected = expected_data[idx].strip()
             actual = html[idx].strip()
+            print actual
             self.assertEqual(expected, actual)
 
     def test_partial(self):
@@ -47,6 +48,21 @@ class TestAnsi2HTML(unittest.TestCase):
                     six.u('<span class="ansi35">b<span class="ansi36">o') +
                     six.u('<span class="ansi37">w') +
                     six.u('</span>')*9)
+        self.assertEqual(expected, html)
+
+    def test_inline(self):
+
+        rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m'
+
+        html = Ansi2HTMLConverter(inline=True).convert(rainbow, full=False)
+        expected = (six.u('<span style="font-weight: bold">') +
+                    six.u('<span style="background-color: #000316">') +
+                    six.u('<span style="color: #aa0000">r<span style="color: #00aa00">a') +
+                    six.u('<span style="color: #aa5500">i<span style="color: #0000aa">n') +
+                    six.u('<span style="color: #E850A8">b<span style="color: #00aaaa">o') +
+                    six.u('<span style="color: #F5F1DE">w') +
+                    six.u('</span>')*9)
+
         self.assertEqual(expected, html)
 
     def test_produce_headers(self):
