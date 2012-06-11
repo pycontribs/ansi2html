@@ -51,7 +51,10 @@ setup(
         "Topic :: Text Processing :: Markup :: HTML",
     ],
     install_requires=requires,
-    tests_require=['nose'],
+    tests_require=[
+        'nose',
+        'mock',
+    ],
     test_suite='nose.collector',
     packages=['ansi2html'],
     include_package_data=True,
