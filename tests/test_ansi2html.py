@@ -37,6 +37,18 @@ class TestAnsi2HTML(unittest.TestCase):
             actual = html[idx].strip()
             self.assertEqual(expected, actual)
 
+    def test_unicode(self):
+        """ Ensure that the converter returns unicode(py2)/str(py3) objs. """
+
+        with open(join(_here, "ansicolor.txt"), "rb") as input:
+            test_data = "".join(read_to_unicode(input))
+
+        html = Ansi2HTMLConverter().convert(test_data).split("\n")
+
+        for chunk in html:
+            assert isinstance(chunk, six.text_type)
+
+
     def test_partial(self):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
 
