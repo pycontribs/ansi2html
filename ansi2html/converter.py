@@ -28,7 +28,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-from .style import template as style_template
+from .style import get_styles
 import six
 from six.moves import map
 from six.moves import zip
@@ -37,7 +37,7 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={output_encoding}">
-<style type="text/css">{style}</style>
+<style type="text/css">\n{style}\n</style>
 </head>
 <body class="body_foreground body_background" style="font-size: {font_size};" >
 <pre>
@@ -70,6 +70,7 @@ class Ansi2HTMLConverter(object):
     """
 
     def __init__(self,
+                 inline=False,
                  dark_bg=True,
                  font_size='normal',
                  linkify=False,
@@ -77,6 +78,8 @@ class Ansi2HTMLConverter(object):
                  markup_lines=False,
                  output_encoding='utf-8',
                 ):
+
+        self.inline = inline
         self.dark_bg = dark_bg
         self.font_size = font_size
         self.linkify = linkify
@@ -84,6 +87,9 @@ class Ansi2HTMLConverter(object):
         self.markup_lines = markup_lines
         self.output_encoding = output_encoding
         self._attrs = None
+
+        if inline:
+            self.styles = dict([(item.klass.strip('.'), item) for item in get_styles(self.dark_bg)])
 
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
 
@@ -150,8 +156,14 @@ class Ansi2HTMLConverter(object):
 
             # Count how many tags we're opening
             n_open += 1
-            css_classes = " ".join(["ansi%s" % str(p) for p in params])
-            yield '<span class="%s">' % css_classes
+            css_classes = ["ansi%s" % str(p) for p in params]
+
+            if self.inline:
+                style = [self.styles[klass].kw for klass in css_classes if
+                         klass in self.styles]
+                yield '<span style="%s">' % "; ".join(style)
+            else:
+                yield '<span class="%s">' % " ".join(css_classes)
 
         yield ansi[last_end:]
 
@@ -203,15 +215,15 @@ class Ansi2HTMLConverter(object):
             return attrs["body"]
         else:
             return _template.format(
-                style=style_template(self.dark_bg),
+                style="\n".join(map(str, get_styles(self.dark_bg))),
                 font_size=self.font_size,
                 content=attrs["body"],
                 output_encoding=self.output_encoding,
             )
 
     def produce_headers(self):
-        return '<style type="text/css">{style}</style>\n'.format(
-            style=style_template(self.dark_bg)
+        return '<style type="text/css">\n{style}\n</style>\n'.format(
+            style="\n".join(map(str, get_styles(self.dark_bg)))
         )
 
 
@@ -228,6 +240,10 @@ def main():
         default=False, action="store_true",
         help="Process lines as them come in.  No headers are produced.")
     parser.add_option(
+        "-i", "--inline", dest="inline",
+        default=False, action="store_true",
+        help="Inline style without headers or template.")
+    parser.add_option(
         "-H", "--headers", dest="headers",
         default=False, action="store_true",
         help="Just produce the <style> tag.")
@@ -240,7 +256,7 @@ def main():
         default=False, action="store_true",
         help="Set output to 'light background' mode.")
     parser.add_option(
-        "-i", '--linkify', dest='linkify',
+        "-a", '--linkify', dest='linkify',
         default=False, action="store_true",
         help="Transform URLs into <a> links.")
     parser.add_option(
@@ -259,6 +275,7 @@ def main():
     opts, args = parser.parse_args()
 
     conv = Ansi2HTMLConverter(
+        inline=opts.inline,
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
         linkify=opts.linkify,
@@ -267,21 +284,28 @@ def main():
         output_encoding=opts.output_encoding,
     )
 
+    def _print(output):
+        if hasattr(sys.stdout, 'buffer'):
+            output = output.encode(opts.output_encoding)
+            sys.stdout.buffer.write(output)
+        else:
+            print(output)
+
     # Produce only the headers and quit
     if opts.headers:
         print(conv.produce_headers())
         return
 
     # Process input line-by-line.  Produce no headers.
-    if opts.partial:
+    if opts.partial or opts.inline:
         line = sys.stdin.readline()
         while line:
             # Strip newlines
-            print(conv.convert(ansi=line, full=False)[:-1], end=' ')
+            print(conv.convert(ansi=line, full=False)[:-1],
+                  end='\n' if opts.inline else ' ')
             line = sys.stdin.readline()
         return
 
     # Otherwise, just process the whole thing in one go
-    print(conv.convert(
-        " ".join(sys.stdin.readlines())
-    ).encode(opts.output_encoding))
+    output = conv.convert(" ".join(sys.stdin.readlines()))
+    _print(output)

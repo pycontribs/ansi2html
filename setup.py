@@ -28,7 +28,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] < 7:
 
 setup(
     name='ansi2html',
-    version='0.9.0',
+    version='0.9.1',
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
@@ -51,7 +51,10 @@ setup(
         "Topic :: Text Processing :: Markup :: HTML",
     ],
     install_requires=requires,
-    tests_require=['nose'],
+    tests_require=[
+        'nose',
+        'mock',
+    ],
     test_suite='nose.collector',
     packages=['ansi2html'],
     include_package_data=True,

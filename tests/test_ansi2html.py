@@ -1,10 +1,16 @@
 
 from os.path import abspath, dirname, join
 from ansi2html import Ansi2HTMLConverter
+from ansi2html.converter import main
 from ansi2html.util import read_to_unicode
+
+from mock import patch
+from nose.tools import eq_
+
 import cgi
 import unittest
 import six
+import textwrap
 
 _here = dirname(abspath(__file__))
 
@@ -32,10 +38,74 @@ class TestAnsi2HTML(unittest.TestCase):
 
         html = Ansi2HTMLConverter().convert(test_data).split("\n")
 
+        eq_(len(html), len(expected_data))
+
         for idx in range(len(expected_data)):
             expected = expected_data[idx].strip()
             actual = html[idx].strip()
             self.assertEqual(expected, actual)
+
+    @patch("sys.stdout", new_callable=six.StringIO)
+    def test_conversion_as_command(self, mock_stdout):
+        with open(join(_here, "ansicolor.txt"), "rb") as input:
+            test_data = "".join(read_to_unicode(input))
+
+        with open(join(_here, "ansicolor.html"), "rb") as output:
+            expected_data = "".join(read_to_unicode(output))
+
+        with patch("sys.stdin", new_callable=lambda: six.StringIO(test_data)):
+            main()
+
+        html = mock_stdout.getvalue()
+
+        eq_(len(html), len(expected_data), "Strings are not the same length.")
+        eq_(html, expected_data, "Strings are not the same.")
+
+    def test_unicode(self):
+        """ Ensure that the converter returns unicode(py2)/str(py3) objs. """
+
+        with open(join(_here, "ansicolor.txt"), "rb") as input:
+            test_data = "".join(read_to_unicode(input))
+
+        html = Ansi2HTMLConverter().convert(test_data).split("\n")
+
+        for chunk in html:
+            assert isinstance(chunk, six.text_type)
+
+    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--inline"])
+    @patch("sys.stdout", new_callable=six.StringIO)
+    def test_inline_as_command(self, mock_stdout, mock_argv):
+        test_input = textwrap.dedent(six.u("""
+        this is
+        a test
+        """))
+
+        with patch("sys.stdin", new_callable=lambda: six.StringIO(test_input)):
+            main()
+
+        eq_(mock_stdout.getvalue(), test_input)
+
+    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--partial"])
+    @patch("sys.stdout", new_callable=six.StringIO)
+    def test_partial_as_command(self, mock_stdout, mock_argv):
+        rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
+        with patch("sys.stdin", new_callable=lambda: six.StringIO(rainbow)):
+            main()
+
+        html = mock_stdout.getvalue().strip()
+
+        if hasattr(html, 'decode'):
+            html = html.decode('utf-8')
+
+        expected = (six.u('<span class="ansi1"><span class="ansi40">') +
+                    six.u('<span class="ansi31">r<span class="ansi32">a') +
+                    six.u('<span class="ansi33">i<span class="ansi34">n') +
+                    six.u('<span class="ansi35">b<span class="ansi36">o') +
+                    six.u('<span class="ansi37">w') +
+                    six.u('</span>')*9)
+        assert isinstance(html, six.text_type)
+        assert isinstance(expected, six.text_type)
+        self.assertEqual(expected, html)
 
     def test_partial(self):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
@@ -47,6 +117,21 @@ class TestAnsi2HTML(unittest.TestCase):
                     six.u('<span class="ansi35">b<span class="ansi36">o') +
                     six.u('<span class="ansi37">w') +
                     six.u('</span>')*9)
+        self.assertEqual(expected, html)
+
+    def test_inline(self):
+
+        rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m'
+
+        html = Ansi2HTMLConverter(inline=True).convert(rainbow, full=False)
+        expected = (six.u('<span style="font-weight: bold">') +
+                    six.u('<span style="background-color: #000316">') +
+                    six.u('<span style="color: #aa0000">r<span style="color: #00aa00">a') +
+                    six.u('<span style="color: #aa5500">i<span style="color: #0000aa">n') +
+                    six.u('<span style="color: #E850A8">b<span style="color: #00aaaa">o') +
+                    six.u('<span style="color: #F5F1DE">w') +
+                    six.u('</span>')*9)
+
         self.assertEqual(expected, html)
 
     def test_produce_headers(self):
