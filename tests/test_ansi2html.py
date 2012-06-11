@@ -38,10 +38,28 @@ class TestAnsi2HTML(unittest.TestCase):
 
         html = Ansi2HTMLConverter().convert(test_data).split("\n")
 
+        eq_(len(html), len(expected_data))
+
         for idx in range(len(expected_data)):
             expected = expected_data[idx].strip()
             actual = html[idx].strip()
             self.assertEqual(expected, actual)
+
+    @patch("sys.stdout", new_callable=six.StringIO)
+    def test_conversion_as_command(self, mock_stdout):
+        with open(join(_here, "ansicolor.txt"), "rb") as input:
+            test_data = "".join(read_to_unicode(input))
+
+        with open(join(_here, "ansicolor.html"), "rb") as output:
+            expected_data = "".join(read_to_unicode(output))
+
+        with patch("sys.stdin", new_callable=lambda: six.StringIO(test_data)):
+            main()
+
+        html = mock_stdout.getvalue()
+
+        eq_(len(html), len(expected_data), "Strings are not the same length.")
+        eq_(html, expected_data, "Strings are not the same.")
 
     def test_unicode(self):
         """ Ensure that the converter returns unicode(py2)/str(py3) objs. """
