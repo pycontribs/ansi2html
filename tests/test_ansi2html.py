@@ -92,7 +92,11 @@ class TestAnsi2HTML(unittest.TestCase):
         with patch("sys.stdin", new_callable=lambda: six.StringIO(rainbow)):
             main()
 
-        html = mock_stdout.getvalue().decode('utf-8').strip()
+        html = mock_stdout.getvalue().strip()
+
+        if hasattr(html, 'decode'):
+            html = html.decode('utf-8')
+
         expected = (six.u('<span class="ansi1"><span class="ansi40">') +
                     six.u('<span class="ansi31">r<span class="ansi32">a') +
                     six.u('<span class="ansi33">i<span class="ansi34">n') +
