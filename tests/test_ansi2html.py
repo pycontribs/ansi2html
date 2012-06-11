@@ -1,10 +1,16 @@
 
 from os.path import abspath, dirname, join
 from ansi2html import Ansi2HTMLConverter
+from ansi2html.converter import main
 from ansi2html.util import read_to_unicode
+
+from mock import patch
+from nose.tools import eq_
+
 import cgi
 import unittest
 import six
+import textwrap
 
 _here = dirname(abspath(__file__))
 
@@ -48,6 +54,18 @@ class TestAnsi2HTML(unittest.TestCase):
         for chunk in html:
             assert isinstance(chunk, six.text_type)
 
+    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--inline"])
+    @patch("sys.stdout", new_callable=six.StringIO)
+    def test_inline_as_command(self, mock_stdout, mock_argv):
+        test_input = textwrap.dedent(six.u("""
+        this is
+        a test
+        """))
+
+        with patch("sys.stdin", new_callable=lambda: six.StringIO(test_input)):
+            main()
+
+        eq_(mock_stdout.getvalue(), test_input)
 
     def test_partial(self):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
