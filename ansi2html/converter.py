@@ -284,6 +284,13 @@ def main():
         output_encoding=opts.output_encoding,
     )
 
+    def _print(output):
+        if hasattr(sys.stdout, 'buffer'):
+            output = output.encode(opts.output_encoding)
+            sys.stdout.buffer.write(output)
+        else:
+            print(output)
+
     # Produce only the headers and quit
     if opts.headers:
         print(conv.produce_headers())
@@ -300,6 +307,5 @@ def main():
         return
 
     # Otherwise, just process the whole thing in one go
-    print(conv.convert(
-        " ".join(sys.stdin.readlines())
-    ).encode(opts.output_encoding))
+    output = conv.convert(" ".join(sys.stdin.readlines()))
+    _print(output)
