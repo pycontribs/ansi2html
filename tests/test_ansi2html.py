@@ -85,6 +85,24 @@ class TestAnsi2HTML(unittest.TestCase):
 
         eq_(mock_stdout.getvalue(), test_input)
 
+    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--partial"])
+    @patch("sys.stdout", new_callable=six.StringIO)
+    def test_partial_as_command(self, mock_stdout, mock_argv):
+        rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
+        with patch("sys.stdin", new_callable=lambda: six.StringIO(rainbow)):
+            main()
+
+        html = mock_stdout.getvalue().decode('utf-8').strip()
+        expected = (six.u('<span class="ansi1"><span class="ansi40">') +
+                    six.u('<span class="ansi31">r<span class="ansi32">a') +
+                    six.u('<span class="ansi33">i<span class="ansi34">n') +
+                    six.u('<span class="ansi35">b<span class="ansi36">o') +
+                    six.u('<span class="ansi37">w') +
+                    six.u('</span>')*9)
+        assert isinstance(html, six.text_type)
+        assert isinstance(expected, six.text_type)
+        self.assertEqual(expected, html)
+
     def test_partial(self):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
 
