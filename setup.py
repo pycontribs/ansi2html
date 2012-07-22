@@ -53,7 +53,7 @@ setup(
     install_requires=requires,
     tests_require=[
         'nose',
-        'mock',
+        'mock>=0.8',
     ],
     test_suite='nose.collector',
     packages=['ansi2html'],
