@@ -45,8 +45,9 @@ class TestAnsi2HTML(unittest.TestCase):
             actual = html[idx].strip()
             self.assertEqual(expected, actual)
 
+    @patch("sys.argv", new_callable=lambda: ["ansi2html"])
     @patch("sys.stdout", new_callable=six.StringIO)
-    def test_conversion_as_command(self, mock_stdout):
+    def test_conversion_as_command(self, mock_stdout, mock_argv):
         with open(join(_here, "ansicolor.txt"), "rb") as input:
             test_data = "".join(read_to_unicode(input))
 

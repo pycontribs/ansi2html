@@ -147,7 +147,7 @@ class Ansi2HTMLConverter(object):
             if params[0] in [38, 48]:
                 params = ["%i-%i" % (params[0], params[2])] + params[3:]
 
-            if params == [0]:
+            if 0 in params:
                 # If the control code 0 is present, close all tags we've
                 # opened so far.  i.e. reset all attributes
                 yield '</span>' * n_open
