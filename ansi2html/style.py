@@ -25,7 +25,8 @@ class Rule(object):
     def __init__(self, klass, **kw):
 
         self.klass = klass
-        self.kw = '; '.join([(k.replace('_', '-')+': '+v) for k, v in kw.items()]).strip()
+        self.kw = '; '.join([(k.replace('_', '-')+': '+kw[k])
+                             for k in sorted(kw.keys())]).strip()
 
     def __str__(self):
         return '%s { %s; }' % (self.klass, self.kw)
