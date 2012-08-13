@@ -300,9 +300,7 @@ def main():
     if opts.partial or opts.inline:
         line = sys.stdin.readline()
         while line:
-            # Strip newlines
-            print(conv.convert(ansi=line, full=False)[:-1],
-                  end='\n' if opts.inline else ' ')
+            print(conv.convert(ansi=line, full=False)[:-1], end='\n')
             line = sys.stdin.readline()
         return
 
