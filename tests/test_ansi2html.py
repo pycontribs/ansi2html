@@ -54,7 +54,12 @@ class TestAnsi2HTML(unittest.TestCase):
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = "".join(read_to_unicode(output))
 
-        with patch("sys.stdin", new_callable=lambda: six.StringIO(test_data)):
+        if six.PY3:
+            f = lambda: six.StringIO(test_data)
+        else:
+            f = lambda: six.StringIO(test_data.encode('utf-8'))
+
+        with patch("sys.stdin", new_callable=f):
             main()
 
         html = mock_stdout.getvalue()
