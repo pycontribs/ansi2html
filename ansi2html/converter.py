@@ -293,14 +293,14 @@ def main():
 
     # Produce only the headers and quit
     if opts.headers:
-        print(conv.produce_headers())
+        _print(conv.produce_headers())
         return
 
     # Process input line-by-line.  Produce no headers.
     if opts.partial or opts.inline:
         line = sys.stdin.readline()
         while line:
-            print(conv.convert(ansi=line, full=False)[:-1], end='\n')
+            _print(conv.convert(ansi=line, full=False)[:-1])
             line = sys.stdin.readline()
         return
 
