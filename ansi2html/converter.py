@@ -268,6 +268,10 @@ def main():
         default=False, action="store_true",
         help="Surround lines with <span id='line-n'>...</span>.")
     parser.add_option(
+        '--input-encoding', dest='input_encoding',
+        default='utf-8',
+        help="Input encoding")
+    parser.add_option(
         '--output-encoding', dest='output_encoding',
         default='utf-8',
         help="Output encoding")
@@ -284,12 +288,20 @@ def main():
         output_encoding=opts.output_encoding,
     )
 
-    def _print(output):
-        if hasattr(sys.stdout, 'buffer'):
-            output = output.encode(opts.output_encoding)
-            sys.stdout.buffer.write(output)
+    def _read(input_bytes):
+        if six.PY3:
+            # This is actually already unicode.  How to we explicitly decode in
+            # python3?  I don't know the answer yet.
+            return input_bytes
         else:
-            print(output)
+            return input_bytes.decode(opts.input_encoding)
+
+    def _print(output_unicode):
+        if hasattr(sys.stdout, 'buffer'):
+            output_bytes = output_unicode.encode(opts.output_encoding)
+            sys.stdout.buffer.write(output_bytes)
+        else:
+            print(output_unicode)
 
     # Produce only the headers and quit
     if opts.headers:
@@ -298,10 +310,10 @@ def main():
 
     # Process input line-by-line.  Produce no headers.
     if opts.partial or opts.inline:
-        line = sys.stdin.readline()
+        line = _read(sys.stdin.readline())
         while line:
             _print(conv.convert(ansi=line, full=False)[:-1])
-            line = sys.stdin.readline()
+            line = _read(sys.stdin.readline())
         return
 
     # Otherwise, just process the whole thing in one go
@@ -310,6 +322,6 @@ def main():
         _print(output)
     else:
         output = conv.convert(six.u(" ").join(
-            map(six.u, sys.stdin.readlines())
+            map(_read, sys.stdin.readlines())
         ))
         _print(output.encode(opts.output_encoding))
