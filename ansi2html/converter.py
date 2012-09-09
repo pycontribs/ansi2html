@@ -300,6 +300,8 @@ def main():
         if hasattr(sys.stdout, 'buffer'):
             output_bytes = output_unicode.encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)
+        elif not six.PY3:
+            print(output_unicode.encode(opts.output_encoding))
         else:
             print(output_unicode)
 
