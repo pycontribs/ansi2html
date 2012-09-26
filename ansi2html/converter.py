@@ -147,7 +147,7 @@ class Ansi2HTMLConverter(object):
             if params[0] in [38, 48]:
                 params = ["%i-%i" % (params[0], params[2])] + params[3:]
 
-            if params == [0]:
+            if 0 in params:
                 # If the control code 0 is present, close all tags we've
                 # opened so far.  i.e. reset all attributes
                 yield '</span>' * n_open
@@ -268,6 +268,10 @@ def main():
         default=False, action="store_true",
         help="Surround lines with <span id='line-n'>...</span>.")
     parser.add_option(
+        '--input-encoding', dest='input_encoding',
+        default='utf-8',
+        help="Input encoding")
+    parser.add_option(
         '--output-encoding', dest='output_encoding',
         default='utf-8',
         help="Output encoding")
@@ -284,28 +288,42 @@ def main():
         output_encoding=opts.output_encoding,
     )
 
-    def _print(output):
-        if hasattr(sys.stdout, 'buffer'):
-            output = output.encode(opts.output_encoding)
-            sys.stdout.buffer.write(output)
+    def _read(input_bytes):
+        if six.PY3:
+            # This is actually already unicode.  How to we explicitly decode in
+            # python3?  I don't know the answer yet.
+            return input_bytes
         else:
-            print(output)
+            return input_bytes.decode(opts.input_encoding)
+
+    def _print(output_unicode):
+        if hasattr(sys.stdout, 'buffer'):
+            output_bytes = output_unicode.encode(opts.output_encoding)
+            sys.stdout.buffer.write(output_bytes)
+        elif not six.PY3:
+            print(output_unicode.encode(opts.output_encoding))
+        else:
+            print(output_unicode)
 
     # Produce only the headers and quit
     if opts.headers:
-        print(conv.produce_headers())
+        _print(conv.produce_headers())
         return
 
     # Process input line-by-line.  Produce no headers.
     if opts.partial or opts.inline:
-        line = sys.stdin.readline()
+        line = _read(sys.stdin.readline())
         while line:
-            # Strip newlines
-            print(conv.convert(ansi=line, full=False)[:-1],
-                  end='\n' if opts.inline else ' ')
-            line = sys.stdin.readline()
+            _print(conv.convert(ansi=line, full=False)[:-1])
+            line = _read(sys.stdin.readline())
         return
 
     # Otherwise, just process the whole thing in one go
-    output = conv.convert(" ".join(sys.stdin.readlines()))
-    _print(output)
+    if six.PY3:
+        output = conv.convert(" ".join(sys.stdin.readlines()))
+        _print(output)
+    else:
+        output = conv.convert(six.u(" ").join(
+            map(_read, sys.stdin.readlines())
+        ))
+        _print(output.encode(opts.output_encoding))

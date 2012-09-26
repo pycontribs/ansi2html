@@ -45,15 +45,21 @@ class TestAnsi2HTML(unittest.TestCase):
             actual = html[idx].strip()
             self.assertEqual(expected, actual)
 
+    @patch("sys.argv", new_callable=lambda: ["ansi2html"])
     @patch("sys.stdout", new_callable=six.StringIO)
-    def test_conversion_as_command(self, mock_stdout):
+    def test_conversion_as_command(self, mock_stdout, mock_argv):
         with open(join(_here, "ansicolor.txt"), "rb") as input:
             test_data = "".join(read_to_unicode(input))
 
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = "".join(read_to_unicode(output))
 
-        with patch("sys.stdin", new_callable=lambda: six.StringIO(test_data)):
+        if six.PY3:
+            f = lambda: six.StringIO(test_data)
+        else:
+            f = lambda: six.StringIO(test_data.encode('utf-8'))
+
+        with patch("sys.stdin", new_callable=f):
             main()
 
         html = mock_stdout.getvalue()
