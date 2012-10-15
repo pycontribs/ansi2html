@@ -218,7 +218,7 @@ class Ansi2HTMLConverter(object):
                 'font_size' : self.font_size,
                 'content' :  attrs["body"],
                 'output_encoding' : self.output_encoding,
-            )
+            }
 
     def produce_headers(self):
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
