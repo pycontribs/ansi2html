@@ -51,10 +51,10 @@ def index2(grey):
 def get_styles(dark_bg=True):
 
     css = [
-        Rule('.body_foreground', color='#AAAAAA' if dark_bg else '#000000'),
-        Rule('.body_background', background_color="#000000" if dark_bg else "#AAAAAA"),
+        Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg])),
+        Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg])),
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
-             color="#FFFFFF" if dark_bg else "#000000", font_weight="normal" if dark_bg else "bold"),
+             color=('#000000', '#FFFFFF')[dark_bg], font_weight=('bold', 'normal')[dark_bg]),
         Rule('.ansi1', font_weight='bold'),
         Rule('.ansi3', font_weight='italic'),
         Rule('.ansi4', text_decoration='underline'),
