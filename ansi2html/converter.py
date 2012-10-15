@@ -27,7 +27,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-from style import get_styles
+from ansi2html.style import get_styles
 import six
 from six.moves import map
 from six.moves import zip
