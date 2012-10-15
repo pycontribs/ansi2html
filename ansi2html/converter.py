@@ -35,7 +35,7 @@ from six.moves import zip
 _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s}">
+<meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
 <style type="text/css">\n%(style)s\n</style>
 </head>
 <body class="body_foreground body_background" style="font-size: %(font_size)s;" >
