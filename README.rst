@@ -1,7 +1,8 @@
-ansi2html
+ansi2html - backport to python 2.4
 =========
 
 :Author: Ralph Bean <rbean@redhat.com>
+backported by Jens Timmerman
 
 .. comment: split here
 
