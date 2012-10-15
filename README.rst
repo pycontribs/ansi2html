@@ -12,24 +12,7 @@ Convert text with ANSI color codes to HTML
 
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 
-Build Status
-------------
-
-.. |master| image:: https://secure.travis-ci.org/ralphbean/ansi2html.png?branch=master
-   :alt: Build Status - master branch
-   :target: http://travis-ci.org/#!/ralphbean/ansi2html
-
-.. |develop| image:: https://secure.travis-ci.org/ralphbean/ansi2html.png?branch=develop
-   :alt: Build Status - develop branch
-   :target: http://travis-ci.org/#!/ralphbean/ansi2html
-
-+----------+-----------+
-| Branch   | Status    |
-+==========+===========+
-| master   | |master|  |
-+----------+-----------+
-| develop  | |develop| |
-+----------+-----------+
+Forked by Jens Timmerman for easy installation in python 2.4
 
 
 Example - Python API
@@ -58,9 +41,11 @@ Get this project:
 
 ::
 
- $ sudo yum install python-ansi2html
+ $ sudo easy_install -v -Z https://github.com/JensTimmerman/ansi2html/tarball/develop#egg=ansi2html-0.9.2
 
-Source:  http://github.com/ralphbean/ansi2html/
+Source: https://github.com/JensTimmerman/ansi2html
+
+Original Source:  http://github.com/ralphbean/ansi2html/
 
 pypi:    http://pypi.python.org/pypi/ansi2html/
 
