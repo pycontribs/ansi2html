@@ -17,7 +17,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
-from __future__ import print_function
 
 import re
 import sys
@@ -28,7 +27,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-from .style import get_styles
+from ansi2html.style import get_styles
 import six
 from six.moves import map
 from six.moves import zip
@@ -36,12 +35,12 @@ from six.moves import zip
 _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset={output_encoding}">
-<style type="text/css">\n{style}\n</style>
+<meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
+<style type="text/css">\n%(style)s\n</style>
 </head>
-<body class="body_foreground body_background" style="font-size: {font_size};" >
+<body class="body_foreground body_background" style="font-size: %(font_size)s;" >
 <pre>
-{content}
+%(content)s
 </pre>
 </body>
 
@@ -214,17 +213,17 @@ class Ansi2HTMLConverter(object):
         if not full:
             return attrs["body"]
         else:
-            return _template.format(
-                style="\n".join(map(str, get_styles(self.dark_bg))),
-                font_size=self.font_size,
-                content=attrs["body"],
-                output_encoding=self.output_encoding,
-            )
+            return _template % {
+                'style' : "\n".join(map(str, get_styles(self.dark_bg))),
+                'font_size' : self.font_size,
+                'content' :  attrs["body"],
+                'output_encoding' : self.output_encoding,
+            }
 
     def produce_headers(self):
-        return '<style type="text/css">\n{style}\n</style>\n'.format(
-            style="\n".join(map(str, get_styles(self.dark_bg)))
-        )
+        return '<style type="text/css">\n%(style)s\n</style>\n' % {
+            'style' : "\n".join(map(str, get_styles(self.dark_bg)))
+        }
 
 
 def main():
