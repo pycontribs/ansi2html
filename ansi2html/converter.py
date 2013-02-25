@@ -325,4 +325,4 @@ def main():
         output = conv.convert(six.u(" ").join(
             map(_read, sys.stdin.readlines())
         ))
-        _print(output.encode(opts.output_encoding))
+        _print(output)
