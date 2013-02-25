@@ -17,8 +17,12 @@ f.close()
 # Ridiculous as it may seem, we need to import multiprocessing and
 # logging here in order to get tests to pass smoothly on python 2.7.
 
-# no multiprocessing in python < 2.6
-#import multiprocessing
+try:
+    # no multiprocessing in python < 2.6
+    import multiprocessing
+except ImportError:
+    pass
+
 import logging
 
 requires = [
@@ -30,7 +34,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] < 7:
 
 setup(
     name='ansi2html',
-    version='0.9.3',
+    version='0.9.4',
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
