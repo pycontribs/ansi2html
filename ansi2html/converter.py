@@ -1,6 +1,7 @@
 #  This file is part of ansi2html
 #  Convert ANSI (terminal) colours and attributes to HTML
 #  Copyright (C) 2012  Ralph Bean <rbean@redhat.com>
+#  Copyright (C) 2013  Sebastian Pipping <sebastian@pipping.org>
 #
 #  Inspired by and developed off of the work by pixelbeat and blackjack.
 #
@@ -142,16 +143,32 @@ class Ansi2HTMLConverter(object):
             except ValueError:
                 params = [0]
 
-            # Special control codes.  Mutate into an explicit-color css class.
-            if params[0] in [38, 48]:
-                params = ["%i-%i" % (params[0], params[2])] + params[3:]
+            # Find latest reset marker
+            last_null_index = None
+            skip_after_index = -1
+            for i, v in enumerate(params):
+                if i <= skip_after_index:
+                    continue
 
-            if 0 in params:
+                if v == 0:
+                    last_null_index = i
+                elif v in [38, 48]:
+                    skip_after_index = i + 2
+
+            # Process reset marker, drop everything before
+            if last_null_index is not None:
+                params = params[last_null_index + 1:]
                 # If the control code 0 is present, close all tags we've
                 # opened so far.  i.e. reset all attributes
                 yield '</span>' * n_open
                 n_open = 0
-                continue
+
+                if not params:
+                    continue
+
+            # Special control codes.  Mutate into an explicit-color css class.
+            if params[0] in [38, 48]:
+                params = ["%i-%i" % (params[0], params[2])] + params[3:]
 
             # Count how many tags we're opening
             n_open += 1
