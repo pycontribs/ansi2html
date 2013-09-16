@@ -166,13 +166,25 @@ class Ansi2HTMLConverter(object):
                 if not params:
                     continue
 
-            # Special control codes.  Mutate into an explicit-color css class.
-            if params[0] in [38, 48]:
-                params = ["%i-%i" % (params[0], params[2])] + params[3:]
+            # Turn codes into CSS classes
+            css_classes = []
+            skip_after_index = -1
+            for i, v in enumerate(params):
+                if i <= skip_after_index:
+                    continue
+
+                if v in [38, 48]:  # 256 color mode switches
+                    try:
+                        css_class = 'ansi%i-%i' % (params[i], params[i + 2])
+                    except IndexError:
+                        continue
+                    skip_after_index = i + 2
+                else:
+                    css_class = 'ansi%d' % v
+                css_classes.append(css_class)
 
             # Count how many tags we're opening
             n_open += 1
-            css_classes = ["ansi%s" % str(p) for p in params]
 
             if self.inline:
                 style = [self.styles[klass].kw for klass in css_classes if
