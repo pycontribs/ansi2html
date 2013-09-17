@@ -319,10 +319,10 @@ def main():
 
     # Otherwise, just process the whole thing in one go
     if six.PY3:
-        output = conv.convert(" ".join(sys.stdin.readlines()))
+        output = conv.convert("".join(sys.stdin.readlines()))
         _print(output)
     else:
-        output = conv.convert(six.u(" ").join(
+        output = conv.convert(six.u("").join(
             map(_read, sys.stdin.readlines())
         ))
         _print(output)
