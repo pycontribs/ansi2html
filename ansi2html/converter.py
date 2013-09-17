@@ -297,7 +297,7 @@ def main():
 
     def _print(output_unicode):
         if hasattr(sys.stdout, 'buffer'):
-            output_bytes = output_unicode.encode(opts.output_encoding)
+            output_bytes = (output_unicode + '\n').encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)
         elif not six.PY3:
             print(output_unicode.encode(opts.output_encoding))
