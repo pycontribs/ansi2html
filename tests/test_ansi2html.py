@@ -183,5 +183,13 @@ class TestAnsi2HTML(unittest.TestCase):
         html = Ansi2HTMLConverter().convert(test, full=False)
         self.assertEqual(expected, html)
 
+    def test_issue_25(self):
+        sample = '\x1b[0;38;5;238;48;5;231mTEXT\x1b[0m'
+
+        html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
+        expected = six.u('<span class="ansi38-238 ansi48-231">TEXT</span>')
+
+        self.assertEqual(expected, html)
+
 if __name__ == '__main__':
     unittest.main()
