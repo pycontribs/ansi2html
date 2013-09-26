@@ -36,6 +36,7 @@ class TestAnsi2HTML(unittest.TestCase):
     def test_conversion(self):
         for input_filename, expected_output_filename in (
                 ("ansicolor.txt", "ansicolor.html"),
+                ("ansicolor_eix.txt", "ansicolor_eix.html"),
                 ):
             with open(join(_here, input_filename), "rb") as input:
                 test_data = "".join(read_to_unicode(input))
