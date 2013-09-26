@@ -54,7 +54,7 @@ def get_styles(dark_bg=True):
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
              color=('#000000', '#FFFFFF')[dark_bg], font_weight=('bold', 'normal')[dark_bg]),
         Rule('.ansi1', font_weight='bold'),
-        Rule('.ansi3', font_weight='italic'),
+        Rule('.ansi3', font_style='italic'),
         Rule('.ansi4', text_decoration='underline'),
         Rule('.ansi9', text_decoration='line-through'),
         Rule('.ansi30', color="#000316"),
