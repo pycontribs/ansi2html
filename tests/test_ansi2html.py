@@ -34,20 +34,23 @@ class TestAnsi2HTML(unittest.TestCase):
         assert(target not in html)
 
     def test_conversion(self):
-        with open(join(_here, "ansicolor.txt"), "rb") as input:
-            test_data = "".join(read_to_unicode(input))
+        for input_filename, expected_output_filename in (
+                ("ansicolor.txt", "ansicolor.html"),
+                ):
+            with open(join(_here, input_filename), "rb") as input:
+                test_data = "".join(read_to_unicode(input))
 
-        with open(join(_here, "ansicolor.html"), "rb") as output:
-            expected_data = read_to_unicode(output)
+            with open(join(_here, expected_output_filename), "rb") as output:
+                expected_data = read_to_unicode(output)
 
-        html = Ansi2HTMLConverter().convert(test_data).split("\n")
+            html = Ansi2HTMLConverter().convert(test_data).split("\n")
 
-        eq_(len(html), len(expected_data))
+            eq_(len(html), len(expected_data))
 
-        for idx in range(len(expected_data)):
-            expected = expected_data[idx].strip()
-            actual = html[idx].strip()
-            self.assertEqual(expected, actual)
+            for idx in range(len(expected_data)):
+                expected = expected_data[idx].strip()
+                actual = html[idx].strip()
+                self.assertEqual(expected, actual)
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html"])
     @patch("sys.stdout", new_callable=six.StringIO)
