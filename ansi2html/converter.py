@@ -285,11 +285,13 @@ class Ansi2HTMLConverter(object):
                     parameter = None
                 state.adjust(v, parameter=parameter)
 
-            css_classes = state.to_css_classes()
-
             if inside_span:
                 yield '</span>'
                 inside_span = False
+
+            css_classes = state.to_css_classes()
+            if not css_classes:
+                continue
 
             if self.inline:
                 style = [self.styles[klass].kw for klass in css_classes if
