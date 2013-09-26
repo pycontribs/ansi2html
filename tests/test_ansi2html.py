@@ -1,7 +1,11 @@
 
 from os.path import abspath, dirname, join
 from ansi2html import Ansi2HTMLConverter
-from ansi2html.converter import main
+from ansi2html.converter import main, \
+    ANSI_VISIBILITY_ON, ANSI_VISIBILITY_OFF, \
+    ANSI_BLINK_SLOW, ANSI_BLINK_FAST, ANSI_BLINK_OFF, \
+    ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF, \
+    ANSI_INTENSITY_INCREASED, ANSI_INTENSITY_REDUCED, ANSI_INTENSITY_NORMAL
 from ansi2html.util import read_to_unicode
 
 from mock import patch
@@ -205,6 +209,49 @@ class TestAnsi2HTML(unittest.TestCase):
         html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
         expected = six.u('<span style="font-style: italic">ITALIC</span>')
 
+        self.assertEqual(expected, html)
+
+    def test_hidden_text(self):
+        sample = '\x1b[%dmHIDDEN\x1b[%dmVISIBLE\x1b[0m' % (ANSI_VISIBILITY_OFF, ANSI_VISIBILITY_ON)
+
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        expected = six.u('<span style="visibility: hidden">HIDDEN</span>VISIBLE')
+
+        self.assertEqual(expected, html)
+
+    def test_lighter_text(self):
+        sample = 'NORMAL\x1b[%dmLIGHTER\x1b[%dmBOLD\x1b[%dmNORMAL' % (ANSI_INTENSITY_REDUCED, ANSI_INTENSITY_INCREASED, ANSI_INTENSITY_NORMAL)
+
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        expected = six.u('NORMAL<span style="font-weight: lighter">LIGHTER</span><span style="font-weight: bold">BOLD</span>NORMAL')
+
+        self.assertEqual(expected, html)
+
+    def test_blinking_text(self):
+        sample = '\x1b[%dm555\x1b[%dm666\x1b[%dmNOBLINK\x1b[0m' % (ANSI_BLINK_SLOW, ANSI_BLINK_FAST, ANSI_BLINK_OFF)
+
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        expected = six.u('<span style="text-decoration: blink">555</span><span style="text-decoration: blink">666</span>NOBLINK')
+        self.assertEqual(expected, html)
+
+        html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
+        expected = six.u('<span class="ansi5">555</span><span class="ansi6">666</span>NOBLINK')
+        self.assertEqual(expected, html)
+
+    def test_inverse_text(self):
+        sample = 'NORMAL\x1b[%dmINVERSE\x1b[%dmNORMAL\x1b[0m' % (ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF)
+        html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
+        expected = six.u('NORMAL<span class="inv_background inv_foreground">INVERSE</span>NORMAL')
+        self.assertEqual(expected, html)
+
+        sample = 'NORMAL\x1b[%dm303030\x1b[%dm!30!30!30\x1b[%dm303030\x1b[0m' % (30, ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF)
+        html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
+        expected = six.u('NORMAL<span class="ansi30">303030</span><span class="inv30 inv_foreground">!30!30!30</span><span class="ansi30">303030</span>')
+        self.assertEqual(expected, html)
+
+        sample = 'NORMAL\x1b[%dm313131\x1b[%dm!31!31!31\x1b[%dm!31!43\x1b[%dm31+43\x1b[0mNORMAL' % (31, ANSI_NEGATIVE_ON, 43, ANSI_NEGATIVE_OFF)
+        html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
+        expected = six.u('NORMAL<span class="ansi31">313131</span><span class="inv31 inv_foreground">!31!31!31</span><span class="inv31 inv43">!31!43</span><span class="ansi31 ansi43">31+43</span>NORMAL')
         self.assertEqual(expected, html)
 
 if __name__ == '__main__':
