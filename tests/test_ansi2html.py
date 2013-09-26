@@ -103,12 +103,15 @@ class TestAnsi2HTML(unittest.TestCase):
         if hasattr(html, 'decode'):
             html = html.decode('utf-8')
 
-        expected = (six.u('<span class="ansi1"><span class="ansi40">') +
-                    six.u('<span class="ansi31">r<span class="ansi32">a') +
-                    six.u('<span class="ansi33">i<span class="ansi34">n') +
-                    six.u('<span class="ansi35">b<span class="ansi36">o') +
-                    six.u('<span class="ansi37">w') +
-                    six.u('</span>')*9)
+        expected = (six.u('<span class="ansi1"></span>') +
+                    six.u('<span class="ansi1 ansi40"></span>') +
+                    six.u('<span class="ansi1 ansi31 ansi40">r</span>') +
+                    six.u('<span class="ansi1 ansi32 ansi40">a</span>') +
+                    six.u('<span class="ansi1 ansi33 ansi40">i</span>') +
+                    six.u('<span class="ansi1 ansi34 ansi40">n</span>') +
+                    six.u('<span class="ansi1 ansi35 ansi40">b</span>') +
+                    six.u('<span class="ansi1 ansi36 ansi40">o</span>') +
+                    six.u('<span class="ansi1 ansi37 ansi40">w</span>'))
         assert isinstance(html, six.text_type)
         assert isinstance(expected, six.text_type)
         self.assertEqual(expected, html)
@@ -117,12 +120,15 @@ class TestAnsi2HTML(unittest.TestCase):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n'
 
         html = Ansi2HTMLConverter().convert(rainbow, full=False).strip()
-        expected = (six.u('<span class="ansi1"><span class="ansi40">') +
-                    six.u('<span class="ansi31">r<span class="ansi32">a') +
-                    six.u('<span class="ansi33">i<span class="ansi34">n') +
-                    six.u('<span class="ansi35">b<span class="ansi36">o') +
-                    six.u('<span class="ansi37">w') +
-                    six.u('</span>')*9)
+        expected = (six.u('<span class="ansi1"></span>') +
+                    six.u('<span class="ansi1 ansi40"></span>') +
+                    six.u('<span class="ansi1 ansi31 ansi40">r</span>') +
+                    six.u('<span class="ansi1 ansi32 ansi40">a</span>') +
+                    six.u('<span class="ansi1 ansi33 ansi40">i</span>') +
+                    six.u('<span class="ansi1 ansi34 ansi40">n</span>') +
+                    six.u('<span class="ansi1 ansi35 ansi40">b</span>') +
+                    six.u('<span class="ansi1 ansi36 ansi40">o</span>') +
+                    six.u('<span class="ansi1 ansi37 ansi40">w</span>'))
         self.assertEqual(expected, html)
 
     def test_inline(self):
@@ -130,13 +136,15 @@ class TestAnsi2HTML(unittest.TestCase):
         rainbow = '\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m'
 
         html = Ansi2HTMLConverter(inline=True).convert(rainbow, full=False)
-        expected = (six.u('<span style="font-weight: bold">') +
-                    six.u('<span style="background-color: #000316">') +
-                    six.u('<span style="color: #aa0000">r<span style="color: #00aa00">a') +
-                    six.u('<span style="color: #aa5500">i<span style="color: #0000aa">n') +
-                    six.u('<span style="color: #E850A8">b<span style="color: #00aaaa">o') +
-                    six.u('<span style="color: #F5F1DE">w') +
-                    six.u('</span>')*9)
+        expected = (six.u('<span style="font-weight: bold"></span>') +
+                    six.u('<span style="font-weight: bold; background-color: #000316"></span>') +
+                    six.u('<span style="font-weight: bold; color: #aa0000; background-color: #000316">r</span>') +
+                    six.u('<span style="font-weight: bold; color: #00aa00; background-color: #000316">a</span>') +
+                    six.u('<span style="font-weight: bold; color: #aa5500; background-color: #000316">i</span>') +
+                    six.u('<span style="font-weight: bold; color: #0000aa; background-color: #000316">n</span>') +
+                    six.u('<span style="font-weight: bold; color: #E850A8; background-color: #000316">b</span>') +
+                    six.u('<span style="font-weight: bold; color: #00aaaa; background-color: #000316">o</span>') +
+                    six.u('<span style="font-weight: bold; color: #F5F1DE; background-color: #000316">w</span>'))
 
         self.assertEqual(expected, html)
 
