@@ -5,8 +5,12 @@
 .inv_foreground { color: #000000; }
 .inv_background { background-color: #AAAAAA; }
 .ansi1 { font-weight: bold; }
+.ansi2 { font-weight: lighter; }
 .ansi3 { font-style: italic; }
 .ansi4 { text-decoration: underline; }
+.ansi5 { text-decoration: blink; }
+.ansi6 { text-decoration: blink; }
+.ansi8 { visibility: hidden; }
 .ansi9 { text-decoration: line-through; }
 .ansi30 { color: #000316; }
 .inv30 { background-color: #000316; }
