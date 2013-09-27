@@ -29,6 +29,7 @@ except ImportError:
     from ordereddict import OrderedDict
 
 from ansi2html.style import get_styles
+from ansi2html.version import VERSION_STR
 import six
 from six.moves import map
 from six.moves import zip
@@ -374,7 +375,7 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
-    parser = optparse.OptionParser(usage=main.__doc__)
+    parser = optparse.OptionParser(usage=main.__doc__, version="%%prog %s" % VERSION_STR)
     parser.add_option(
         "-p", "--partial", dest="partial",
         default=False, action="store_true",

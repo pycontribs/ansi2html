@@ -9,6 +9,9 @@ except ImportError:
 
 import sys
 
+sys.path.insert(0, '.')
+from ansi2html.version import VERSION_STR
+
 f = open('README.rst')
 long_description = f.read().strip()
 long_description = long_description.split('split here', 1)[1]
@@ -34,7 +37,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] < 7:
 
 setup(
     name='ansi2html',
-    version='0.10.0',
+    version=VERSION_STR,
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
