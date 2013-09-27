@@ -128,7 +128,8 @@ class _State(object):
                 css_class = 'ansi%d' % value
                 output.append(css_class)
 
-        def append_color_unless_default(output, (value, parameter), default, negative, neg_css_class):
+        def append_color_unless_default(output, color, default, negative, neg_css_class):
+            value, parameter = color
             if value != default:
                 prefix = 'inv' if negative else 'ansi'
                 css_class_index = str(value) \
