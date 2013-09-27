@@ -191,5 +191,13 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(expected, html)
 
+    def test_italic(self):
+        sample = '\x1b[3mITALIC\x1b[0m'
+
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        expected = six.u('<span style="font-style: italic">ITALIC</span>')
+
+        self.assertEqual(expected, html)
+
 if __name__ == '__main__':
     unittest.main()
