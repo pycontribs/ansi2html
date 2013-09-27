@@ -1,0 +1,84 @@
+ANSI2HTML(1)
+============
+:doctype: manpage
+:man source: {manual_package}
+:man version: {manual_version}
+:man manual: {manual_title}
+
+
+NAME
+----
+ansi2html - Convert text with ANSI color codes to HTML
+
+
+SYNOPSIS
+--------
+*ansi2html* ['OPTIONS'] [*--inline*] [*--partial*]
+
+
+DESCRIPTION
+-----------
+Tool to convert text with ANSI color codes to HTML.
+
+
+OPTIONS
+-------
+
+*-p*, *--partial*::
+	Process lines as them come in.  No headers are produced.
+
+*-i*, *--inline*::
+	Inline style without headers or template.
+
+*-H*, *--headers*::
+	Just produce the "<style>" tag.
+
+*-f* 'SIZE', *--font-size*='SIZE'::
+	Set the global font size in the output.
+
+*-l*, *--light-background*::
+	Set output to "light background" mode.
+
+*-a*, *--linkify*::
+	Transform URLs into "<a>" links.
+
+*-u*, *--unescape*::
+	Do not escape XML tags found in the input.
+
+*-m*, *--markup-lines*::
+    Surround lines with "`<span id='line-n'>..</span>`".
+
+*--input-encoding='ENCODING'*::
+	Specify input encoding.
+
+*--output-encoding='ENCODING'*::
+	Specify output encoding.
+
+*-h*, *--help*::
+	Show this help message and exit.
+
+*--version*::
+	Show program's version number and exit.
+
+
+EXAMPLES
+--------
+-------------------
+$ ls --color=always | ansi2html > directories.html
+
+$ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
+
+$ task burndown | ansi2html > burndown.html
+-------------------
+
+
+HOMEPAGE
+--------
+* GitHub: https://github.com/ralphbean/ansi2html
+* PyPI: https://pypi.python.org/pypi/ansi2html
+
+
+AUTHORS
+-------
+* Ralph Bean <rbean@redhat.com>
+* Sebastian Pipping <sebastian@pipping.org>
