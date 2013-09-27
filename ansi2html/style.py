@@ -1,5 +1,6 @@
 #    This file is part of ansi2html.
 #    Copyright (C) 2012  Kuno Woudt <kuno@frob.nl>
+#    Copyright (C) 2013  Sebastian Pipping <sebastian@pipping.org>
 #
 #    This program is free software: you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License as
@@ -53,26 +54,48 @@ def get_styles(dark_bg=True):
         Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg]),
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
              color=('#000000', '#FFFFFF')[dark_bg], font_weight=('bold', 'normal')[dark_bg]),
+        Rule('.inv_foreground', color=('#000000', '#FFFFFF')[not dark_bg]),
+        Rule('.inv_background', background_color=('#AAAAAA', '#000000')[not dark_bg]),
         Rule('.ansi1', font_weight='bold'),
+        Rule('.ansi2', font_weight='lighter'),
         Rule('.ansi3', font_style='italic'),
         Rule('.ansi4', text_decoration='underline'),
+        Rule('.ansi5', text_decoration='blink'),
+        Rule('.ansi6', text_decoration='blink'),
+        Rule('.ansi8', visibility='hidden'),
         Rule('.ansi9', text_decoration='line-through'),
         Rule('.ansi30', color="#000316"),
+        Rule('.inv30', background_color="#000316"),
         Rule('.ansi31', color="#aa0000"),
+        Rule('.inv31', background_color="#aa0000"),
         Rule('.ansi32', color="#00aa00"),
+        Rule('.inv32', background_color="#00aa00"),
         Rule('.ansi33', color="#aa5500"),
+        Rule('.inv33', background_color="#aa5500"),
         Rule('.ansi34', color="#0000aa"),
+        Rule('.inv34', background_color="#0000aa"),
         Rule('.ansi35', color="#E850A8"),
+        Rule('.inv35', background_color="#E850A8"),
         Rule('.ansi36', color="#00aaaa"),
+        Rule('.inv36', background_color="#00aaaa"),
         Rule('.ansi37', color="#F5F1DE"),
+        Rule('.inv37', background_color="#F5F1DE"),
         Rule('.ansi40', background_color="#000316"),
+        Rule('.inv40', color="#000316"),
         Rule('.ansi41', background_color="#aa0000"),
+        Rule('.inv41', color="#aa0000"),
         Rule('.ansi42', background_color="#00aa00"),
+        Rule('.inv42', color="#00aa00"),
         Rule('.ansi43', background_color="#aa5500"),
+        Rule('.inv43', color="#aa5500"),
         Rule('.ansi44', background_color="#0000aa"),
+        Rule('.inv44', color="#0000aa"),
         Rule('.ansi45', background_color="#E850A8"),
+        Rule('.inv45', color="#E850A8"),
         Rule('.ansi46', background_color="#00aaaa"),
-        Rule('.ansi47', background_color="#F5F1DE")
+        Rule('.inv46', color="#00aaaa"),
+        Rule('.ansi47', background_color="#F5F1DE"),
+        Rule('.inv47', color="#F5F1DE"),
         ]
 
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
@@ -82,11 +105,17 @@ def get_styles(dark_bg=True):
             for blue in range(0, 6):
                 css.append(Rule(".ansi38-%s" % index(red, green, blue),
                                 color=color(red, green, blue)))
+                css.append(Rule(".inv38-%s" % index(red, green, blue),
+                                background=color(red, green, blue)))
                 css.append(Rule(".ansi48-%s" % index(red, green, blue),
                                 background=color(red, green, blue)))
+                css.append(Rule(".inv48-%s" % index(red, green, blue),
+                                color=color(red, green, blue)))
 
     for grey in range(0, 24):
         css.append(Rule('.ansi38-%s' % index2(grey), color=level(grey)))
+        css.append(Rule('.inv38-%s' % index2(grey), background=level(grey)))
         css.append(Rule('.ansi48-%s' % index2(grey), background=level(grey)))
+        css.append(Rule('.inv48-%s' % index2(grey), color=level(grey)))
 
     return css
