@@ -37,7 +37,7 @@ Example - Python API
 
 >>> from ansi2html import Ansi2HTMLConverter
 >>> conv = Ansi2HTMLConverter()
->>> ansi = " ".join(sys.stdin.readlines())
+>>> ansi = "".join(sys.stdin.readlines())
 >>> html = conv.convert(ansi)
 
 Example - Shell Usage
