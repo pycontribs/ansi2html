@@ -34,7 +34,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] < 7:
 
 setup(
     name='ansi2html',
-    version='0.9.4',
+    version='0.10.0',
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
@@ -52,6 +52,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.1",
         "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
         "Topic :: Text Processing",
         "Topic :: Text Processing :: Markup",
         "Topic :: Text Processing :: Markup :: HTML",

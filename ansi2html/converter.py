@@ -1,6 +1,7 @@
 #  This file is part of ansi2html
 #  Convert ANSI (terminal) colours and attributes to HTML
 #  Copyright (C) 2012  Ralph Bean <rbean@redhat.com>
+#  Copyright (C) 2013  Sebastian Pipping <sebastian@pipping.org>
 #
 #  Inspired by and developed off of the work by pixelbeat and blackjack.
 #
@@ -32,6 +33,34 @@ import six
 from six.moves import map
 from six.moves import zip
 
+
+ANSI_FULL_RESET = 0
+ANSI_INTENSITY_INCREASED = 1
+ANSI_INTENSITY_REDUCED = 2
+ANSI_INTENSITY_NORMAL = 22
+ANSI_STYLE_ITALIC = 3
+ANSI_STYLE_NORMAL = 23
+ANSI_BLINK_SLOW = 5
+ANSI_BLINK_FAST = 6
+ANSI_BLINK_OFF = 25
+ANSI_UNDERLINE_ON = 4
+ANSI_UNDERLINE_OFF = 24
+ANSI_CROSSED_OUT_ON = 9
+ANSI_CROSSED_OUT_OFF = 29
+ANSI_VISIBILITY_ON = 28
+ANSI_VISIBILITY_OFF = 8
+ANSI_FOREGROUND_CUSTOM_MIN = 30
+ANSI_FOREGROUND_CUSTOM_MAX = 37
+ANSI_FOREGROUND_256 = 38
+ANSI_FOREGROUND_DEFAULT = 39
+ANSI_BACKGROUND_CUSTOM_MIN = 40
+ANSI_BACKGROUND_CUSTOM_MAX = 47
+ANSI_BACKGROUND_256 = 48
+ANSI_BACKGROUND_DEFAULT = 49
+ANSI_NEGATIVE_ON = 7
+ANSI_NEGATIVE_OFF = 27
+
+
 _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -46,6 +75,82 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 
 </html>
 """)
+
+
+class _State(object):
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.intensity = ANSI_INTENSITY_NORMAL
+        self.style = ANSI_STYLE_NORMAL
+        self.blink = ANSI_BLINK_OFF
+        self.underline = ANSI_UNDERLINE_OFF
+        self.crossedout = ANSI_CROSSED_OUT_OFF
+        self.visibility = ANSI_VISIBILITY_ON
+        self.foreground = (ANSI_FOREGROUND_DEFAULT, None)
+        self.background = (ANSI_BACKGROUND_DEFAULT, None)
+        self.negative = ANSI_NEGATIVE_OFF
+
+    def adjust(self, ansi_code, parameter=None):
+        if ansi_code in (ANSI_INTENSITY_INCREASED, ANSI_INTENSITY_REDUCED, ANSI_INTENSITY_NORMAL):
+            self.intensity = ansi_code
+        elif ansi_code in (ANSI_STYLE_ITALIC, ANSI_STYLE_NORMAL):
+            self.style = ansi_code
+        elif ansi_code in (ANSI_BLINK_SLOW, ANSI_BLINK_FAST, ANSI_BLINK_OFF):
+            self.blink = ansi_code
+        elif ansi_code in (ANSI_UNDERLINE_ON, ANSI_UNDERLINE_OFF):
+            self.underline = ansi_code
+        elif ansi_code in (ANSI_CROSSED_OUT_ON, ANSI_CROSSED_OUT_OFF):
+            self.crossedout = ansi_code
+        elif ansi_code in (ANSI_VISIBILITY_ON, ANSI_VISIBILITY_OFF):
+            self.visibility = ansi_code
+        elif ANSI_FOREGROUND_CUSTOM_MIN <= ansi_code <= ANSI_FOREGROUND_CUSTOM_MAX:
+            self.foreground = (ansi_code, None)
+        elif ansi_code == ANSI_FOREGROUND_256:
+            self.foreground = (ansi_code, parameter)
+        elif ansi_code == ANSI_FOREGROUND_DEFAULT:
+            self.foreground = (ansi_code, None)
+        elif ANSI_BACKGROUND_CUSTOM_MIN <= ansi_code <= ANSI_BACKGROUND_CUSTOM_MAX:
+            self.background = (ansi_code, None)
+        elif ansi_code == ANSI_BACKGROUND_256:
+            self.background = (ansi_code, parameter)
+        elif ansi_code == ANSI_BACKGROUND_DEFAULT:
+            self.background = (ansi_code, None)
+        elif ansi_code in (ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF):
+            self.negative = ansi_code
+
+    def to_css_classes(self):
+        css_classes = []
+
+        def append_unless_default(output, value, default):
+            if value != default:
+                css_class = 'ansi%d' % value
+                output.append(css_class)
+
+        def append_color_unless_default(output, color, default, negative, neg_css_class):
+            value, parameter = color
+            if value != default:
+                prefix = 'inv' if negative else 'ansi'
+                css_class_index = str(value) \
+                        if (parameter is None) \
+                        else '%d-%d' % (value, parameter)
+                output.append(prefix + css_class_index)
+            elif negative:
+                output.append(neg_css_class)
+
+        append_unless_default(css_classes, self.intensity, ANSI_INTENSITY_NORMAL)
+        append_unless_default(css_classes, self.style, ANSI_STYLE_NORMAL)
+        append_unless_default(css_classes, self.blink, ANSI_BLINK_OFF)
+        append_unless_default(css_classes, self.underline, ANSI_UNDERLINE_OFF)
+        append_unless_default(css_classes, self.crossedout, ANSI_CROSSED_OUT_OFF)
+        append_unless_default(css_classes, self.visibility, ANSI_VISIBILITY_ON)
+
+        flip_fore_and_background = (self.negative == ANSI_NEGATIVE_ON)
+        append_color_unless_default(css_classes, self.foreground, ANSI_FOREGROUND_DEFAULT, flip_fore_and_background, 'inv_background')
+        append_color_unless_default(css_classes, self.background, ANSI_BACKGROUND_DEFAULT, flip_fore_and_background, 'inv_foreground')
+
+        return css_classes
 
 
 def linkify(line):
@@ -120,9 +225,9 @@ class Ansi2HTMLConverter(object):
             for pattern, special in specials.items():
                 ansi = ansi.replace(pattern, special)
 
-        # n_open is a count of the number of open tags
-        # last_end is the index of the last end of a code we've seen
-        n_open, last_end = 0, 0
+        state = _State()
+        inside_span = False
+        last_end = 0  # the index of the last end of a code we've seen
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end:match.start()]
             last_end = match.end()
@@ -140,22 +245,54 @@ class Ansi2HTMLConverter(object):
             try:
                 params = list(map(int, params.split(';')))
             except ValueError:
-                params = [0]
+                params = [ANSI_FULL_RESET]
 
-            # Special control codes.  Mutate into an explicit-color css class.
-            if params[0] in [38, 48]:
-                params = ["%i-%i" % (params[0], params[2])] + params[3:]
+            # Find latest reset marker
+            last_null_index = None
+            skip_after_index = -1
+            for i, v in enumerate(params):
+                if i <= skip_after_index:
+                    continue
 
-            if 0 in params:
-                # If the control code 0 is present, close all tags we've
-                # opened so far.  i.e. reset all attributes
-                yield '</span>' * n_open
-                n_open = 0
+                if v == ANSI_FULL_RESET:
+                    last_null_index = i
+                elif v in (ANSI_FOREGROUND_256, ANSI_BACKGROUND_256):
+                    skip_after_index = i + 2
+
+            # Process reset marker, drop everything before
+            if last_null_index is not None:
+                params = params[last_null_index + 1:]
+                if inside_span:
+                    inside_span = False
+                    yield '</span>'
+                state.reset()
+
+                if not params:
+                    continue
+
+            # Turn codes into CSS classes
+            skip_after_index = -1
+            for i, v in enumerate(params):
+                if i <= skip_after_index:
+                    continue
+
+                if v in (ANSI_FOREGROUND_256, ANSI_BACKGROUND_256):
+                    try:
+                        parameter = params[i + 2]
+                    except IndexError:
+                        continue
+                    skip_after_index = i + 2
+                else:
+                    parameter = None
+                state.adjust(v, parameter=parameter)
+
+            if inside_span:
+                yield '</span>'
+                inside_span = False
+
+            css_classes = state.to_css_classes()
+            if not css_classes:
                 continue
-
-            # Count how many tags we're opening
-            n_open += 1
-            css_classes = ["ansi%s" % str(p) for p in params]
 
             if self.inline:
                 style = [self.styles[klass].kw for klass in css_classes if
@@ -163,8 +300,12 @@ class Ansi2HTMLConverter(object):
                 yield '<span style="%s">' % "; ".join(style)
             else:
                 yield '<span class="%s">' % " ".join(css_classes)
+            inside_span = True
 
         yield ansi[last_end:]
+        if inside_span:
+            yield '</span>'
+            inside_span = False
 
     def _collapse_cursor(self, parts):
         """ Act on any CursorMoveUp commands by deleting preceding tokens """
@@ -297,7 +438,7 @@ def main():
 
     def _print(output_unicode):
         if hasattr(sys.stdout, 'buffer'):
-            output_bytes = output_unicode.encode(opts.output_encoding)
+            output_bytes = (output_unicode + '\n').encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)
         elif not six.PY3:
             print(output_unicode.encode(opts.output_encoding))
@@ -319,10 +460,10 @@ def main():
 
     # Otherwise, just process the whole thing in one go
     if six.PY3:
-        output = conv.convert(" ".join(sys.stdin.readlines()))
+        output = conv.convert("".join(sys.stdin.readlines()))
         _print(output)
     else:
-        output = conv.convert(six.u(" ").join(
+        output = conv.convert(six.u("").join(
             map(_read, sys.stdin.readlines())
         ))
         _print(output)
