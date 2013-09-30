@@ -450,20 +450,12 @@ def main():
         _print(conv.produce_headers())
         return
 
-    # Process input line-by-line.  Produce no headers.
-    if opts.partial or opts.inline:
-        line = _read(sys.stdin.readline())
-        while line:
-            _print(conv.convert(ansi=line, full=False)[:-1])
-            line = _read(sys.stdin.readline())
-        return
-
-    # Otherwise, just process the whole thing in one go
+    full = not bool(opts.partial or opts.inline)
     if six.PY3:
-        output = conv.convert("".join(sys.stdin.readlines()))
+        output = conv.convert("".join(sys.stdin.readlines()), full=full)
         _print(output)
     else:
         output = conv.convert(six.u("").join(
             map(_read, sys.stdin.readlines())
-        ))
+        ), full=full)
         _print(output)
