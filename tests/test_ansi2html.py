@@ -42,15 +42,17 @@ class TestAnsi2HTML(unittest.TestCase):
                 test_data = "".join(read_to_unicode(input))
 
             with open(join(_here, expected_output_filename), "rb") as output:
-                expected_data = read_to_unicode(output)
+                expected_data = [e.rstrip('\n') for e in read_to_unicode(output)]
 
-            html = Ansi2HTMLConverter().convert(test_data).split("\n")
+            html = Ansi2HTMLConverter().convert(test_data, ensure_trailing_newline=True).split("\n")
+            if html and html[-1] == '':
+                html = html[:-1]
 
             eq_(len(html), len(expected_data))
 
             for idx in range(len(expected_data)):
-                expected = expected_data[idx].strip()
-                actual = html[idx].strip()
+                expected = expected_data[idx]
+                actual = html[idx]
                 self.assertEqual(expected, actual)
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html"])
@@ -260,13 +262,28 @@ class TestAnsi2HTML(unittest.TestCase):
 
     def test_cross_line_state(self):  # covers issue 36, too
         sample = '\x1b[31mRED\nSTILL RED'
-        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=False)
         expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>')
         self.assertEqual(expected, html)
 
         sample = '\x1b[31mRED\nSTILL RED\n'
-        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=False)
         expected = six.u('<span style="color: #aa0000">RED\nSTILL RED\n</span>')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=True)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>\n')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED\n'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=True)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED\n</span>\n')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED\x1b[m\n'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=True)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>\n')
         self.assertEqual(expected, html)
 
 if __name__ == '__main__':
