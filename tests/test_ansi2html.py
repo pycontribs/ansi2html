@@ -258,5 +258,16 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = six.u('NORMAL<span class="ansi31">313131</span><span class="inv31 inv_foreground">!31!31!31</span><span class="inv31 inv43">!31!43</span><span class="ansi31 ansi43">31+43</span>NORMAL')
         self.assertEqual(expected, html)
 
+    def test_cross_line_state(self):  # covers issue 36, too
+        sample = '\x1b[31mRED\nSTILL RED'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED\n'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED\n</span>')
+        self.assertEqual(expected, html)
+
 if __name__ == '__main__':
     unittest.main()
