@@ -160,6 +160,12 @@ def linkify(line):
     return line
 
 
+def _needs_extra_newline(text):
+    if not text or text.endswith('\n'):
+        return False
+    return True
+
+
 class CursorMoveUp(object):
     pass
 
@@ -330,10 +336,13 @@ class Ansi2HTMLConverter(object):
 
         return final_parts
 
-    def prepare(self, ansi=''):
+    def prepare(self, ansi='', ensure_trailing_newline=False):
         """ Load the contents of 'ansi' into this object """
 
         body = self.apply_regex(ansi)
+
+        if ensure_trailing_newline and _needs_extra_newline(body):
+            body += '\n'
 
         self._attrs = {
             'dark_bg': self.dark_bg,
@@ -349,8 +358,8 @@ class Ansi2HTMLConverter(object):
             raise Exception("Method .prepare not yet called.")
         return self._attrs
 
-    def convert(self, ansi, full=True):
-        attrs = self.prepare(ansi)
+    def convert(self, ansi, full=True, ensure_trailing_newline=False):
+        attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
         if not full:
             return attrs["body"]
         else:
@@ -436,34 +445,26 @@ def main():
         else:
             return input_bytes.decode(opts.input_encoding)
 
-    def _print(output_unicode):
+    def _print(output_unicode, end='\n'):
         if hasattr(sys.stdout, 'buffer'):
-            output_bytes = (output_unicode + '\n').encode(opts.output_encoding)
+            output_bytes = (output_unicode + end).encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)
         elif not six.PY3:
-            print(output_unicode.encode(opts.output_encoding))
+            sys.stdout.write((output_unicode + end).encode(opts.output_encoding))
         else:
-            print(output_unicode)
+            sys.stdout.write(output_unicode + end)
 
     # Produce only the headers and quit
     if opts.headers:
-        _print(conv.produce_headers())
+        _print(conv.produce_headers(), end='')
         return
 
-    # Process input line-by-line.  Produce no headers.
-    if opts.partial or opts.inline:
-        line = _read(sys.stdin.readline())
-        while line:
-            _print(conv.convert(ansi=line, full=False)[:-1])
-            line = _read(sys.stdin.readline())
-        return
-
-    # Otherwise, just process the whole thing in one go
+    full = not bool(opts.partial or opts.inline)
     if six.PY3:
-        output = conv.convert("".join(sys.stdin.readlines()))
-        _print(output)
+        output = conv.convert("".join(sys.stdin.readlines()), full=full, ensure_trailing_newline=True)
+        _print(output, end='')
     else:
         output = conv.convert(six.u("").join(
             map(_read, sys.stdin.readlines())
-        ))
-        _print(output)
+        ), full=full, ensure_trailing_newline=True)
+        _print(output, end='')
