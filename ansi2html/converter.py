@@ -29,6 +29,7 @@ except ImportError:
     from ordereddict import OrderedDict
 
 from ansi2html.style import get_styles
+from ansi2html.version import VERSION_STR
 import six
 from six.moves import map
 from six.moves import zip
@@ -383,7 +384,7 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
-    parser = optparse.OptionParser(usage=main.__doc__)
+    parser = optparse.OptionParser(usage=main.__doc__, version="%%prog %s" % VERSION_STR)
     parser.add_option(
         "-p", "--partial", dest="partial",
         default=False, action="store_true",
@@ -397,7 +398,7 @@ def main():
         default=False, action="store_true",
         help="Just produce the <style> tag.")
     parser.add_option(
-        "-f", '--font-size', dest='font_size',
+        "-f", '--font-size', dest='font_size', metavar='SIZE',
         default="normal",
         help="Set the global font size in the output.")
     parser.add_option(
@@ -411,19 +412,19 @@ def main():
     parser.add_option(
         "-u", '--unescape', dest='escaped',
         default=True, action="store_false",
-        help="Don't escape xml tags found in the input.")
+        help="Do not escape XML tags found in the input.")
     parser.add_option(
         "-m", '--markup-lines', dest="markup_lines",
         default=False, action="store_true",
-        help="Surround lines with <span id='line-n'>...</span>.")
+        help="Surround lines with <span id='line-n'>..</span>.")
     parser.add_option(
-        '--input-encoding', dest='input_encoding',
+        '--input-encoding', dest='input_encoding', metavar='ENCODING',
         default='utf-8',
-        help="Input encoding")
+        help="Specify input encoding")
     parser.add_option(
-        '--output-encoding', dest='output_encoding',
+        '--output-encoding', dest='output_encoding', metavar='ENCODING',
         default='utf-8',
-        help="Output encoding")
+        help="Specify output encoding")
 
     opts, args = parser.parse_args()
 
