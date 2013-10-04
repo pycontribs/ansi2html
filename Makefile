@@ -35,7 +35,7 @@ upload: $(GENERATED_FILES)
 install: $(GENERATED_FILES)
 	$(SETUP_PY) install --root '$(DESTDIR)'
 
-man/ansi2html.1: man/ansi2html.1.txt man/asciidoc.conf Makefile
+man/ansi2html.1: man/ansi2html.1.txt man/asciidoc.conf Makefile setup.py
 	$(A2X) \
 		--conf-file=man/asciidoc.conf \
 		--attribute="manual_package=$(_MANUAL_PACKAGE)" \
@@ -44,4 +44,4 @@ man/ansi2html.1: man/ansi2html.1.txt man/asciidoc.conf Makefile
 		--format=manpage -D man \
 		"$<"
 
-.PHONY: all check clean dist install
+.PHONY: all check clean dist install upload
