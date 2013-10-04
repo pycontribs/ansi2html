@@ -29,6 +29,9 @@ clean:
 dist: $(GENERATED_FILES)
 	$(SETUP_PY) sdist
 
+upload: $(GENERATED_FILES)
+	$(SETUP_PY) sdist upload --sign
+
 install: $(GENERATED_FILES)
 	$(SETUP_PY) install --root '$(DESTDIR)'
 
