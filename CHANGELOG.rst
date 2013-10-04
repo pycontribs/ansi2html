@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0.2
+-----
+
+- Add an upload command to the Makefile. `12e68427c <https://github.com/ralphbean/ansi2html/commit/12e68427c8dc4255bb4da8ccd8024c2b742be8e8>`_
+- Tweak travis setup. `07a95ef6e <https://github.com/ralphbean/ansi2html/commit/07a95ef6e5d0c6afc5ee53fa5ce6f9c5bc3a2bab>`_
+- Remove a forgotten import. `756139724 <https://github.com/ralphbean/ansi2html/commit/75613972499b6ee18326bdd2989e5411ad475ce9>`_
+
 1.0.1
 -----
 
