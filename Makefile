@@ -44,4 +44,4 @@ man/ansi2html.1: man/ansi2html.1.txt man/asciidoc.conf Makefile setup.py
 		--format=manpage -D man \
 		"$<"
 
-.PHONY: all check clean dist install
+.PHONY: all check clean dist install upload
