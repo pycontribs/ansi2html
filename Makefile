@@ -12,7 +12,7 @@ GENERATED_FILES = man/ansi2html.1
 
 _MANUAL_PACKAGE = ansi2html
 _MANUAL_TITLE = ansi2html Manual
-_MANUAL_VERSION = $(shell $(PYTHON) ansi2html/version.py)
+_MANUAL_VERSION = $(shell $(PYTHON) setup.py --version)
 
 
 all: $(GENERATED_FILES)
@@ -32,7 +32,7 @@ dist: $(GENERATED_FILES)
 install: $(GENERATED_FILES)
 	$(SETUP_PY) install --root '$(DESTDIR)'
 
-man/ansi2html.1: man/ansi2html.1.txt man/asciidoc.conf Makefile ansi2html/version.py
+man/ansi2html.1: man/ansi2html.1.txt man/asciidoc.conf Makefile
 	$(A2X) \
 		--conf-file=man/asciidoc.conf \
 		--attribute="manual_package=$(_MANUAL_PACKAGE)" \

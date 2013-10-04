@@ -28,9 +28,6 @@ except ImportError:
 
 import sys
 
-sys.path.insert(0, '.')
-from ansi2html.version import VERSION_STR
-
 f = open('README.rst')
 long_description = f.read().strip()
 long_description = long_description.split('split here', 1)[1]
@@ -38,7 +35,6 @@ f.close()
 
 # Ridiculous as it may seem, we need to import multiprocessing and
 # logging here in order to get tests to pass smoothly on python 2.7.
-
 try:
     # no multiprocessing in python < 2.6
     import multiprocessing
@@ -54,9 +50,15 @@ requires = [
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     requires.append("ordereddict")
 
+version = '1.0.0'
+
+if '--version' in sys.argv:
+    print(version)
+    sys.exit(0)
+
 setup(
     name='ansi2html',
-    version=VERSION_STR,
+    version=version,
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
