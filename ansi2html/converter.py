@@ -22,6 +22,7 @@
 import re
 import sys
 import optparse
+import pkg_resources
 
 try:
     from collections import OrderedDict
@@ -384,7 +385,10 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
-    parser = optparse.OptionParser(usage=main.__doc__, version="%%prog %s" % VERSION_STR)
+    version_str = pkg_resources.get_distribution('ansi2html').version
+    parser = optparse.OptionParser(
+        usage=main.__doc__,
+        version="%%prog %s" % version_str)
     parser.add_option(
         "-p", "--partial", dest="partial",
         default=False, action="store_true",
