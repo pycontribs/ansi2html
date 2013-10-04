@@ -1,4 +1,23 @@
 #!/usr/bin/env python
+#  This file is part of ansi2html
+#  Convert ANSI (terminal) colours and attributes to HTML
+#  Copyright (C) 2012  Ralph Bean <rbean@redhat.com>
+#
+#  Inspired by and developed off of the work by pixelbeat and blackjack.
+#
+#  This program is free software: you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, either version 3 of
+#  the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see
+#  <http://www.gnu.org/licenses/>.
 
 try:
     from setuptools import setup, find_packages
@@ -8,6 +27,9 @@ except ImportError:
     from setuptools import setup, find_packages
 
 import sys
+
+sys.path.insert(0, '.')
+from ansi2html.version import VERSION_STR
 
 f = open('README.rst')
 long_description = f.read().strip()
@@ -34,7 +56,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] < 7:
 
 setup(
     name='ansi2html',
-    version='0.10.0',
+    version=VERSION_STR,
     description="Convert text with ANSI color codes to HTML",
     long_description=long_description,
     author='Ralph Bean',
@@ -64,6 +86,11 @@ setup(
     ],
     test_suite='nose.collector',
     packages=['ansi2html'],
+    data_files=[
+        ('/usr/share/man/man1/', [
+            'man/ansi2html.1',
+            ]),
+        ],
     include_package_data=True,
     zip_safe=False,
     entry_points="""

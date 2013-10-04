@@ -1,3 +1,25 @@
+#  This file is part of ansi2html
+#  Convert ANSI (terminal) colours and attributes to HTML
+#  Copyright (C) 2012  Ralph Bean <rbean@redhat.com>
+#  Copyright (C) 2012  Kuno Woudt <kuno@frob.nl>
+#  Copyright (C) 2012  Martin Zimmermann <info@posativ.org>
+#  Copyright (C) 2013  Sebastian Pipping <sebastian@pipping.org>
+#
+#  Inspired by and developed off of the work by pixelbeat and blackjack.
+#
+#  This program is free software: you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation, either version 3 of
+#  the License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see
+#  <http://www.gnu.org/licenses/>.
 
 from os.path import abspath, dirname, join
 from ansi2html import Ansi2HTMLConverter
@@ -42,15 +64,17 @@ class TestAnsi2HTML(unittest.TestCase):
                 test_data = "".join(read_to_unicode(input))
 
             with open(join(_here, expected_output_filename), "rb") as output:
-                expected_data = read_to_unicode(output)
+                expected_data = [e.rstrip('\n') for e in read_to_unicode(output)]
 
-            html = Ansi2HTMLConverter().convert(test_data).split("\n")
+            html = Ansi2HTMLConverter().convert(test_data, ensure_trailing_newline=True).split("\n")
+            if html and html[-1] == '':
+                html = html[:-1]
 
             eq_(len(html), len(expected_data))
 
             for idx in range(len(expected_data)):
-                expected = expected_data[idx].strip()
-                actual = html[idx].strip()
+                expected = expected_data[idx]
+                actual = html[idx]
                 self.assertEqual(expected, actual)
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html"])
@@ -256,6 +280,32 @@ class TestAnsi2HTML(unittest.TestCase):
         sample = 'NORMAL\x1b[%dm313131\x1b[%dm!31!31!31\x1b[%dm!31!43\x1b[%dm31+43\x1b[0mNORMAL' % (31, ANSI_NEGATIVE_ON, 43, ANSI_NEGATIVE_OFF)
         html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
         expected = six.u('NORMAL<span class="ansi31">313131</span><span class="inv31 inv_foreground">!31!31!31</span><span class="inv31 inv43">!31!43</span><span class="ansi31 ansi43">31+43</span>NORMAL')
+        self.assertEqual(expected, html)
+
+    def test_cross_line_state(self):  # covers issue 36, too
+        sample = '\x1b[31mRED\nSTILL RED'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=False)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED\n'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=False)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED\n</span>')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=True)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>\n')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED\n'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=True)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED\n</span>\n')
+        self.assertEqual(expected, html)
+
+        sample = '\x1b[31mRED\nSTILL RED\x1b[m\n'
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=True)
+        expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>\n')
         self.assertEqual(expected, html)
 
 if __name__ == '__main__':

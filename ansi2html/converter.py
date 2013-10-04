@@ -29,6 +29,7 @@ except ImportError:
     from ordereddict import OrderedDict
 
 from ansi2html.style import get_styles
+from ansi2html.version import VERSION_STR
 import six
 from six.moves import map
 from six.moves import zip
@@ -158,6 +159,12 @@ def linkify(line):
         line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
 
     return line
+
+
+def _needs_extra_newline(text):
+    if not text or text.endswith('\n'):
+        return False
+    return True
 
 
 class CursorMoveUp(object):
@@ -330,10 +337,13 @@ class Ansi2HTMLConverter(object):
 
         return final_parts
 
-    def prepare(self, ansi=''):
+    def prepare(self, ansi='', ensure_trailing_newline=False):
         """ Load the contents of 'ansi' into this object """
 
         body = self.apply_regex(ansi)
+
+        if ensure_trailing_newline and _needs_extra_newline(body):
+            body += '\n'
 
         self._attrs = {
             'dark_bg': self.dark_bg,
@@ -349,8 +359,8 @@ class Ansi2HTMLConverter(object):
             raise Exception("Method .prepare not yet called.")
         return self._attrs
 
-    def convert(self, ansi, full=True):
-        attrs = self.prepare(ansi)
+    def convert(self, ansi, full=True, ensure_trailing_newline=False):
+        attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
         if not full:
             return attrs["body"]
         else:
@@ -374,7 +384,7 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
-    parser = optparse.OptionParser(usage=main.__doc__)
+    parser = optparse.OptionParser(usage=main.__doc__, version="%%prog %s" % VERSION_STR)
     parser.add_option(
         "-p", "--partial", dest="partial",
         default=False, action="store_true",
@@ -388,7 +398,7 @@ def main():
         default=False, action="store_true",
         help="Just produce the <style> tag.")
     parser.add_option(
-        "-f", '--font-size', dest='font_size',
+        "-f", '--font-size', dest='font_size', metavar='SIZE',
         default="normal",
         help="Set the global font size in the output.")
     parser.add_option(
@@ -402,19 +412,19 @@ def main():
     parser.add_option(
         "-u", '--unescape', dest='escaped',
         default=True, action="store_false",
-        help="Don't escape xml tags found in the input.")
+        help="Do not escape XML tags found in the input.")
     parser.add_option(
         "-m", '--markup-lines', dest="markup_lines",
         default=False, action="store_true",
-        help="Surround lines with <span id='line-n'>...</span>.")
+        help="Surround lines with <span id='line-n'>..</span>.")
     parser.add_option(
-        '--input-encoding', dest='input_encoding',
+        '--input-encoding', dest='input_encoding', metavar='ENCODING',
         default='utf-8',
-        help="Input encoding")
+        help="Specify input encoding")
     parser.add_option(
-        '--output-encoding', dest='output_encoding',
+        '--output-encoding', dest='output_encoding', metavar='ENCODING',
         default='utf-8',
-        help="Output encoding")
+        help="Specify output encoding")
 
     opts, args = parser.parse_args()
 
@@ -436,34 +446,26 @@ def main():
         else:
             return input_bytes.decode(opts.input_encoding)
 
-    def _print(output_unicode):
+    def _print(output_unicode, end='\n'):
         if hasattr(sys.stdout, 'buffer'):
-            output_bytes = (output_unicode + '\n').encode(opts.output_encoding)
+            output_bytes = (output_unicode + end).encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)
         elif not six.PY3:
-            print(output_unicode.encode(opts.output_encoding))
+            sys.stdout.write((output_unicode + end).encode(opts.output_encoding))
         else:
-            print(output_unicode)
+            sys.stdout.write(output_unicode + end)
 
     # Produce only the headers and quit
     if opts.headers:
-        _print(conv.produce_headers())
+        _print(conv.produce_headers(), end='')
         return
 
-    # Process input line-by-line.  Produce no headers.
-    if opts.partial or opts.inline:
-        line = _read(sys.stdin.readline())
-        while line:
-            _print(conv.convert(ansi=line, full=False)[:-1])
-            line = _read(sys.stdin.readline())
-        return
-
-    # Otherwise, just process the whole thing in one go
+    full = not bool(opts.partial or opts.inline)
     if six.PY3:
-        output = conv.convert("".join(sys.stdin.readlines()))
-        _print(output)
+        output = conv.convert("".join(sys.stdin.readlines()), full=full, ensure_trailing_newline=True)
+        _print(output, end='')
     else:
         output = conv.convert(six.u("").join(
             map(_read, sys.stdin.readlines())
-        ))
-        _print(output)
+        ), full=full, ensure_trailing_newline=True)
+        _print(output, end='')
