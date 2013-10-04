@@ -50,7 +50,7 @@ requires = [
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     requires.append("ordereddict")
 
-version = '1.0.0'
+version = '1.0.1'
 
 if '--version' in sys.argv:
     print(version)
