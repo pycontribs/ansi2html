@@ -308,5 +308,17 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = six.u('<span style="color: #aa0000">RED\nSTILL RED</span>\n')
         self.assertEqual(expected, html)
 
+    def test_scheme(self):  # covers issue 36, too
+        sample = '\x1b[33mYELLOW/BROWN'
+        # ansi2html scheme is brown #aa5500
+        html = Ansi2HTMLConverter(inline=True).convert(sample, full=False, ensure_trailing_newline=False)
+        expected = six.u('<span style="color: #aa5500">YELLOW/BROWN</span>')
+        self.assertEqual(expected, html)
+
+        # xterm scheme is yellow #cdcd00
+        html = Ansi2HTMLConverter(inline=True, scheme='xterm').convert(sample, full=False, ensure_trailing_newline=False)
+        expected = six.u('<span style="color: #cdcd00">YELLOW/BROWN</span>')
+        self.assertEqual(expected, html)
+
 if __name__ == '__main__':
     unittest.main()
