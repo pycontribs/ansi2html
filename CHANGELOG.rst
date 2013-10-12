@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0.3
+-----
+
+- Makefile: Fix regression where version bumps would not force a rebuild of the man page `750fe09fe <https://github.com/ralphbean/ansi2html/commit/750fe09feccf600ee19d5842649a9b9cd6965510>`_
+- Makefile: Mark target upload as phony `ac3877f57 <https://github.com/ralphbean/ansi2html/commit/ac3877f5728281ed2df792767ad18e6283001615>`_
+- Merge pull request #38 from hartwork/dependency-regression `10b6051a4 <https://github.com/ralphbean/ansi2html/commit/10b6051a4bd207064a77b5f28be7e6954c028d8b>`_
+- Conditionally install man page into system or virtualenv.  For #39. `720ac2f93 <https://github.com/ralphbean/ansi2html/commit/720ac2f93e6dfb1c77520dc5f7aeab4f031dfd75>`_
+
 1.0.2
 -----
 
