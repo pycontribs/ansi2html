@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0.5
+-----
+
+- added support to select a color-scheme. added schemes 'xterm' and 'xterm-bright' `367289a86 <https://github.com/ralphbean/ansi2html/commit/367289a86bb81f0c22801b6db7b63cc8acdec300>`_
+- Merge pull request #40 from schettino72/color-schemes `1111aec78 <https://github.com/ralphbean/ansi2html/commit/1111aec7863584c1153438e89833f53be29fa249>`_
+- 1.0.4 `96b6f19ae <https://github.com/ralphbean/ansi2html/commit/96b6f19ae99a239051cd52c8edd7980d791736e9>`_
+- 1.0.4 `b7e6e048c <https://github.com/ralphbean/ansi2html/commit/b7e6e048cc78324849c2af93d4948f6bc696ff09>`_
+
 1.0.4
 -----
 
