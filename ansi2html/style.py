@@ -46,8 +46,17 @@ def level(grey):
 def index2(grey):
     return str(232 + grey)
 
+# http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
+    'ansi2html': ("#000316", "#aa0000", "#00aa00", "#aa5500", "#0000aa",
+                  "#E850A8", "#00aaaa", "#F5F1DE"),
+    'xterm': ("#000000", "#cd0000", "#00cd00", "#cdcd00", "#0000ee",
+              "#cd00cd", "#00cdcd", "#e5e5e5"),
+    'xterm-bright': ("#7f7f7f", "#ff0000", "#00ff00", "#ffff00", "#5c5cff",
+              "#ff00ff", "#00ffff", "#ffffff"),
+    }
 
-def get_styles(dark_bg=True):
+def get_styles(dark_bg=True, scheme='ansi2html'):
 
     css = [
         Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg]),
@@ -64,39 +73,17 @@ def get_styles(dark_bg=True):
         Rule('.ansi6', text_decoration='blink'),
         Rule('.ansi8', visibility='hidden'),
         Rule('.ansi9', text_decoration='line-through'),
-        Rule('.ansi30', color="#000316"),
-        Rule('.inv30', background_color="#000316"),
-        Rule('.ansi31', color="#aa0000"),
-        Rule('.inv31', background_color="#aa0000"),
-        Rule('.ansi32', color="#00aa00"),
-        Rule('.inv32', background_color="#00aa00"),
-        Rule('.ansi33', color="#aa5500"),
-        Rule('.inv33', background_color="#aa5500"),
-        Rule('.ansi34', color="#0000aa"),
-        Rule('.inv34', background_color="#0000aa"),
-        Rule('.ansi35', color="#E850A8"),
-        Rule('.inv35', background_color="#E850A8"),
-        Rule('.ansi36', color="#00aaaa"),
-        Rule('.inv36', background_color="#00aaaa"),
-        Rule('.ansi37', color="#F5F1DE"),
-        Rule('.inv37', background_color="#F5F1DE"),
-        Rule('.ansi40', background_color="#000316"),
-        Rule('.inv40', color="#000316"),
-        Rule('.ansi41', background_color="#aa0000"),
-        Rule('.inv41', color="#aa0000"),
-        Rule('.ansi42', background_color="#00aa00"),
-        Rule('.inv42', color="#00aa00"),
-        Rule('.ansi43', background_color="#aa5500"),
-        Rule('.inv43', color="#aa5500"),
-        Rule('.ansi44', background_color="#0000aa"),
-        Rule('.inv44', color="#0000aa"),
-        Rule('.ansi45', background_color="#E850A8"),
-        Rule('.inv45', color="#E850A8"),
-        Rule('.ansi46', background_color="#00aaaa"),
-        Rule('.inv46', color="#00aaaa"),
-        Rule('.ansi47', background_color="#F5F1DE"),
-        Rule('.inv47', color="#F5F1DE"),
         ]
+
+    # set palette
+    assert scheme in SCHEME
+    pal = SCHEME[scheme]
+    for _index in range(8):
+        css.append(Rule('.ansi3%s' % _index, color=pal[_index]))
+        css.append(Rule('.inv3%s' % _index, background_color=pal[_index]))
+    for _index in range(8):
+        css.append(Rule('.ansi4%s' % _index, background_color=pal[_index]))
+        css.append(Rule('.inv4%s' % _index, color=pal[_index]))
 
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
