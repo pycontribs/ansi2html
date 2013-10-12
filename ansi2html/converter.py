@@ -188,6 +188,7 @@ class Ansi2HTMLConverter(object):
                  escaped=True,
                  markup_lines=False,
                  output_encoding='utf-8',
+                 scheme='ansi2html'
                 ):
 
         self.inline = inline
@@ -197,10 +198,11 @@ class Ansi2HTMLConverter(object):
         self.escaped = escaped
         self.markup_lines = markup_lines
         self.output_encoding = output_encoding
+        self.scheme = scheme
         self._attrs = None
 
         if inline:
-            self.styles = dict([(item.klass.strip('.'), item) for item in get_styles(self.dark_bg)])
+            self.styles = dict([(item.klass.strip('.'), item) for item in get_styles(self.dark_bg, self.scheme)])
 
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
 
@@ -365,7 +367,7 @@ class Ansi2HTMLConverter(object):
             return attrs["body"]
         else:
             return _template % {
-                'style' : "\n".join(map(str, get_styles(self.dark_bg))),
+                'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme))),
                 'font_size' : self.font_size,
                 'content' :  attrs["body"],
                 'output_encoding' : self.output_encoding,
@@ -373,7 +375,7 @@ class Ansi2HTMLConverter(object):
 
     def produce_headers(self):
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
-            'style' : "\n".join(map(str, get_styles(self.dark_bg)))
+            'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme)))
         }
 
 
@@ -428,6 +430,10 @@ def main():
         '--output-encoding', dest='output_encoding', metavar='ENCODING',
         default='utf-8',
         help="Specify output encoding")
+    parser.add_option(
+        '-s', '--scheme', dest='scheme', metavar='SCHEME',
+        default='ansi2html',
+        help="Specify color palette scheme [ansi2html, xterm, xterm-bright]")
 
     opts, args = parser.parse_args()
 
@@ -439,6 +445,7 @@ def main():
         escaped=opts.escaped,
         markup_lines=opts.markup_lines,
         output_encoding=opts.output_encoding,
+        scheme=opts.scheme,
     )
 
     def _read(input_bytes):
