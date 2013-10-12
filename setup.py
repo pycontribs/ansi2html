@@ -63,7 +63,7 @@ data_files = [
         ]),
     ]
 
-version = '1.0.2'
+version = '1.0.3'
 
 if '--version' in sys.argv:
     print(version)
