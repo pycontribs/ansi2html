@@ -27,6 +27,7 @@ except ImportError:
     from setuptools import setup, find_packages
 
 import sys
+import os
 
 f = open('README.rst')
 long_description = f.read().strip()
@@ -50,7 +51,19 @@ requires = [
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     requires.append("ordereddict")
 
-version = '1.0.3'
+# Conditionally install man pages into the system or the virtualenv.
+if 'VIRTUAL_ENV' in os.environ:
+    man_prefix = os.environ['VIRTUAL_ENV']
+else:
+    man_prefix = '/usr'
+
+data_files = [
+    (man_prefix + '/share/man/man1/', [
+        'man/ansi2html.1',
+        ]),
+    ]
+
+version = '1.0.4'
 
 if '--version' in sys.argv:
     print(version)
