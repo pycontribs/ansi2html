@@ -53,7 +53,13 @@ SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
     'xterm': ("#000000", "#cd0000", "#00cd00", "#cdcd00", "#0000ee",
               "#cd00cd", "#00cdcd", "#e5e5e5"),
     'xterm-bright': ("#7f7f7f", "#ff0000", "#00ff00", "#ffff00", "#5c5cff",
-              "#ff00ff", "#00ffff", "#ffffff"),
+                     "#ff00ff", "#00ffff", "#ffffff"),
+    'osx': ("#000000", "#c23621", "#25bc24", "#adad27", "#492ee1",
+            "#d338d3", "#33bbc8", "#cbcccd"),
+
+    # http://ethanschoonover.com/solarized
+    'solarized': ("#262626", "#d70000", "#5f8700", "#af8700", "#0087ff",
+                  "#af005f", "#00afaf", "#e4e4e4"),
     }
 
 def get_styles(dark_bg=True, scheme='ansi2html'):
