@@ -76,7 +76,6 @@ def get_styles(dark_bg=True, scheme='ansi2html'):
         ]
 
     # set palette
-    assert scheme in SCHEME
     pal = SCHEME[scheme]
     for _index in range(8):
         css.append(Rule('.ansi3%s' % _index, color=pal[_index]))

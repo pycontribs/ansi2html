@@ -29,7 +29,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-from ansi2html.style import get_styles
+from ansi2html.style import get_styles, SCHEME
 import six
 from six.moves import map
 from six.moves import zip
@@ -386,6 +386,7 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
+    scheme_names = sorted(six.iterkeys(SCHEME))
     version_str = pkg_resources.get_distribution('ansi2html').version
     parser = optparse.OptionParser(
         usage=main.__doc__,
@@ -432,8 +433,9 @@ def main():
         help="Specify output encoding")
     parser.add_option(
         '-s', '--scheme', dest='scheme', metavar='SCHEME',
-        default='ansi2html',
-        help="Specify color palette scheme [ansi2html, xterm, xterm-bright]")
+        default='ansi2html', choices=scheme_names,
+        help=("Specify color palette scheme. Default: %%default. Choices: %s"
+              % scheme_names))
 
     opts, args = parser.parse_args()
 
