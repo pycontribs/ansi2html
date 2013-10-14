@@ -26,7 +26,6 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
-import os
 import sys
 
 f = open('README.rst')
@@ -50,18 +49,6 @@ requires = [
 
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     requires.append("ordereddict")
-
-# Conditionally install man pages into the system or the virtualenv.
-if 'VIRTUAL_ENV' in os.environ:
-    man_prefix = os.environ['VIRTUAL_ENV']
-else:
-    man_prefix = '/usr'
-
-data_files = [
-    (man_prefix + '/share/man/man1/', [
-        'man/ansi2html.1',
-        ]),
-    ]
 
 version = '1.0.3'
 
@@ -101,7 +88,11 @@ setup(
     ],
     test_suite='nose.collector',
     packages=['ansi2html'],
-    data_files=data_files,
+    data_files=[
+        ('/usr/share/man/man1/', [
+            'man/ansi2html.1',
+            ]),
+        ],
     include_package_data=True,
     zip_safe=False,
     entry_points="""
