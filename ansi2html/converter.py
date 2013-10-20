@@ -66,6 +66,7 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
+<title></title>
 <style type="text/css">\n%(style)s\n</style>
 </head>
 <body class="body_foreground body_background" style="font-size: %(font_size)s;" >
