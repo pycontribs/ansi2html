@@ -66,7 +66,7 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
-<title></title>
+<title>%(title)s</title>
 <style type="text/css">\n%(style)s\n</style>
 </head>
 <body class="body_foreground body_background" style="font-size: %(font_size)s;" >
@@ -189,7 +189,8 @@ class Ansi2HTMLConverter(object):
                  escaped=True,
                  markup_lines=False,
                  output_encoding='utf-8',
-                 scheme='ansi2html'
+                 scheme='ansi2html',
+                 title=''
                 ):
 
         self.inline = inline
@@ -200,6 +201,7 @@ class Ansi2HTMLConverter(object):
         self.markup_lines = markup_lines
         self.output_encoding = output_encoding
         self.scheme = scheme
+        self.title = title
         self._attrs = None
 
         if inline:
@@ -369,6 +371,7 @@ class Ansi2HTMLConverter(object):
         else:
             return _template % {
                 'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme))),
+                'title' : self.title,
                 'font_size' : self.font_size,
                 'content' :  attrs["body"],
                 'output_encoding' : self.output_encoding,
@@ -437,6 +440,10 @@ def main():
         default='ansi2html', choices=scheme_names,
         help=("Specify color palette scheme. Default: %%default. Choices: %s"
               % scheme_names))
+    parser.add_option(
+        '-t', '--title', dest='output_title',
+        default='',
+        help="Specify output title")
 
     opts, args = parser.parse_args()
 
@@ -449,6 +456,7 @@ def main():
         markup_lines=opts.markup_lines,
         output_encoding=opts.output_encoding,
         scheme=opts.scheme,
+        title=opts.output_title,
     )
 
     def _read(input_bytes):
