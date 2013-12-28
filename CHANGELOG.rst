@@ -1,6 +1,26 @@
 Changelog
 =========
 
+1.0.6
+-----
+
+- 1.0.4 `b7e6e048c <https://github.com/ralphbean/ansi2html/commit/b7e6e048cc78324849c2af93d4948f6bc696ff09>`_
+- 1.0.5 `f9cab7af7 <https://github.com/ralphbean/ansi2html/commit/f9cab7af7483969d73e3696e988945cc797e5149>`_
+- use optparse choices to deal with invalid scheme selection. `214d73609 <https://github.com/ralphbean/ansi2html/commit/214d73609ff0e0dd645778dbbc0392cd340f8df5>`_
+- added solarized and os X terminal color schemes `2176bc4d0 <https://github.com/ralphbean/ansi2html/commit/2176bc4d050f52b69dd9227e29508a9dfd2e1b0a>`_
+- Merge pull request #41 from schettino72/more-schemes `609326371 <https://github.com/ralphbean/ansi2html/commit/609326371e74c8f19c4185f76a64e24f54d6cfbf>`_
+- Revert "Conditionally install man page into system or virtualenv.  For #39." `c1ee2bac9 <https://github.com/ralphbean/ansi2html/commit/c1ee2bac9bf66944cce387a4f1a534a408966d6a>`_
+- Install man page to ${PREFIX}, not /usr (issue #39) `86abc9e3d <https://github.com/ralphbean/ansi2html/commit/86abc9e3dd8769af848a93ac2afc3728688554b3>`_
+- Merge pull request #42 from hartwork/issue-39 `e81c55b38 <https://github.com/ralphbean/ansi2html/commit/e81c55b38b3368ceb05842823f980320607ed6db>`_
+- add empty title element to head section in html output `c16fe680b <https://github.com/ralphbean/ansi2html/commit/c16fe680b18fa5c880ae8ed71fab3b062c2a371a>`_
+- Merge pull request #43 from CBke/develop `c13f4a985 <https://github.com/ralphbean/ansi2html/commit/c13f4a9852785fc4c68d416747923b2f6653faca>`_
+- 1.0.4 `40526f43a <https://github.com/ralphbean/ansi2html/commit/40526f43a009c85fddc0ab34de51e9eb94883e1c>`_
+- 1.0.5 `e6a150e9d <https://github.com/ralphbean/ansi2html/commit/e6a150e9dd00f607ad32377878e36e2783cba784>`_
+- Fix tests for added title. `aab8348ce <https://github.com/ralphbean/ansi2html/commit/aab8348ced14e747178772b49e0a796effeec974>`_
+- add option --title for filling in the title `007e77c50 <https://github.com/ralphbean/ansi2html/commit/007e77c507cd9bc8465caa46fc47abbd66d5c313>`_
+- Merge pull request #44 from CBke/develop `4fd918e54 <https://github.com/ralphbean/ansi2html/commit/4fd918e54e62d2658f3fdedc5347070de96ddcff>`_
+- Drop manpage installation stuff. `a2f157614 <https://github.com/ralphbean/ansi2html/commit/a2f157614243e70d0134818ef1c37b1b780339d5>`_
+
 1.0.5
 -----
 

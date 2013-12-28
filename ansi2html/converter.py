@@ -29,7 +29,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-from ansi2html.style import get_styles
+from ansi2html.style import get_styles, SCHEME
 import six
 from six.moves import map
 from six.moves import zip
@@ -66,6 +66,7 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
+<title>%(title)s</title>
 <style type="text/css">\n%(style)s\n</style>
 </head>
 <body class="body_foreground body_background" style="font-size: %(font_size)s;" >
@@ -188,7 +189,8 @@ class Ansi2HTMLConverter(object):
                  escaped=True,
                  markup_lines=False,
                  output_encoding='utf-8',
-                 scheme='ansi2html'
+                 scheme='ansi2html',
+                 title=''
                 ):
 
         self.inline = inline
@@ -199,6 +201,7 @@ class Ansi2HTMLConverter(object):
         self.markup_lines = markup_lines
         self.output_encoding = output_encoding
         self.scheme = scheme
+        self.title = title
         self._attrs = None
 
         if inline:
@@ -368,6 +371,7 @@ class Ansi2HTMLConverter(object):
         else:
             return _template % {
                 'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme))),
+                'title' : self.title,
                 'font_size' : self.font_size,
                 'content' :  attrs["body"],
                 'output_encoding' : self.output_encoding,
@@ -386,6 +390,7 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
+    scheme_names = sorted(six.iterkeys(SCHEME))
     version_str = pkg_resources.get_distribution('ansi2html').version
     parser = optparse.OptionParser(
         usage=main.__doc__,
@@ -432,8 +437,13 @@ def main():
         help="Specify output encoding")
     parser.add_option(
         '-s', '--scheme', dest='scheme', metavar='SCHEME',
-        default='ansi2html',
-        help="Specify color palette scheme [ansi2html, xterm, xterm-bright]")
+        default='ansi2html', choices=scheme_names,
+        help=("Specify color palette scheme. Default: %%default. Choices: %s"
+              % scheme_names))
+    parser.add_option(
+        '-t', '--title', dest='output_title',
+        default='',
+        help="Specify output title")
 
     opts, args = parser.parse_args()
 
@@ -446,6 +456,7 @@ def main():
         markup_lines=opts.markup_lines,
         output_encoding=opts.output_encoding,
         scheme=opts.scheme,
+        title=opts.output_title,
     )
 
     def _read(input_bytes):
