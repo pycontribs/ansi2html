@@ -51,17 +51,22 @@ requires = [
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     requires.append("ordereddict")
 
-# Conditionally install man pages into the system or the virtualenv.
-if 'VIRTUAL_ENV' in os.environ:
-    man_prefix = os.environ['VIRTUAL_ENV']
-else:
-    man_prefix = '/usr'
+data_files = []
 
-data_files = [
-    (man_prefix + '/share/man/man1/', [
-        'man/ansi2html.1',
-        ]),
-    ]
+# We tried installing manpages with setuptools & co but it had all kinds of
+# "sandbox violation" issues that were inconsistent and wonky.  Therefore, we
+# don't do this anymore and instead just ship man pages with the tarball.
+if False:
+    # Conditionally install man pages into the system or the virtualenv.
+    if 'VIRTUAL_ENV' in os.environ:
+        man_prefix = os.environ['VIRTUAL_ENV']
+    else:
+        man_prefix = '/usr'
+
+    data_files.append(tuple(
+        man_prefix + '/share/man/man1/',
+        ['man/ansi2html.1'],
+    ))
 
 version = '1.0.5'
 
