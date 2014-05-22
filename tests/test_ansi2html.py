@@ -320,5 +320,11 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = six.u('<span style="color: #cdcd00">YELLOW/BROWN</span>')
         self.assertEqual(expected, html)
 
+    def test_latex_inline(self):
+        ansi = '\x1b[33mYELLOW/BROWN'
+        target = '\\textcolor[HTML]{aa5500}{YELLOW/BROWN}'
+        latex = Ansi2HTMLConverter(latex=True, inline=True).convert(ansi)
+        assert(target in latex)
+
 if __name__ == '__main__':
     unittest.main()
