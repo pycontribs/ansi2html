@@ -69,11 +69,13 @@ _latex_template = '''\documentclass{scrartcl}
 \usepackage[usenames,dvipsnames]{xcolor}
 \definecolor{red-sd}{HTML}{7ed2d2}
 
+\\title{%(title)s}
+
 \\fvset{commandchars=\\\\\\{\}}
 
 \\begin{document}
 
-\\begin{Verbatim}[label={My orange command sample output}]
+\\begin{Verbatim}
 %(content)s
 \end{Verbatim}
 \end{document}
@@ -171,9 +173,12 @@ class _State(object):
         return css_classes
 
 
-def linkify(line):
+def linkify(line, latex_mode):
     for match in re.findall(r'https?:\/\/\S+', line):
-        line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
+        if latex_mode:
+            line = line.replace(match, '\url{%s}' % match)
+        else:
+            line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
 
     return line
 
@@ -233,11 +238,11 @@ class Ansi2HTMLConverter(object):
         parts = list(parts)
 
         if self.linkify:
-            parts = [linkify(part) for part in parts]
+            parts = [linkify(part, self.latex) for part in parts]
 
         combined = "".join(parts)
 
-        if self.markup_lines:
+        if self.markup_lines and not self.latex:
             combined = "\n".join([
                 """<span id="line-%i">%s</span>""" % (i, line)
                 for i, line in enumerate(combined.split('\n'))
@@ -247,11 +252,15 @@ class Ansi2HTMLConverter(object):
 
     def _apply_regex(self, ansi):
         if self.escaped:
-            specials = OrderedDict([
-                ('&', '&amp;'),
-                ('<', '&lt;'),
-                ('>', '&gt;'),
-            ])
+            if self.latex: # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
+                specials = OrderedDict([
+                ])
+            else:
+                specials = OrderedDict([
+                    ('&', '&amp;'),
+                    ('<', '&lt;'),
+                    ('>', '&gt;'),
+                ])
             for pattern, special in specials.items():
                 ansi = ansi.replace(pattern, special)
 

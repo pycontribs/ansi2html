@@ -326,5 +326,18 @@ class TestAnsi2HTML(unittest.TestCase):
         latex = Ansi2HTMLConverter(latex=True, inline=True).convert(ansi)
         assert(target in latex)
 
+    def test_latex_title(self):
+        ansi = ''
+        title = 'testing'
+        target = '\\title{%s}' % title
+        latex = Ansi2HTMLConverter(latex=True, inline=True, title=title).convert(ansi)
+        assert(target in latex)
+
+    def test_latex_linkify(self):
+        ansi = 'http://python.org/'
+        target = '\url{%s}' % ansi
+        latex = Ansi2HTMLConverter(latex=True, inline=True, linkify=True).convert(ansi)
+        assert(target in latex)
+
 if __name__ == '__main__':
     unittest.main()
