@@ -1,3 +1,4 @@
+# encoding: utf-8
 #  This file is part of ansi2html
 #  Convert ANSI (terminal) colours and attributes to HTML
 #  Copyright (C) 2012  Ralph Bean <rbean@redhat.com>
