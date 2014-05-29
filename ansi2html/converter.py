@@ -1,3 +1,4 @@
+# encoding: utf-8
 #  This file is part of ansi2html
 #  Convert ANSI (terminal) colours and attributes to HTML
 #  Copyright (C) 2012  Ralph Bean <rbean@redhat.com>
@@ -62,7 +63,26 @@ ANSI_NEGATIVE_ON = 7
 ANSI_NEGATIVE_OFF = 27
 
 
-_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+# http://stackoverflow.com/a/15190498
+_latex_template = '''\\documentclass{scrartcl}
+\\usepackage[utf8]{inputenc}
+\\usepackage{fancyvrb}
+\\usepackage[usenames,dvipsnames]{xcolor}
+%% \\definecolor{red-sd}{HTML}{7ed2d2}
+
+\\title{%(title)s}
+
+\\fvset{commandchars=\\\\\\{\}}
+
+\\begin{document}
+
+\\begin{Verbatim}
+%(content)s
+\\end{Verbatim}
+\\end{document}
+'''
+
+_html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
@@ -77,7 +97,6 @@ _template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//
 
 </html>
 """)
-
 
 class _State(object):
     def __init__(self):
@@ -155,9 +174,12 @@ class _State(object):
         return css_classes
 
 
-def linkify(line):
+def linkify(line, latex_mode):
     for match in re.findall(r'https?:\/\/\S+', line):
-        line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
+        if latex_mode:
+            line = line.replace(match, '\\url{%s}' % match)
+        else:
+            line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
 
     return line
 
@@ -182,6 +204,7 @@ class Ansi2HTMLConverter(object):
     """
 
     def __init__(self,
+                 latex=False,
                  inline=False,
                  dark_bg=True,
                  font_size='normal',
@@ -193,6 +216,7 @@ class Ansi2HTMLConverter(object):
                  title=''
                 ):
 
+        self.latex = latex
         self.inline = inline
         self.dark_bg = dark_bg
         self.font_size = font_size
@@ -215,11 +239,11 @@ class Ansi2HTMLConverter(object):
         parts = list(parts)
 
         if self.linkify:
-            parts = [linkify(part) for part in parts]
+            parts = [linkify(part, self.latex) for part in parts]
 
         combined = "".join(parts)
 
-        if self.markup_lines:
+        if self.markup_lines and not self.latex:
             combined = "\n".join([
                 """<span id="line-%i">%s</span>""" % (i, line)
                 for i, line in enumerate(combined.split('\n'))
@@ -229,11 +253,15 @@ class Ansi2HTMLConverter(object):
 
     def _apply_regex(self, ansi):
         if self.escaped:
-            specials = OrderedDict([
-                ('&', '&amp;'),
-                ('<', '&lt;'),
-                ('>', '&gt;'),
-            ])
+            if self.latex: # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
+                specials = OrderedDict([
+                ])
+            else:
+                specials = OrderedDict([
+                    ('&', '&amp;'),
+                    ('<', '&lt;'),
+                    ('>', '&gt;'),
+                ])
             for pattern, special in specials.items():
                 ansi = ansi.replace(pattern, special)
 
@@ -276,7 +304,10 @@ class Ansi2HTMLConverter(object):
                 params = params[last_null_index + 1:]
                 if inside_span:
                     inside_span = False
-                    yield '</span>'
+                    if self.latex:
+                        yield '}'
+                    else:
+                        yield '</span>'
                 state.reset()
 
                 if not params:
@@ -299,7 +330,10 @@ class Ansi2HTMLConverter(object):
                 state.adjust(v, parameter=parameter)
 
             if inside_span:
-                yield '</span>'
+                if self.latex:
+                    yield '}'
+                else:
+                    yield '</span>'
                 inside_span = False
 
             css_classes = state.to_css_classes()
@@ -307,16 +341,27 @@ class Ansi2HTMLConverter(object):
                 continue
 
             if self.inline:
-                style = [self.styles[klass].kw for klass in css_classes if
-                         klass in self.styles]
-                yield '<span style="%s">' % "; ".join(style)
+                if self.latex:
+                    style = [self.styles[klass].kwl[0][1] for klass in css_classes if
+                             self.styles[klass].kwl[0][0] == 'color']
+                    yield '\\textcolor[HTML]{%s}{' % style[0]
+                else:
+                    style = [self.styles[klass].kw for klass in css_classes if
+                             klass in self.styles]
+                    yield '<span style="%s">' % "; ".join(style)
             else:
-                yield '<span class="%s">' % " ".join(css_classes)
+                if self.latex:
+                    yield '\\textcolor{%s}{' % " ".join(css_classes)
+                else:
+                    yield '<span class="%s">' % " ".join(css_classes)
             inside_span = True
 
         yield ansi[last_end:]
         if inside_span:
-            yield '</span>'
+            if self.latex:
+                yield '}'
+            else:
+                yield '</span>'
             inside_span = False
 
     def _collapse_cursor(self, parts):
@@ -369,6 +414,10 @@ class Ansi2HTMLConverter(object):
         if not full:
             return attrs["body"]
         else:
+            if self.latex:
+                _template = _latex_template
+            else:
+                _template = _html_template
             return _template % {
                 'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme))),
                 'title' : self.title,
@@ -399,6 +448,10 @@ def main():
         "-p", "--partial", dest="partial",
         default=False, action="store_true",
         help="Process lines as them come in.  No headers are produced.")
+    parser.add_option(
+        "-L", "--latex", dest="latex",
+        default=False, action="store_true",
+        help="Export as LaTeX instead of HTML.")
     parser.add_option(
         "-i", "--inline", dest="inline",
         default=False, action="store_true",
@@ -448,6 +501,7 @@ def main():
     opts, args = parser.parse_args()
 
     conv = Ansi2HTMLConverter(
+        latex=opts.latex,
         inline=opts.inline,
         dark_bg=not opts.light_background,
         font_size=opts.font_size,
