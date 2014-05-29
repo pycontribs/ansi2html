@@ -68,7 +68,7 @@ _latex_template = '''\\documentclass{scrartcl}
 \\usepackage[utf8]{inputenc}
 \\usepackage{fancyvrb}
 \\usepackage[usenames,dvipsnames]{xcolor}
-% \\definecolor{red-sd}{HTML}{7ed2d2}
+%% \\definecolor{red-sd}{HTML}{7ed2d2}
 
 \\title{%(title)s}
 
