@@ -64,11 +64,11 @@ ANSI_NEGATIVE_OFF = 27
 
 
 # http://stackoverflow.com/a/15190498
-_latex_template = '''\documentclass{scrartcl}
-\usepackage[utf8]{inputenc}
-\usepackage{fancyvrb}
-\usepackage[usenames,dvipsnames]{xcolor}
-\definecolor{red-sd}{HTML}{7ed2d2}
+_latex_template = '''\\documentclass{scrartcl}
+\\usepackage[utf8]{inputenc}
+\\usepackage{fancyvrb}
+\\usepackage[usenames,dvipsnames]{xcolor}
+% \\definecolor{red-sd}{HTML}{7ed2d2}
 
 \\title{%(title)s}
 
@@ -78,8 +78,8 @@ _latex_template = '''\documentclass{scrartcl}
 
 \\begin{Verbatim}
 %(content)s
-\end{Verbatim}
-\end{document}
+\\end{Verbatim}
+\\end{document}
 '''
 
 _html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -177,7 +177,7 @@ class _State(object):
 def linkify(line, latex_mode):
     for match in re.findall(r'https?:\/\/\S+', line):
         if latex_mode:
-            line = line.replace(match, '\url{%s}' % match)
+            line = line.replace(match, '\\url{%s}' % match)
         else:
             line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
 

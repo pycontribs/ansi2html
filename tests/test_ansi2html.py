@@ -335,7 +335,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
     def test_latex_linkify(self):
         ansi = 'http://python.org/'
-        target = '\url{%s}' % ansi
+        target = '\\url{%s}' % ansi
         latex = Ansi2HTMLConverter(latex=True, inline=True, linkify=True).convert(ansi)
         assert(target in latex)
 
