@@ -66,10 +66,10 @@ SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
 
 def get_styles(dark_bg=True, scheme='ansi2html'):
 
-    css = [
+        Rule('#content', white_space='pre-wrap', word_wrap='break-word'),
         Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg]),
         Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg]),
-        Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
+        Rule('.body_foreground > .bold, .bold > .body_foreground, body.body_foreground > pre > .bold',
              color=('#000000', '#FFFFFF')[dark_bg], font_weight=('bold', 'normal')[dark_bg]),
         Rule('.inv_foreground', color=('#000000', '#FFFFFF')[not dark_bg]),
         Rule('.inv_background', background_color=('#AAAAAA', '#000000')[not dark_bg]),
