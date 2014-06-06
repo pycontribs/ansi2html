@@ -90,7 +90,7 @@ _html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitio
 <style type="text/css">\n%(style)s\n</style>
 </head>
 <body class="body_foreground body_background" style="font-size: %(font_size)s;" >
-<pre>
+<pre id="content">
 %(content)s
 </pre>
 </body>
