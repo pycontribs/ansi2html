@@ -106,11 +106,7 @@ setup(
     ],
     test_suite='nose.collector',
     packages=['ansi2html'],
-    data_files=[
-        ('share/man/man1/', [
-            'man/ansi2html.1',
-            ]),
-        ],
+    data_files=data_files,
     include_package_data=True,
     zip_safe=False,
     entry_points="""
