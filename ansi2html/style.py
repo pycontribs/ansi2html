@@ -26,6 +26,8 @@ class Rule(object):
         self.klass = klass
         self.kw = '; '.join([(k.replace('_', '-')+': '+kw[k])
                              for k in sorted(kw.keys())]).strip()
+        self.kwl = [(k.replace('_', '-'), kw[k][1:])
+                             for k in sorted(kw.keys())]
 
     def __str__(self):
         return '%s { %s; }' % (self.klass, self.kw)
@@ -65,6 +67,7 @@ SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
 def get_styles(dark_bg=True, scheme='ansi2html'):
 
     css = [
+        Rule('#content', white_space='pre-wrap', word_wrap='break-word'),
         Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg]),
         Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg]),
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
