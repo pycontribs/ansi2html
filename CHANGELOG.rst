@@ -1,6 +1,23 @@
 Changelog
 =========
 
+1.0.7
+-----
+
+- Implemented LaTeX support. Only colors are supported but it does already what I need. `caa8c6fe5 <https://github.com/ralphbean/ansi2html/commit/caa8c6fe5010c3d912aac47ce1e6e3aeaddfaa17>`_
+- Updated README.rst. `4979c1409 <https://github.com/ralphbean/ansi2html/commit/4979c14091e43ee1090dc2399e04f57e8d60db95>`_
+- Added first test for LaTeX output. `4b80d41e0 <https://github.com/ralphbean/ansi2html/commit/4b80d41e0bd1f7bc4dd73df82cc67acb6917d4e9>`_
+- Added title and linkify for LaTeX. `3a869bce1 <https://github.com/ralphbean/ansi2html/commit/3a869bce19a6ad0c219d1c5f524e9c7b9784f978>`_
+- Trying to fix https://travis-ci.org/ralphbean/ansi2html/jobs/25808505. `a0a06b41c <https://github.com/ralphbean/ansi2html/commit/a0a06b41cc7fe10e5241954fc03438c41a16a338>`_
+- Fixed unicode escape problem. Fixes https://travis-ci.org/ralphbean/ansi2html/builds/26243970. `095eca5a5 <https://github.com/ralphbean/ansi2html/commit/095eca5a5731ce45a1a4cbf77e3cdfdf2e6716cb>`_
+- Sure % has a special meaning … `2324a3dcf <https://github.com/ralphbean/ansi2html/commit/2324a3dcfe5b9896d0e93aec4b9de4202894eb73>`_
+- Merge pull request #48 from ypid/ansi2latex `91e174cfd <https://github.com/ralphbean/ansi2html/commit/91e174cfd207c2fa273153ba11275459c3a5a1a2>`_
+- set pre's id to "content" `6f14bc202 <https://github.com/ralphbean/ansi2html/commit/6f14bc202afa20379cdc3b5c15819119ea8b524f>`_
+- the css `418bef2f0 <https://github.com/ralphbean/ansi2html/commit/418bef2f03dd36e7ad0dac663db0e917879d3dee>`_
+- Merge pull request #50 from szepeviktor/patch-2 `97977e53b <https://github.com/ralphbean/ansi2html/commit/97977e53b4c85738be603c7f236958f95aacf1f9>`_
+- Merge pull request #52 from szepeviktor/patch-3 `620fc1032 <https://github.com/ralphbean/ansi2html/commit/620fc1032af177406b17facfa20093b85772a2c5>`_
+- Use the data_files that we build above. `654bc30b4 <https://github.com/ralphbean/ansi2html/commit/654bc30b40d89acdec91a194ff8651a6db86f812>`_
+
 1.0.6
 -----
 
