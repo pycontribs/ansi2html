@@ -1,5 +1,6 @@
 #    This file is part of ansi2html.
 #    Copyright (C) 2012  Kuno Woudt <kuno@frob.nl>
+#    Copyright (C) 2013  Sebastian Pipping <sebastian@pipping.org>
 #
 #    This program is free software: you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License as
@@ -15,8 +16,6 @@
 #    along with this program.  If not, see
 #    <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
 import sys
 
 
@@ -27,6 +26,8 @@ class Rule(object):
         self.klass = klass
         self.kw = '; '.join([(k.replace('_', '-')+': '+kw[k])
                              for k in sorted(kw.keys())]).strip()
+        self.kwl = [(k.replace('_', '-'), kw[k][1:])
+                             for k in sorted(kw.keys())]
 
     def __str__(self):
         return '%s { %s; }' % (self.klass, self.kw)
@@ -47,35 +48,50 @@ def level(grey):
 def index2(grey):
     return str(232 + grey)
 
+# http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
+    'ansi2html': ("#000316", "#aa0000", "#00aa00", "#aa5500", "#0000aa",
+                  "#E850A8", "#00aaaa", "#F5F1DE"),
+    'xterm': ("#000000", "#cd0000", "#00cd00", "#cdcd00", "#0000ee",
+              "#cd00cd", "#00cdcd", "#e5e5e5"),
+    'xterm-bright': ("#7f7f7f", "#ff0000", "#00ff00", "#ffff00", "#5c5cff",
+                     "#ff00ff", "#00ffff", "#ffffff"),
+    'osx': ("#000000", "#c23621", "#25bc24", "#adad27", "#492ee1",
+            "#d338d3", "#33bbc8", "#cbcccd"),
 
-def get_styles(dark_bg=True):
+    # http://ethanschoonover.com/solarized
+    'solarized': ("#262626", "#d70000", "#5f8700", "#af8700", "#0087ff",
+                  "#af005f", "#00afaf", "#e4e4e4"),
+    }
+
+def get_styles(dark_bg=True, scheme='ansi2html'):
 
     css = [
-        Rule('.body_foreground', color='#AAAAAA' if dark_bg else '#000000'),
-        Rule('.body_background', background_color="#000000" if dark_bg else "#AAAAAA"),
+        Rule('#content', white_space='pre-wrap', word_wrap='break-word'),
+        Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg]),
+        Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg]),
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
-             color="#FFFFFF" if dark_bg else "#000000", font_weight="normal" if dark_bg else "bold"),
+             color=('#000000', '#FFFFFF')[dark_bg], font_weight=('bold', 'normal')[dark_bg]),
+        Rule('.inv_foreground', color=('#000000', '#FFFFFF')[not dark_bg]),
+        Rule('.inv_background', background_color=('#AAAAAA', '#000000')[not dark_bg]),
         Rule('.ansi1', font_weight='bold'),
-        Rule('.ansi3', font_weight='italic'),
+        Rule('.ansi2', font_weight='lighter'),
+        Rule('.ansi3', font_style='italic'),
         Rule('.ansi4', text_decoration='underline'),
+        Rule('.ansi5', text_decoration='blink'),
+        Rule('.ansi6', text_decoration='blink'),
+        Rule('.ansi8', visibility='hidden'),
         Rule('.ansi9', text_decoration='line-through'),
-        Rule('.ansi30', color="#000316"),
-        Rule('.ansi31', color="#aa0000"),
-        Rule('.ansi32', color="#00aa00"),
-        Rule('.ansi33', color="#aa5500"),
-        Rule('.ansi34', color="#0000aa"),
-        Rule('.ansi35', color="#E850A8"),
-        Rule('.ansi36', color="#00aaaa"),
-        Rule('.ansi37', color="#F5F1DE"),
-        Rule('.ansi40', background_color="#000316"),
-        Rule('.ansi41', background_color="#aa0000"),
-        Rule('.ansi42', background_color="#00aa00"),
-        Rule('.ansi43', background_color="#aa5500"),
-        Rule('.ansi44', background_color="#0000aa"),
-        Rule('.ansi45', background_color="#E850A8"),
-        Rule('.ansi46', background_color="#00aaaa"),
-        Rule('.ansi47', background_color="#F5F1DE")
         ]
+
+    # set palette
+    pal = SCHEME[scheme]
+    for _index in range(8):
+        css.append(Rule('.ansi3%s' % _index, color=pal[_index]))
+        css.append(Rule('.inv3%s' % _index, background_color=pal[_index]))
+    for _index in range(8):
+        css.append(Rule('.ansi4%s' % _index, background_color=pal[_index]))
+        css.append(Rule('.inv4%s' % _index, color=pal[_index]))
 
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
@@ -84,11 +100,17 @@ def get_styles(dark_bg=True):
             for blue in range(0, 6):
                 css.append(Rule(".ansi38-%s" % index(red, green, blue),
                                 color=color(red, green, blue)))
+                css.append(Rule(".inv38-%s" % index(red, green, blue),
+                                background=color(red, green, blue)))
                 css.append(Rule(".ansi48-%s" % index(red, green, blue),
                                 background=color(red, green, blue)))
+                css.append(Rule(".inv48-%s" % index(red, green, blue),
+                                color=color(red, green, blue)))
 
     for grey in range(0, 24):
         css.append(Rule('.ansi38-%s' % index2(grey), color=level(grey)))
+        css.append(Rule('.inv38-%s' % index2(grey), background=level(grey)))
         css.append(Rule('.ansi48-%s' % index2(grey), background=level(grey)))
+        css.append(Rule('.inv48-%s' % index2(grey), color=level(grey)))
 
     return css
