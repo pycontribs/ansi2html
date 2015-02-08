@@ -96,6 +96,15 @@ def get_styles(dark_bg=True, scheme='ansi2html'):
         css.append(Rule('.ansi4%s' % _index, background_color=pal[_index]))
         css.append(Rule('.inv4%s' % _index, color=pal[_index]))
 
+    # set palette colors in 256 color encoding
+    pal = SCHEME[scheme]
+    for _index in range(len(pal)):
+        css.append(Rule('.ansi38-%s' % _index, color=pal[_index]))
+        css.append(Rule('.inv38-%s' % _index, background_color=pal[_index]))
+    for _index in range(len(pal)):
+        css.append(Rule('.ansi48-%s' % _index, background_color=pal[_index]))
+        css.append(Rule('.inv48-%s' % _index, color=pal[_index]))
+
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
     for green in range(0, 6):
