@@ -61,8 +61,11 @@ SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
 
     # http://ethanschoonover.com/solarized
     'solarized': ("#262626", "#d70000", "#5f8700", "#af8700", "#0087ff",
-                  "#af005f", "#00afaf", "#e4e4e4"),
+                  "#af005f", "#00afaf", "#e4e4e4",
+                  "#1c1c1c", "#d75f00", "#585858", "#626262", "#808080",
+                  "#5f5faf", "#8a8a8a", "#ffffd7", ),
     }
+
 
 def get_styles(dark_bg=True, scheme='ansi2html'):
 
