@@ -1,4 +1,5 @@
 <style type="text/css">
+#content { white-space: pre-wrap; word-wrap: break-word; }
 .body_foreground { color: #AAAAAA; }
 .body_background { background-color: #000000; }
 .body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold { color: #FFFFFF; font-weight: normal; }
@@ -44,6 +45,38 @@
 .inv46 { color: #00aaaa; }
 .ansi47 { background-color: #F5F1DE; }
 .inv47 { color: #F5F1DE; }
+.ansi38-0 { color: #000316; }
+.inv38-0 { background-color: #000316; }
+.ansi38-1 { color: #aa0000; }
+.inv38-1 { background-color: #aa0000; }
+.ansi38-2 { color: #00aa00; }
+.inv38-2 { background-color: #00aa00; }
+.ansi38-3 { color: #aa5500; }
+.inv38-3 { background-color: #aa5500; }
+.ansi38-4 { color: #0000aa; }
+.inv38-4 { background-color: #0000aa; }
+.ansi38-5 { color: #E850A8; }
+.inv38-5 { background-color: #E850A8; }
+.ansi38-6 { color: #00aaaa; }
+.inv38-6 { background-color: #00aaaa; }
+.ansi38-7 { color: #F5F1DE; }
+.inv38-7 { background-color: #F5F1DE; }
+.ansi48-0 { background-color: #000316; }
+.inv48-0 { color: #000316; }
+.ansi48-1 { background-color: #aa0000; }
+.inv48-1 { color: #aa0000; }
+.ansi48-2 { background-color: #00aa00; }
+.inv48-2 { color: #00aa00; }
+.ansi48-3 { background-color: #aa5500; }
+.inv48-3 { color: #aa5500; }
+.ansi48-4 { background-color: #0000aa; }
+.inv48-4 { color: #0000aa; }
+.ansi48-5 { background-color: #E850A8; }
+.inv48-5 { color: #E850A8; }
+.ansi48-6 { background-color: #00aaaa; }
+.inv48-6 { color: #00aaaa; }
+.ansi48-7 { background-color: #F5F1DE; }
+.inv48-7 { color: #F5F1DE; }
 .ansi38-16 { color: #000000; }
 .inv38-16 { background: #000000; }
 .ansi48-16 { background: #000000; }
