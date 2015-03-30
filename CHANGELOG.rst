@@ -1,9 +1,12 @@
 Changelog
 =========
 
-1.0.8
+1.0.9
 -----
 
+- 1.0.4 `96b6f19ae <https://github.com/ralphbean/ansi2html/commit/96b6f19ae99a239051cd52c8edd7980d791736e9>`_
+- 1.0.4 `b7e6e048c <https://github.com/ralphbean/ansi2html/commit/b7e6e048cc78324849c2af93d4948f6bc696ff09>`_
+- 1.0.5 `f9cab7af7 <https://github.com/ralphbean/ansi2html/commit/f9cab7af7483969d73e3696e988945cc797e5149>`_
 - added  setup.cfg file `547bd1cb5 <https://github.com/ralphbean/ansi2html/commit/547bd1cb5e5e65ab674d3cd489af872213f60051>`_
 - Merge branch 'develop' of github.com:ralphbean/ansi2html into develop `352d14be6 <https://github.com/ralphbean/ansi2html/commit/352d14be694c0bfb10119c00639f319697587c26>`_
 - changed setup.cfg to work on python 2.6.6 `7a12a92ed <https://github.com/ralphbean/ansi2html/commit/7a12a92edf1747e64b28cb41c7e0f11787d7774e>`_
@@ -20,6 +23,7 @@ Changelog
 - Merge branch 'feature/fixes' into develop `100be7c2d <https://github.com/ralphbean/ansi2html/commit/100be7c2d83d40d10b161d3def9b8e2b56e49b32>`_
 - Fix line height stuff. `db1ee5b47 <https://github.com/ralphbean/ansi2html/commit/db1ee5b47c0495ebb6bffb39c17891fe25dcd8d7>`_
 - Fix tests for the new palette values. `e8c6b9362 <https://github.com/ralphbean/ansi2html/commit/e8c6b9362287033c6d9296d61f8940aaae8703a4>`_
+- 1.0.8 `d9d59f784 <https://github.com/ralphbean/ansi2html/commit/d9d59f784fd14eb45358928ff0af91ec620cc358>`_
 
 1.0.7
 -----
