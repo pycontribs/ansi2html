@@ -16,8 +16,6 @@
 #    along with this program.  If not, see
 #    <http://www.gnu.org/licenses/>.
 
-import sys
-
 
 class Rule(object):
 
@@ -49,21 +47,30 @@ def index2(grey):
     return str(232 + grey)
 
 # http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
-SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
-    'ansi2html': ("#000316", "#aa0000", "#00aa00", "#aa5500", "#0000aa",
-                  "#E850A8", "#00aaaa", "#F5F1DE"),
-    'xterm': ("#000000", "#cd0000", "#00cd00", "#cdcd00", "#0000ee",
-              "#cd00cd", "#00cdcd", "#e5e5e5"),
-    'xterm-bright': ("#7f7f7f", "#ff0000", "#00ff00", "#ffff00", "#5c5cff",
-                     "#ff00ff", "#00ffff", "#ffffff"),
-    'osx': ("#000000", "#c23621", "#25bc24", "#adad27", "#492ee1",
-            "#d338d3", "#33bbc8", "#cbcccd"),
+SCHEME = {
+    # black red green brown/yellow blue magenta cyan grey/white
+    'ansi2html': (
+        "#000316", "#aa0000", "#00aa00", "#aa5500",
+        "#0000aa", "#E850A8", "#00aaaa", "#F5F1DE",
+        "#7f7f7f", "#ff0000", "#00ff00", "#ffff00",
+        "#5c5cff", "#ff00ff", "#00ffff", "#ffffff"),
+
+    'xterm': (
+        "#000000", "#cd0000", "#00cd00", "#cdcd00",
+        "#0000ee", "#cd00cd", "#00cdcd", "#e5e5e5",
+        "#7f7f7f", "#ff0000", "#00ff00", "#ffff00",
+        "#5c5cff", "#ff00ff", "#00ffff", "#ffffff"),
+
+    'osx': (
+        "#000000", "#c23621", "#25bc24", "#adad27",
+        "#492ee1", "#d338d3", "#33bbc8", "#cbcccd") * 2,
 
     # http://ethanschoonover.com/solarized
-    'solarized': ("#262626", "#d70000", "#5f8700", "#af8700", "#0087ff",
-                  "#af005f", "#00afaf", "#e4e4e4",
-                  "#1c1c1c", "#d75f00", "#585858", "#626262", "#808080",
-                  "#5f5faf", "#8a8a8a", "#ffffd7", ),
+    'solarized': (
+        "#262626", "#d70000", "#5f8700", "#af8700",
+        "#0087ff", "#af005f", "#00afaf", "#e4e4e4",
+        "#1c1c1c", "#d75f00", "#585858", "#626262",
+        "#808080", "#5f5faf", "#8a8a8a", "#ffffd7"),
     }
 
 
