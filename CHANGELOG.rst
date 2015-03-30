@@ -1,6 +1,26 @@
 Changelog
 =========
 
+1.0.8
+-----
+
+- added  setup.cfg file `547bd1cb5 <https://github.com/ralphbean/ansi2html/commit/547bd1cb5e5e65ab674d3cd489af872213f60051>`_
+- Merge branch 'develop' of github.com:ralphbean/ansi2html into develop `352d14be6 <https://github.com/ralphbean/ansi2html/commit/352d14be694c0bfb10119c00639f319697587c26>`_
+- changed setup.cfg to work on python 2.6.6 `7a12a92ed <https://github.com/ralphbean/ansi2html/commit/7a12a92edf1747e64b28cb41c7e0f11787d7774e>`_
+- actually, python 2.6.6 on RH, centos etc has OrderedDict `512377d63 <https://github.com/ralphbean/ansi2html/commit/512377d63f7ecfb583530121330d9a0552a24e78>`_
+- Merge pull request #55 from JensTimmerman/develop `03c3e680c <https://github.com/ralphbean/ansi2html/commit/03c3e680c90ca77c24ee465213a88f3726caf5bf>`_
+- Prevent IndexError while handling CursorMoveUp `7a91200df <https://github.com/ralphbean/ansi2html/commit/7a91200df0d6f088b0ba947420d8829bf04caecd>`_
+- Merge pull request #56 from lqez/fix/over-cursormoveup `a23772b57 <https://github.com/ralphbean/ansi2html/commit/a23772b57d584676792cbcdb74266c361a831f61>`_
+- style: Include all 16 solarized colors in the scheme `081c9a741 <https://github.com/ralphbean/ansi2html/commit/081c9a741d1b0f09d8ab9c66dc9647bb882142c2>`_
+- style: Encode pallete in 256 color encoding `acaa92ff2 <https://github.com/ralphbean/ansi2html/commit/acaa92ff2370d7ebda85ee68a47bfdb7d309a811>`_
+- Merge pull request #57 from tbabej/develop `e1bd92d3e <https://github.com/ralphbean/ansi2html/commit/e1bd92d3e735d5143a81836ca6eb5e6d597bd987>`_
+- Update travis config. `74c4f1dc8 <https://github.com/ralphbean/ansi2html/commit/74c4f1dc8b6c3ca41dd9dee284922c88f5934d10>`_
+- Fix existing test suite. `eb7798cb7 <https://github.com/ralphbean/ansi2html/commit/eb7798cb7704465f242e97149d7483074f4d6226>`_
+- Fill out color palettes that were under-specified. `5e55018eb <https://github.com/ralphbean/ansi2html/commit/5e55018eb331e2d934215821e874e30eab20e6ef>`_
+- Merge branch 'feature/fixes' into develop `100be7c2d <https://github.com/ralphbean/ansi2html/commit/100be7c2d83d40d10b161d3def9b8e2b56e49b32>`_
+- Fix line height stuff. `db1ee5b47 <https://github.com/ralphbean/ansi2html/commit/db1ee5b47c0495ebb6bffb39c17891fe25dcd8d7>`_
+- Fix tests for the new palette values. `e8c6b9362 <https://github.com/ralphbean/ansi2html/commit/e8c6b9362287033c6d9296d61f8940aaae8703a4>`_
+
 1.0.7
 -----
 

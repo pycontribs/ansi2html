@@ -16,8 +16,6 @@
 #    along with this program.  If not, see
 #    <http://www.gnu.org/licenses/>.
 
-import sys
-
 
 class Rule(object):
 
@@ -49,25 +47,37 @@ def index2(grey):
     return str(232 + grey)
 
 # http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
-SCHEME = { # black red green brown/yellow blue magenta cyan grey/white
-    'ansi2html': ("#000316", "#aa0000", "#00aa00", "#aa5500", "#0000aa",
-                  "#E850A8", "#00aaaa", "#F5F1DE"),
-    'xterm': ("#000000", "#cd0000", "#00cd00", "#cdcd00", "#0000ee",
-              "#cd00cd", "#00cdcd", "#e5e5e5"),
-    'xterm-bright': ("#7f7f7f", "#ff0000", "#00ff00", "#ffff00", "#5c5cff",
-                     "#ff00ff", "#00ffff", "#ffffff"),
-    'osx': ("#000000", "#c23621", "#25bc24", "#adad27", "#492ee1",
-            "#d338d3", "#33bbc8", "#cbcccd"),
+SCHEME = {
+    # black red green brown/yellow blue magenta cyan grey/white
+    'ansi2html': (
+        "#000316", "#aa0000", "#00aa00", "#aa5500",
+        "#0000aa", "#E850A8", "#00aaaa", "#F5F1DE",
+        "#7f7f7f", "#ff0000", "#00ff00", "#ffff00",
+        "#5c5cff", "#ff00ff", "#00ffff", "#ffffff"),
+
+    'xterm': (
+        "#000000", "#cd0000", "#00cd00", "#cdcd00",
+        "#0000ee", "#cd00cd", "#00cdcd", "#e5e5e5",
+        "#7f7f7f", "#ff0000", "#00ff00", "#ffff00",
+        "#5c5cff", "#ff00ff", "#00ffff", "#ffffff"),
+
+    'osx': (
+        "#000000", "#c23621", "#25bc24", "#adad27",
+        "#492ee1", "#d338d3", "#33bbc8", "#cbcccd") * 2,
 
     # http://ethanschoonover.com/solarized
-    'solarized': ("#262626", "#d70000", "#5f8700", "#af8700", "#0087ff",
-                  "#af005f", "#00afaf", "#e4e4e4"),
+    'solarized': (
+        "#262626", "#d70000", "#5f8700", "#af8700",
+        "#0087ff", "#af005f", "#00afaf", "#e4e4e4",
+        "#1c1c1c", "#d75f00", "#585858", "#626262",
+        "#808080", "#5f5faf", "#8a8a8a", "#ffffd7"),
     }
+
 
 def get_styles(dark_bg=True, scheme='ansi2html'):
 
     css = [
-        Rule('#content', white_space='pre-wrap', word_wrap='break-word'),
+        Rule('.ansi2html-content', white_space='pre-wrap', word_wrap='break-word', display='inline'),
         Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg]),
         Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg]),
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
@@ -92,6 +102,15 @@ def get_styles(dark_bg=True, scheme='ansi2html'):
     for _index in range(8):
         css.append(Rule('.ansi4%s' % _index, background_color=pal[_index]))
         css.append(Rule('.inv4%s' % _index, color=pal[_index]))
+
+    # set palette colors in 256 color encoding
+    pal = SCHEME[scheme]
+    for _index in range(len(pal)):
+        css.append(Rule('.ansi38-%s' % _index, color=pal[_index]))
+        css.append(Rule('.inv38-%s' % _index, background_color=pal[_index]))
+    for _index in range(len(pal)):
+        css.append(Rule('.ansi48-%s' % _index, background_color=pal[_index]))
+        css.append(Rule('.inv48-%s' % _index, color=pal[_index]))
 
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
