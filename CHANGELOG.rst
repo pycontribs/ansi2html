@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.1.0
+-----
+
+- 1.0.4 `96b6f19ae <https://github.com/ralphbean/ansi2html/commit/96b6f19ae99a239051cd52c8edd7980d791736e9>`_
+- 1.0.4 `b7e6e048c <https://github.com/ralphbean/ansi2html/commit/b7e6e048cc78324849c2af93d4948f6bc696ff09>`_
+- 1.0.5 `f9cab7af7 <https://github.com/ralphbean/ansi2html/commit/f9cab7af7483969d73e3696e988945cc797e5149>`_
+- 1.0.9 `1594cddb7 <https://github.com/ralphbean/ansi2html/commit/1594cddb714890ee7878150da679c89373f8846b>`_
+
 1.0.8
 -----
 
