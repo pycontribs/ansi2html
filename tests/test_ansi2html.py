@@ -33,7 +33,6 @@ from ansi2html.util import read_to_unicode
 from mock import patch
 from nose.tools import eq_
 
-import cgi
 import unittest
 import six
 import textwrap
@@ -42,6 +41,7 @@ _here = dirname(abspath(__file__))
 
 
 class TestAnsi2HTML(unittest.TestCase):
+    maxDiff = None
 
     def test_linkify(self):
         ansi = "http://threebean.org"
@@ -70,12 +70,9 @@ class TestAnsi2HTML(unittest.TestCase):
             if html and html[-1] == '':
                 html = html[:-1]
 
-            eq_(len(html), len(expected_data))
-
-            for idx in range(len(expected_data)):
-                expected = expected_data[idx]
-                actual = html[idx]
-                self.assertEqual(expected, actual)
+            self.assertEqual(
+                '\n'.join(html),
+                '\n'.join(expected_data))
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html"])
     @patch("sys.stdout", new_callable=six.StringIO)
@@ -96,8 +93,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         html = mock_stdout.getvalue()
 
-        eq_(len(html), len(expected_data), "Strings are not the same length.")
-        eq_(html, expected_data, "Strings are not the same.")
+        self.assertEqual(html, expected_data)
 
     def test_unicode(self):
         """ Ensure that the converter returns unicode(py2)/str(py3) objs. """
@@ -182,16 +178,13 @@ class TestAnsi2HTML(unittest.TestCase):
 
     def test_produce_headers(self):
         conv = Ansi2HTMLConverter()
-        headers = conv.produce_headers().split("\n")
+        headers = conv.produce_headers()
 
         inputfile = join(_here, "produce_headers.txt")
         with open(inputfile, "rb") as produce_headers:
             expected_data = read_to_unicode(produce_headers)
 
-        for idx in range(len(expected_data)):
-            expected = expected_data[idx].strip()
-            actual = headers[idx].strip()
-            self.assertEqual(expected, actual)
+        self.assertMultiLineEqual(headers, ''.join(expected_data))
 
     def test_escaped_implicit(self):
         test = "<p>awesome</p>"
