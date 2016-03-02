@@ -5,3 +5,4 @@ include man/asciidoc.conf
 include man/ansi2html.1
 include man/ansi2html.1.txt
 recursive-include tests *
+recursive-exclude tests *.pyc
