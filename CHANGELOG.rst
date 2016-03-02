@@ -1,5 +1,22 @@
-Changelog
-=========
+
+1.1.1
+-----
+
+Pull Requests
+
+- (@JensTimmerman)  #61, six is called six, not python-six
+  https://github.com/ralphbean/ansi2html/pull/61
+
+Commits
+
+- 81bb739b1 Drop 2.6
+  https://github.com/ralphbean/ansi2html/commit/81bb739b1
+- cec1dd933 six is called six, not python-six
+  https://github.com/ralphbean/ansi2html/commit/cec1dd933
+- 0dfd66b0b Exclude .pyc files from the release tarball.
+  https://github.com/ralphbean/ansi2html/commit/0dfd66b0b
+- 7b8643066 Remove CHANGELOG header.
+  https://github.com/ralphbean/ansi2html/commit/7b8643066
 
 1.1.0
 -----
