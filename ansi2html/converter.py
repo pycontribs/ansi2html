@@ -24,6 +24,7 @@ import re
 import sys
 import optparse
 import pkg_resources
+import io
 
 try:
     from collections import OrderedDict
@@ -515,10 +516,11 @@ def main():
         title=opts.output_title,
     )
 
+    if six.PY3:
+        sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
+
     def _read(input_bytes):
         if six.PY3:
-            # This is actually already unicode.  How to we explicitly decode in
-            # python3?  I don't know the answer yet.
             return input_bytes
         else:
             return input_bytes.decode(opts.input_encoding)
