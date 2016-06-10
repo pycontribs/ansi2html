@@ -377,11 +377,11 @@ class Ansi2HTMLConverter(object):
 
             # Go back, deleting every token in the last 'line'
             if part == CursorMoveUp:
-                final_parts.pop()
-
                 if final_parts:
-                    while '\n' not in final_parts[-1]:
-                        final_parts.pop()
+                    final_parts.pop()
+
+                while final_parts and '\n' not in final_parts[-1]:
+                    final_parts.pop()
 
                 continue
 
