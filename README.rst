@@ -48,7 +48,7 @@ Example - Shell Usage
 
  $ ls --color=always | ansi2html > directories.html
  $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
- $ task burndown | ansi2html > burndown.html
+ $ task rc._forcecolor:yes limit:0 burndown | ansi2html > burndown.html
 
 See the list of full options with::
 
