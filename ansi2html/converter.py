@@ -99,6 +99,20 @@ _html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitio
 </html>
 """)
 
+_html_escape_tr = str.maketrans({
+    '&'  : '&amp;',
+    '<'  : '&lt;',
+    '>'  : '&gt;'
+})
+
+# Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
+# No need to escape the other special chars since we are in a verbatim environment
+_latex_escape_tr = str.maketrans({
+    '\\' : r'\textbackslash{}',
+    '{'  : r'\{',
+    '}'  : r'\}'
+})
+
 class _State(object):
     def __init__(self):
         self.reset()
@@ -253,18 +267,17 @@ class Ansi2HTMLConverter(object):
         return combined
 
     def _apply_regex(self, ansi):
+        # TODO(ususdei): This algo does not work for latex
+        # if a styling continues after a linebreak.
+        # The linebreak will not be handled correctly by the
+        # verbatim environment.
+        # Suggested solution: Reset all styling before emitting 
+        # linebreaks and reapplying it afterwards 
         if self.escaped:
-            if self.latex: # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
-                specials = OrderedDict([
-                ])
+            if self.latex:
+                ansi = ansi.translate(_latex_escape_tr)
             else:
-                specials = OrderedDict([
-                    ('&', '&amp;'),
-                    ('<', '&lt;'),
-                    ('>', '&gt;'),
-                ])
-            for pattern, special in specials.items():
-                ansi = ansi.replace(pattern, special)
+                ansi = ansi.translate(_html_escape_tr)
 
         state = _State()
         inside_span = False
