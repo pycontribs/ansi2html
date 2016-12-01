@@ -99,19 +99,53 @@ _html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitio
 </html>
 """)
 
-_html_escape_tr = str.maketrans({
+
+_html_escape_map = {
     '&'  : '&amp;',
     '<'  : '&lt;',
     '>'  : '&gt;'
-})
+}
 
 # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
 # No need to escape the other special chars since we are in a verbatim environment
-_latex_escape_tr = str.maketrans({
+# NOTE(ususdei): Observe that latex-escaping comes with circular references between '{', '}' and '\'.
+# This is why we should do the escaping in one go using translate() instead of multiple chained replace(). 
+_latex_escape_map = {
     '\\' : r'\textbackslash{}',
     '{'  : r'\{',
     '}'  : r'\}'
-})
+}
+
+# NOTE(ususdei): In python 2 this only works for unicode strings, since unicode objects
+# have a different translate() function than regular strings.
+# We require a mapping from characters to replacement strings of arbitrary length.
+if six.PY2:
+    _html_escape_ordmap = dict()
+    for k,v in _html_escape_map.iteritems():
+        _html_escape_ordmap[ord(k.decode('ascii'))] = v.decode('ascii')
+    _latex_escape_ordmap = dict()
+    for k,v in _latex_escape_map.iteritems():
+        _latex_escape_ordmap[ord(k.decode('ascii'))] = v.decode('ascii')
+
+    def html_escape(s):
+        assert isinstance(s, unicode)
+        return s.translate( _html_escape_ordmap )
+
+    def latex_escape(s):
+        assert isinstance(s, unicode)
+        return s.translate( _latex_escape_ordmap )
+
+else:
+    _html_escape_tr = str.maketrans( _html_escape_map )
+    _latex_escape_tr = str.maketrans( _latex_escape_map )
+
+    def html_escape(s):
+        return s.translate( _html_escape_tr )
+
+    def latex_escape(s):
+        return s.translate( _latex_escape_tr )
+
+
 
 class _State(object):
     def __init__(self):
@@ -275,9 +309,9 @@ class Ansi2HTMLConverter(object):
         # linebreaks and reapplying it afterwards 
         if self.escaped:
             if self.latex:
-                ansi = ansi.translate(_latex_escape_tr)
+                ansi = latex_escape(ansi)
             else:
-                ansi = ansi.translate(_html_escape_tr)
+                ansi = html_escape(ansi)
 
         state = _State()
         inside_span = False
