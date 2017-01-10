@@ -517,7 +517,11 @@ def main():
     )
 
     if six.PY3:
-        sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
+        try:
+            sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
+        except io.UnsupportedOperation:
+            # This only fails in the test suite...
+            pass
 
     def _read(input_bytes):
         if six.PY3:
