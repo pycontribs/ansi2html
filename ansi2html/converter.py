@@ -24,6 +24,7 @@ import re
 import sys
 import optparse
 import pkg_resources
+import io
 
 try:
     from collections import OrderedDict
@@ -376,11 +377,11 @@ class Ansi2HTMLConverter(object):
 
             # Go back, deleting every token in the last 'line'
             if part == CursorMoveUp:
-                final_parts.pop()
-
                 if final_parts:
-                    while '\n' not in final_parts[-1]:
-                        final_parts.pop()
+                    final_parts.pop()
+
+                while final_parts and '\n' not in final_parts[-1]:
+                    final_parts.pop()
 
                 continue
 
@@ -515,10 +516,15 @@ def main():
         title=opts.output_title,
     )
 
+    if six.PY3:
+        try:
+            sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
+        except io.UnsupportedOperation:
+            # This only fails in the test suite...
+            pass
+
     def _read(input_bytes):
         if six.PY3:
-            # This is actually already unicode.  How to we explicitly decode in
-            # python3?  I don't know the answer yet.
             return input_bytes
         else:
             return input_bytes.decode(opts.input_encoding)
