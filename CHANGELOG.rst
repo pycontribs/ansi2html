@@ -1,4 +1,37 @@
 
+1.2.0
+-----
+
+Pull Requests
+
+- (@kaspar030)      #64, enable python 3 input decoding
+  https://github.com/ralphbean/ansi2html/pull/64
+- (@gberaudo)       #67, Fix handling cursor move up with unique and empty lines
+  https://github.com/ralphbean/ansi2html/pull/67
+- (@AloisMahdal)    #68, Give more useful TaskWarrior example
+  https://github.com/ralphbean/ansi2html/pull/68
+- (@karjaneth)      #69, Update style.py
+  https://github.com/ralphbean/ansi2html/pull/69
+- (@JensTimmerman)  #73, Revert "six is called six, not python-six"
+  https://github.com/ralphbean/ansi2html/pull/73
+
+Commits
+
+- d6e4bc0aa enable python 3 input decoding
+  https://github.com/ralphbean/ansi2html/commit/d6e4bc0aa
+- 1e6a3b81f Fix handling cursor move up with unique and empty lines
+  https://github.com/ralphbean/ansi2html/commit/1e6a3b81f
+- 46e480143 Give more useful TaskWarrior example
+  https://github.com/ralphbean/ansi2html/commit/46e480143
+- 0c975b60b Update style.py
+  https://github.com/ralphbean/ansi2html/commit/0c975b60b
+- 168805a00 Revert "six is called six, not python-six"
+  https://github.com/ralphbean/ansi2html/commit/168805a00
+- 90c8c2303 Tox for tests.
+  https://github.com/ralphbean/ansi2html/commit/90c8c2303
+- 1366309e1 Merge branch 'develop' of github.com:ralphbean/ansi2html into develop
+  https://github.com/ralphbean/ansi2html/commit/1366309e1
+
 1.1.1
 -----
 
