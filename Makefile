@@ -1,5 +1,5 @@
 # Copyright (C) 2013 Sebastian Pipping <sebastian@pipping.org>
-# Licensed under GPL v3 or later
+# Licensed under LGPL v3 or later
 
 DESTDIR = /
 SETUP_PY = ./setup.py
