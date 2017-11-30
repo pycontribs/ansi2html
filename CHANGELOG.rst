@@ -1,4 +1,19 @@
 
+1.3.0
+-----
+
+**Relicensed to LGPLv3+**.
+
+Pull Requests
+
+-                   #80, Merge pull request #80 from ralphbean/feature/lgplv3
+  https://github.com/ralphbean/ansi2html/pull/80
+
+Commits
+
+- f74316174 LGPLv3+
+  https://github.com/ralphbean/ansi2html/commit/f74316174
+
 1.2.0
 -----
 
