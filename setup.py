@@ -82,10 +82,10 @@ setup(
     author='Ralph Bean',
     author_email='rbean@redhat.com',
     url='http://github.com/ralphbean/ansi2html/',
-    license='LGPLv3+',
+    license='LGPLv3',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
         "Programming Language :: Python :: 2",

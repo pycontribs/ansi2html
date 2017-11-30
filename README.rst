@@ -68,4 +68,4 @@ pypi:    http://pypi.python.org/pypi/ansi2html/
 License
 -------
 
-``ansi2html`` is licensed LGPLv3+.
+``ansi2html`` is licensed LGPLv3.
