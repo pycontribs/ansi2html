@@ -68,7 +68,7 @@ if False:
         ['man/ansi2html.1'],
     ))
 
-version = '1.2.0'
+version = '1.3.0'
 
 if '--version' in sys.argv:
     print(version)
