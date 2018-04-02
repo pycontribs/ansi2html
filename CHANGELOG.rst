@@ -1,4 +1,19 @@
 
+1.4.0
+-----
+
+Pull Requests
+
+- #84, Merge pull request #84 from cfstras/prune-unused-css
+  https://github.com/ralphbean/ansi2html/pull/84
+
+Commits
+
+- 61f4b5368 Prune CSS classes from output that are not used
+  https://github.com/ralphbean/ansi2html/commit/61f4b5368
+- 753220215 fix tests: remove unused CSS
+  https://github.com/ralphbean/ansi2html/commit/753220215
+
 1.3.0
 -----
 
