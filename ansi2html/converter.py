@@ -235,7 +235,8 @@ class Ansi2HTMLConverter(object):
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
 
     def apply_regex(self, ansi):
-        parts = self._apply_regex(ansi)
+        styles_used = set()
+        parts = self._apply_regex(ansi, styles_used)
         parts = self._collapse_cursor(parts)
         parts = list(parts)
 
@@ -250,9 +251,9 @@ class Ansi2HTMLConverter(object):
                 for i, line in enumerate(combined.split('\n'))
             ])
 
-        return combined
+        return combined, styles_used
 
-    def _apply_regex(self, ansi):
+    def _apply_regex(self, ansi, styles_used):
         if self.escaped:
             if self.latex: # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
                 specials = OrderedDict([
@@ -340,6 +341,7 @@ class Ansi2HTMLConverter(object):
             css_classes = state.to_css_classes()
             if not css_classes:
                 continue
+            styles_used.update(css_classes)
 
             if self.inline:
                 if self.latex:
@@ -393,7 +395,7 @@ class Ansi2HTMLConverter(object):
     def prepare(self, ansi='', ensure_trailing_newline=False):
         """ Load the contents of 'ansi' into this object """
 
-        body = self.apply_regex(ansi)
+        body, styles = self.apply_regex(ansi)
 
         if ensure_trailing_newline and _needs_extra_newline(body):
             body += '\n'
@@ -402,6 +404,7 @@ class Ansi2HTMLConverter(object):
             'dark_bg': self.dark_bg,
             'font_size': self.font_size,
             'body': body,
+            'styles': styles,
         }
 
         return self._attrs
@@ -421,8 +424,11 @@ class Ansi2HTMLConverter(object):
                 _template = _latex_template
             else:
                 _template = _html_template
+            all_styles = get_styles(self.dark_bg, self.scheme)
+            used_styles = filter(lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles)
+
             return _template % {
-                'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme))),
+                'style' : "\n".join(map(str, used_styles)),
                 'title' : self.title,
                 'font_size' : self.font_size,
                 'content' :  attrs["body"],
