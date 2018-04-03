@@ -178,7 +178,7 @@ class _State(object):
 def linkify(line, latex_mode):
     url_matcher = re.compile('(https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+)')
     if latex_mode:
-        return url_matcher.sub(r'\\url{\1}', line)
+        return url_matcher.sub(r'\\\\url{\1}', line)
     else:
         return url_matcher.sub(r'<a href="\1">\1</a>', line)
 
