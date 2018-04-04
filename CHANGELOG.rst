@@ -1,4 +1,21 @@
 
+1.4.1
+-----
+
+Pull Requests
+
+-                   #85, Merge pull request #85 from sujanadiga-practo/patch-1
+  https://github.com/ralphbean/ansi2html/pull/85
+
+Commits
+
+- 9adc3ddef Update converter.py
+  https://github.com/ralphbean/ansi2html/commit/9adc3ddef
+- 11cb73657 Fix linkify with latex
+  https://github.com/ralphbean/ansi2html/commit/11cb73657
+- 190835f4f Update url regex
+  https://github.com/ralphbean/ansi2html/commit/190835f4f
+
 1.4.0
 -----
 
