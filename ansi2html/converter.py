@@ -176,13 +176,14 @@ class _State(object):
 
 
 def linkify(line, latex_mode):
-    for match in re.findall(r'https?:\/\/\S+', line):
-        if latex_mode:
-            line = line.replace(match, '\\url{%s}' % match)
-        else:
-            line = line.replace(match, '<a href="%s">%s</a>' % (match, match))
-
-    return line
+    url_matcher = re.compile(
+        r'(((((https?|ftps?|gopher|telnet|nntp)://)|'
+        r'(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*'
+        r'\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][[:blank:]])?)')
+    if latex_mode:
+        return url_matcher.sub(r'\\url{\1}', line)
+    else:
+        return url_matcher.sub(r'<a href="\1">\1</a>', line)
 
 
 def _needs_extra_newline(text):
