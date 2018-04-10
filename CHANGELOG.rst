@@ -1,4 +1,14 @@
 
+1.4.2
+-----
+
+Commits
+
+- efb491f09 py36
+  https://github.com/ralphbean/ansi2html/commit/efb491f09
+- 947f813a3 Restore CSS styles for background colors.
+  https://github.com/ralphbean/ansi2html/commit/947f813a3
+
 1.4.1
 -----
 
