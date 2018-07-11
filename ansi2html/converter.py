@@ -282,7 +282,12 @@ class Ansi2HTMLConverter(object):
 
             # Special cursor-moving code.  The only supported one.
             if command == 'A':
-                yield CursorMoveUp
+                try:
+                    # params is the number of lines to move up
+                    for i in range(int(params)):
+                        yield CursorMoveUp
+                except ValueError:
+                    yield CursorMoveUp
                 continue
 
             try:
@@ -380,11 +385,20 @@ class Ansi2HTMLConverter(object):
 
             # Go back, deleting every token in the last 'line'
             if part == CursorMoveUp:
-                if final_parts:
-                    final_parts.pop()
+                popped = False
 
+                # one line may have beeen separated into multiple parts, 
+                # if the last parts doesn't contain '\n', they belong to
+                # the same line
                 while final_parts and '\n' not in final_parts[-1]:
+                    popped = True
                     final_parts.pop()
+  
+                # remove the last 'line' from part
+                # one $part may contain multiple lines
+                if final_parts and not popped:
+                    second_last_newline = final_parts[-1][:-1].rfind('\n')
+                    final_parts[-1] = final_parts[-1][:second_last_newline + 1]
 
                 continue
 
