@@ -482,7 +482,7 @@ class Ansi2HTMLConverter(object):
 
     def produce_headers(self):
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
-            'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme)))
+            'style' : "\n".join(map(str, get_styles(self.dark_bg, self.line_wrap, self.scheme)))
         }
 
 
