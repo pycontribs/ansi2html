@@ -109,13 +109,13 @@ def get_styles(dark_bg=True, line_wrap=True, scheme='ansi2html'):
     for _index in range(8):
         css.append(Rule('.ansi3%s' % _index, color=pal[_index]))
         css.append(Rule('.inv3%s' % _index, background_color=pal[_index]))
-    for _index in range(len(pal)):
+    for _index in range(8):
         css.append(Rule('.ansi4%s' % _index, background_color=pal[_index]))
         css.append(Rule('.inv4%s' % _index, color=pal[_index]))
-    for _index in range(len(pal)):
+    for _index in range(8):
         css.append(Rule('.ansi9%s' % _index, color=intensify(pal[_index], dark_bg)))
         css.append(Rule('.inv9%s' % _index, background_color=intensify(pal[_index], dark_bg)))
-    for _index in range(len(pal)):
+    for _index in range(8):
         css.append(Rule('.ansi10%s' % _index, background_color=intensify(pal[_index], dark_bg)))
         css.append(Rule('.inv10%s' % _index, color=intensify(pal[_index], dark_bg)))
 
