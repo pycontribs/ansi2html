@@ -79,6 +79,11 @@ SCHEME = {
         "#729FCF", "#AD7FA8", "#34E2E2", "#EEEEEC"),
     }
 
+def intensify(color, dark_bg, amount=64):
+    if not dark_bg:
+        amount = -amount
+    rgb = tuple(max(0, min(255, amount + int(color[i:i+2], 16))) for i in (1, 3, 5))
+    return "#%.2x%.2x%.2x" % rgb
 
 def get_styles(dark_bg=True, line_wrap=True, scheme='ansi2html'):
     css = [
@@ -106,8 +111,10 @@ def get_styles(dark_bg=True, line_wrap=True, scheme='ansi2html'):
         css.append(Rule('.inv3%s' % _index, background_color=pal[_index]))
         css.append(Rule('.ansi4%s' % _index, background_color=pal[_index]))
         css.append(Rule('.inv4%s' % _index, color=pal[_index]))
-        css.append(Rule('.ansi9%s' % _index, color=pal[_index]))
-        css.append(Rule('.ansi10%s' % _index, background_color=pal[_index]))
+        css.append(Rule('.ansi9%s' % _index, color=intensify(pal[_index], dark_bg)))
+        css.append(Rule('.inv9%s' % _index, background_color=intensify(pal[_index], dark_bg)))
+        css.append(Rule('.ansi10%s' % _index, background_color=intensify(pal[_index], dark_bg)))
+        css.append(Rule('.inv10%s' % _index, color=intensify(pal[_index], dark_bg)))
 
     # set palette colors in 256 color encoding
     pal = SCHEME[scheme]
