@@ -1,4 +1,27 @@
 
+1.5.0
+-----
+
+Pull Requests
+
+-                   #90, Merge pull request #90 from p-sherratt/develop
+  https://github.com/ralphbean/ansi2html/pull/90
+
+Commits
+
+- bf327d216 add support for vt100 box drawing mode and high-intensity ansi codes
+  https://github.com/ralphbean/ansi2html/commit/bf327d216
+- d9bf45f81 make 'intense' colors more 'intense'
+  https://github.com/ralphbean/ansi2html/commit/d9bf45f81
+- 3bf89663a restore css ordering for unit tests
+  https://github.com/ralphbean/ansi2html/commit/3bf89663a
+- 289d01595 trivial fix/update
+  https://github.com/ralphbean/ansi2html/commit/289d01595
+- 0ea0a71f7 update test_produce_headers unit test
+  https://github.com/ralphbean/ansi2html/commit/0ea0a71f7
+- ed942a5d2 another fix/update for box drawing & high-intensity patch
+  https://github.com/ralphbean/ansi2html/commit/ed942a5d2
+
 1.4.2
 -----
 
