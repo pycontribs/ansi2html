@@ -62,7 +62,24 @@ ANSI_BACKGROUND_256 = 48
 ANSI_BACKGROUND_DEFAULT = 49
 ANSI_NEGATIVE_ON = 7
 ANSI_NEGATIVE_OFF = 27
+ANSI_FOREGROUND_HIGH_INTENSITY_MIN = 90
+ANSI_FOREGROUND_HIGH_INTENSITY_MAX = 97
+ANSI_BACKGROUND_HIGH_INTENSITY_MIN = 100
+ANSI_BACKGROUND_HIGH_INTENSITY_MAX = 107
 
+VT100_BOX_CODES = {
+    '0x71': '─',
+    '0x74': '├',
+    '0x75': '┤',
+    '0x76': '┴',
+    '0x77': '┬',
+    '0x78': '│',
+    '0x6a': '┘',
+    '0x6b': '┐',
+    '0x6c': '┌',
+    '0x6d': '└',
+    '0x6e': '┼'
+}
 
 # http://stackoverflow.com/a/15190498
 _latex_template = '''\\documentclass{scrartcl}
@@ -129,11 +146,15 @@ class _State(object):
             self.visibility = ansi_code
         elif ANSI_FOREGROUND_CUSTOM_MIN <= ansi_code <= ANSI_FOREGROUND_CUSTOM_MAX:
             self.foreground = (ansi_code, None)
+        elif ANSI_FOREGROUND_HIGH_INTENSITY_MIN <= ansi_code <= ANSI_FOREGROUND_HIGH_INTENSITY_MAX:
+            self.foreground = (ansi_code, None)
         elif ansi_code == ANSI_FOREGROUND_256:
             self.foreground = (ansi_code, parameter)
         elif ansi_code == ANSI_FOREGROUND_DEFAULT:
             self.foreground = (ansi_code, None)
         elif ANSI_BACKGROUND_CUSTOM_MIN <= ansi_code <= ANSI_BACKGROUND_CUSTOM_MAX:
+            self.background = (ansi_code, None)
+        elif ANSI_BACKGROUND_HIGH_INTENSITY_MIN <= ansi_code <= ANSI_BACKGROUND_HIGH_INTENSITY_MAX:
             self.background = (ansi_code, None)
         elif ansi_code == ANSI_BACKGROUND_256:
             self.background = (ansi_code, parameter)
@@ -185,6 +206,9 @@ def linkify(line, latex_mode):
     else:
         return url_matcher.sub(r'<a href="\1">\1</a>', line)
 
+def map_vt100_box_code(char):
+    char_hex = hex(ord(char))
+    return VT100_BOX_CODES[char_hex] if char_hex in VT100_BOX_CODES else char
 
 def _needs_extra_newline(text):
     if not text or text.endswith('\n'):
@@ -209,6 +233,7 @@ class Ansi2HTMLConverter(object):
                  latex=False,
                  inline=False,
                  dark_bg=True,
+                 line_wrap=True,
                  font_size='normal',
                  linkify=False,
                  escaped=True,
@@ -221,6 +246,7 @@ class Ansi2HTMLConverter(object):
         self.latex = latex
         self.inline = inline
         self.dark_bg = dark_bg
+        self.line_wrap = line_wrap
         self.font_size = font_size
         self.linkify = linkify
         self.escaped = escaped
@@ -231,8 +257,9 @@ class Ansi2HTMLConverter(object):
         self._attrs = None
 
         if inline:
-            self.styles = dict([(item.klass.strip('.'), item) for item in get_styles(self.dark_bg, self.scheme)])
+            self.styles = dict([(item.klass.strip('.'), item) for item in get_styles(self.dark_bg, self.line_wrap, self.scheme)])
 
+        self.vt100_box_codes_prog = re.compile('\033\\(([B0])')
         self.ansi_codes_prog = re.compile('\033\\[' '([\\d;]*)' '([a-zA-z])')
 
     def apply_regex(self, ansi):
@@ -267,6 +294,21 @@ class Ansi2HTMLConverter(object):
                 ])
             for pattern, special in specials.items():
                 ansi = ansi.replace(pattern, special)
+
+        def _vt100_box_drawing():
+            last_end = 0  # the index of the last end of a code we've seen
+            box_drawing_mode = False
+            for match in self.vt100_box_codes_prog.finditer(ansi):
+                trailer = ansi[last_end:match.start()]
+                if box_drawing_mode:
+                    for char in trailer:
+                        yield map_vt100_box_code(char)
+                else:
+                    yield trailer
+                last_end = match.end()
+                box_drawing_mode = (match.groups()[0] == "0")
+            yield ansi[last_end:]
+        ansi = "".join(_vt100_box_drawing())
 
         state = _State()
         inside_span = False
@@ -403,6 +445,7 @@ class Ansi2HTMLConverter(object):
 
         self._attrs = {
             'dark_bg': self.dark_bg,
+            'line_wrap': self.line_wrap,
             'font_size': self.font_size,
             'body': body,
             'styles': styles,
@@ -425,7 +468,7 @@ class Ansi2HTMLConverter(object):
                 _template = _latex_template
             else:
                 _template = _html_template
-            all_styles = get_styles(self.dark_bg, self.scheme)
+            all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
             backgrounds = all_styles[:6]
             used_styles = filter(lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles)
 
@@ -439,7 +482,7 @@ class Ansi2HTMLConverter(object):
 
     def produce_headers(self):
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
-            'style' : "\n".join(map(str, get_styles(self.dark_bg, self.scheme)))
+            'style' : "\n".join(map(str, get_styles(self.dark_bg, self.line_wrap, self.scheme)))
         }
 
 
@@ -480,6 +523,10 @@ def main():
         default=False, action="store_true",
         help="Set output to 'light background' mode.")
     parser.add_option(
+        "-W", '--no-line-wrap', dest='no_line_wrap',
+        default=False, action="store_true",
+        help="Disable line wrapping.")
+    parser.add_option(
         "-a", '--linkify', dest='linkify',
         default=False, action="store_true",
         help="Transform URLs into <a> links.")
@@ -515,6 +562,7 @@ def main():
         latex=opts.latex,
         inline=opts.inline,
         dark_bg=not opts.light_background,
+        line_wrap=not opts.no_line_wrap,
         font_size=opts.font_size,
         linkify=opts.linkify,
         escaped=opts.escaped,
