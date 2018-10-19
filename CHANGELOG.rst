@@ -1,4 +1,9 @@
 
+1.5.1
+-----
+
+Include manpage in release.
+
 1.5.0
 -----
 
