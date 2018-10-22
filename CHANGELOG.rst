@@ -1,4 +1,12 @@
 
+1.5.2
+-----
+
+Commits
+
+- 5688d50ae Update pypi python versions.
+  https://github.com/ralphbean/ansi2html/commit/5688d50ae
+
 1.5.1
 -----
 
