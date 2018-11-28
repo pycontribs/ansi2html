@@ -34,9 +34,11 @@ class Rule(object):
 def index(r, g, b):
     return str(16 + (r * 36) + (g * 6) + b)
 
+def color_component(x):
+    return 0x37 + (0x28 * x)
 
 def color(r, g, b):
-    return "#%.2x%.2x%.2x" % (r * 42, g * 42, b * 42)
+    return "#%.2x%.2x%.2x" % (color_component(r), color_component(g), color_component(b))
 
 
 def level(grey):
