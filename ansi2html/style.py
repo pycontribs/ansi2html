@@ -35,6 +35,8 @@ def index(r, g, b):
     return str(16 + (r * 36) + (g * 6) + b)
 
 def color_component(x):
+    if x == 0:
+        return 0
     return 0x37 + (0x28 * x)
 
 def color(r, g, b):
