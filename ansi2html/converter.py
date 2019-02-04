@@ -238,6 +238,7 @@ class Ansi2HTMLConverter(object):
                  linkify=False,
                  escaped=True,
                  markup_lines=False,
+                 markup_lines_display=False,
                  output_encoding='utf-8',
                  scheme='ansi2html',
                  title=''
@@ -251,6 +252,7 @@ class Ansi2HTMLConverter(object):
         self.linkify = linkify
         self.escaped = escaped
         self.markup_lines = markup_lines
+        self.markup_lines_display = markup_lines_display
         self.output_encoding = output_encoding
         self.scheme = scheme
         self.title = title
@@ -274,12 +276,23 @@ class Ansi2HTMLConverter(object):
         combined = "".join(parts)
 
         if self.markup_lines and not self.latex:
-            combined = "\n".join([
-                """<span id="line-%i">%s</span>""" % (i, line)
+            lines_combined = ''
+
+            if self.markup_lines_display:
+                lines_combined += """<table>""";
+                line_template = """<tr><td class="line_number"><a class="body_foreground" id="line-{0}" href="#line-{0}">{0}</a></td><td>{1}</td></tr>"""
+            else:
+                line_template = """<span class="numbered-line" id="line-{0}">{1}</span>"""
+
+            lines_combined += "\n".join([
+                line_template.format(i, line)
                 for i, line in enumerate(combined.split('\n'))
             ])
 
-        return combined, styles_used
+            if self.markup_lines_display:
+                lines_combined += """</table>""";
+
+        return lines_combined, styles_used
 
     def _apply_regex(self, ansi, styles_used):
         if self.escaped:
@@ -469,7 +482,7 @@ class Ansi2HTMLConverter(object):
             else:
                 _template = _html_template
             all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
-            backgrounds = all_styles[:6]
+            backgrounds = all_styles[:8]
             used_styles = filter(lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles)
 
             return _template % {
@@ -539,6 +552,10 @@ def main():
         default=False, action="store_true",
         help="Surround lines with <span id='line-n'>..</span>.")
     parser.add_option(
+        "-d", '--markup-lines-display', dest="markup_lines_display",
+        default=False, action="store_true",
+        help="Show line numbers next to each line.")
+    parser.add_option(
         '--input-encoding', dest='input_encoding', metavar='ENCODING',
         default='utf-8',
         help="Specify input encoding")
@@ -567,6 +584,7 @@ def main():
         linkify=opts.linkify,
         escaped=opts.escaped,
         markup_lines=opts.markup_lines,
+        markup_lines_display=opts.markup_lines_display,
         output_encoding=opts.output_encoding,
         scheme=opts.scheme,
         title=opts.output_title,
