@@ -206,7 +206,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
     def test_markup_lines(self):
         test = "  wat  \n "
-        expected = '<span id="line-0">  wat  </span>\n<span id="line-1"> </span>'
+        expected = '<span id="line-1">  wat  </span>\n<span id="line-2"> </span>'
         html = Ansi2HTMLConverter(markup_lines=True).convert(test, full=False)
         self.assertEqual(expected, html)
 

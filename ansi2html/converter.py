@@ -282,7 +282,7 @@ class Ansi2HTMLConverter(object):
                 lines_combined += """<table>""";
                 line_template = """<tr><td class="line_number"><a class="body_foreground" id="line-{0}" href="#line-{0}">{0}</a></td><td>{1}</td></tr>"""
             else:
-                line_template = """<span class="numbered-line" id="line-{0}">{1}</span>"""
+                line_template = """<span id="line-{0}">{1}</span>"""
 
             lines_combined += "\n".join([
                 line_template.format(i + 1, line)
