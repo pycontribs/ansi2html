@@ -285,7 +285,7 @@ class Ansi2HTMLConverter(object):
                 line_template = """<span class="numbered-line" id="line-{0}">{1}</span>"""
 
             lines_combined += "\n".join([
-                line_template.format(i, line)
+                line_template.format(i + 1, line)
                 for i, line in enumerate(combined.split('\n'))
             ])
 
