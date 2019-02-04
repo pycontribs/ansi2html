@@ -292,7 +292,9 @@ class Ansi2HTMLConverter(object):
             if self.markup_lines_display:
                 lines_combined += """</table>""";
 
-        return lines_combined, styles_used
+            combined = lines_combined
+
+        return combined, styles_used
 
     def _apply_regex(self, ansi, styles_used):
         if self.escaped:
