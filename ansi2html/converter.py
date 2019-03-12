@@ -330,7 +330,7 @@ class Ansi2HTMLConverter:
         self.url_matcher = re.compile(
             r"(((((https?|ftps?|gopher|telnet|nntp)://)|"
             r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
-            r"\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][\s])?)"
+            r"\';/?#:@&=+$,A-Za-z0-9])+)([).!\';/?:,][\s])?)"
         )
         self.osc_link_re = re.compile("\033\\]8;;(.*?)\007(.*?)\033\\]8;;\007")
 
