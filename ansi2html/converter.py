@@ -200,7 +200,7 @@ def linkify(line, latex_mode):
     url_matcher = re.compile(
         r'(((((https?|ftps?|gopher|telnet|nntp)://)|'
         r'(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*'
-        r'\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][[:blank:]])?)')
+        r'\';/?#:@&=+$,A-Za-z0-9])+)([).!\';/?:,][[:blank:]])?)')
     if latex_mode:
         return url_matcher.sub(r'\\url{\1}', line)
     else:

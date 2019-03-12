@@ -44,15 +44,21 @@ class TestAnsi2HTML(unittest.TestCase):
     maxDiff = None
 
     def test_linkify(self):
-        ansi = "http://threebean.org"
-        target = '<a href="http://threebean.org">http://threebean.org</a>'
-        html = Ansi2HTMLConverter(linkify=True).convert(ansi)
+        ansi = "http://threebean.org#foobar"
+        target = '<a href="http://threebean.org#foobar">http://threebean.org#foobar</a>'
+        html = Ansi2HTMLConverter(linkify=True).convert(ansi, full=False)
         assert(target in html)
 
     def test_not_linkify(self):
         ansi = "http://threebean.org"
         target = '<a href="http://threebean.org">http://threebean.org</a>'
-        html = Ansi2HTMLConverter().convert(ansi)
+        html = Ansi2HTMLConverter().convert(ansi, full=False)
+        assert(target not in html)
+
+    def test_linkify_word_boundary(self):
+        ansi = ":http://threebean.org"
+        target = '<a href="http://threebean.org">http://threebean.org</a>'
+        html = Ansi2HTMLConverter().convert(ansi, full=False)
         assert(target not in html)
 
     def test_conversion(self):
