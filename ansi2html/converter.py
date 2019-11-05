@@ -292,13 +292,18 @@ class Ansi2HTMLConverter:
             )
 
         self.vt100_box_codes_prog = re.compile("\033\\(([B0])")
+        # Regex to match the subset of ANSI that we can process
         self.ansi_codes_prog = re.compile("\033\\[" "([\\d;]*)" "([a-zA-z])")
+        # Regex to match all ANSI codes from https://github.com/chalk/ansi-regex
+        self.strip_ansi_codes_prog = re.compile(
+            r"[\x1B\x9B][\\\[\]()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\x07)|"
+            r"(?:(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-ntqry=><~]))"
+        )
 
     def apply_regex(self, ansi):
         styles_used = set()
         parts = self._apply_regex(ansi, styles_used)
         parts = self._collapse_cursor(parts)
-        parts = list(parts)
 
         if self.linkify:
             parts = [linkify(part, self.latex) for part in parts]
@@ -316,21 +321,27 @@ class Ansi2HTMLConverter:
         return combined, styles_used
 
     def _apply_regex(self, ansi, styles_used):
-        if self.escaped:
-            if (
-                self.latex
-            ):  # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
-                specials = OrderedDict([])
-            else:
-                specials = OrderedDict(
-                    [
-                        ("&", "&amp;"),
-                        ("<", "&lt;"),
-                        (">", "&gt;"),
-                    ]
-                )
-            for pattern, special in specials.items():
-                ansi = ansi.replace(pattern, special)
+        def sanitize(chunk):
+            # Strip out all ANSI codes we haven't been able to process
+            chunk = self.strip_ansi_codes_prog.sub("", chunk)
+
+            if self.escaped:
+                if (
+                    self.latex
+                ):  # Known Perl function which does this: https://tex.stackexchange.com/questions/34580/escape-character-in-latex/119383#119383
+                    specials = OrderedDict([])
+                else:
+                    specials = OrderedDict(
+                        [
+                            ("&", "&amp;"),
+                            ("<", "&lt;"),
+                            (">", "&gt;"),
+                        ]
+                    )
+
+                for pattern, special in specials.items():
+                    chunk = chunk.replace(pattern, special)
+            return chunk
 
         def _vt100_box_drawing():
             last_end = 0  # the index of the last end of a code we've seen
@@ -352,7 +363,7 @@ class Ansi2HTMLConverter:
         inside_span = False
         last_end = 0  # the index of the last end of a code we've seen
         for match in self.ansi_codes_prog.finditer(ansi):
-            yield ansi[last_end : match.start()]
+            yield sanitize(ansi[last_end : match.start()])
             last_end = match.end()
 
             params, command = match.groups()
@@ -446,7 +457,7 @@ class Ansi2HTMLConverter:
                     yield '<span class="%s">' % " ".join(css_classes)
             inside_span = True
 
-        yield ansi[last_end:]
+        yield sanitize(ansi[last_end:])
         if inside_span:
             if self.latex:
                 yield "}"
