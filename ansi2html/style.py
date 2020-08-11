@@ -81,6 +81,11 @@ SCHEME = {
         "#3465A4", "#75507B", "#06989A", "#D3D7CF",
         "#555753", "#EF2929", "#8AE234", "#FCE94F",
         "#729FCF", "#AD7FA8", "#34E2E2", "#EEEEEC"),
+    'dracula': (
+        "#2E3436", "#FF5555", "#50FA7B", "#F1FA8C",
+        "#BD93F9", "#FF79C6", "#8BE9FD", "#BFBFBF",
+        "#4D4D4D", "#FF6E67", "#5AF78E", "#F4F99D",
+        "#CAA9FA", "#FF92D0", "#9AEDFE", "#E6E6E6")
     }
 
 def intensify(color, dark_bg, amount=64):
