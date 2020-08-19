@@ -46,6 +46,26 @@ def level(grey):
 def index2(grey):
     return str(232 + grey)
 
+# Solarized color names
+SOL = {
+    "base03":  "#002b36",
+    "base02":  "#073642",
+    "base01":  "#586e75",
+    "base00":  "#657b83",
+    "base0":   "#839496",
+    "base1":   "#93a1a1",
+    "base2":   "#eee8d5",
+    "base3":   "#fdf6e3",
+    "yellow":  "#b58900",
+    "orange":  "#cb4b16",
+    "red":     "#dc322f",
+    "magenta": "#d33682",
+    "violet":  "#6c71c4",
+    "blue":    "#268bd2",
+    "cyan":    "#2aa198",
+    "green":   "#859900",
+}
+
 # http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 SCHEME = {
     # black red green brown/yellow blue magenta cyan grey/white
@@ -67,16 +87,21 @@ SCHEME = {
 
     # http://ethanschoonover.com/solarized
     'solarized': (
-        "#262626", "#d70000", "#5f8700", "#af8700",
-        "#0087ff", "#af005f", "#00afaf", "#e4e4e4",
-        "#1c1c1c", "#d75f00", "#585858", "#626262",
-        "#808080", "#5f5faf", "#8a8a8a", "#ffffd7"),
+        SOL["base02"], SOL["red"],     SOL["green"], SOL["yellow"],
+        SOL["blue"],   SOL["magenta"], SOL["cyan"],  SOL["base2"],
+        SOL["base02"], SOL["red"],     SOL["green"], SOL["yellow"],
+        SOL["blue"],   SOL["magenta"], SOL["cyan"],  SOL["base2"]),
 
     'mint-terminal': (
         "#2E3436", "#CC0000", "#4E9A06", "#C4A000",
         "#3465A4", "#75507B", "#06989A", "#D3D7CF",
         "#555753", "#EF2929", "#8AE234", "#FCE94F",
         "#729FCF", "#AD7FA8", "#34E2E2", "#EEEEEC"),
+    }
+
+SCHEME_FG_BG = {
+    'solarized-dark': (SOL["base03"], SOL["base0"]),
+    'solarized-light': (SOL["base3"], SOL["base00"]),
     }
 
 def intensify(color, dark_bg, amount=64):
@@ -86,14 +111,24 @@ def intensify(color, dark_bg, amount=64):
     return "#%.2x%.2x%.2x" % rgb
 
 def get_styles(dark_bg=True, line_wrap=True, scheme='ansi2html'):
+    full_scheme_name = scheme + ("-light", "-dark")[dark_bg]
+
+    try:
+        bg, fg = SCHEME_FG_BG[full_scheme_name]
+        fg_bold = fg
+    except KeyError:
+        colors = ('#000000', '#AAAAAA')
+        bg, fg = colors[not dark_bg], colors[dark_bg]
+        fg_bold = ('#000000', '#FFFFFF')[dark_bg]
+
     css = [
         Rule('.ansi2html-content', white_space=('pre', 'pre-wrap')[line_wrap], word_wrap='break-word', display='inline'),
-        Rule('.body_foreground', color=('#000000', '#AAAAAA')[dark_bg]),
-        Rule('.body_background', background_color=('#AAAAAA', '#000000')[dark_bg]),
+        Rule('.body_foreground', color=fg),
+        Rule('.body_background', background_color=bg),
         Rule('.body_foreground > .bold,.bold > .body_foreground, body.body_foreground > pre > .bold',
-             color=('#000000', '#FFFFFF')[dark_bg], font_weight=('bold', 'normal')[dark_bg]),
-        Rule('.inv_foreground', color=('#000000', '#FFFFFF')[not dark_bg]),
-        Rule('.inv_background', background_color=('#AAAAAA', '#000000')[not dark_bg]),
+             color=fg_bold, font_weight=('bold', 'normal')[dark_bg]),
+        Rule('.inv_foreground', color=bg),
+        Rule('.inv_background', background_color=fg),
         Rule('.ansi1', font_weight='bold'),
         Rule('.ansi2', font_weight='lighter'),
         Rule('.ansi3', font_style='italic'),
