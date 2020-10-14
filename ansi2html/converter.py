@@ -32,9 +32,6 @@ except ImportError:
     from ordereddict import OrderedDict
 
 from ansi2html.style import get_styles, SCHEME
-import six
-from six.moves import map
-from six.moves import zip
 
 
 ANSI_FULL_RESET = 0
@@ -100,7 +97,7 @@ _latex_template = '''\\documentclass{scrartcl}
 \\end{document}
 '''
 
-_html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+_html_template = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=%(output_encoding)s">
@@ -114,7 +111,7 @@ _html_template = six.u("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitio
 </body>
 
 </html>
-""")
+"""
 
 class _State(object):
     def __init__(self):
@@ -495,7 +492,7 @@ def main():
     $ task burndown | ansi2html > burndown.html
     """
 
-    scheme_names = sorted(six.iterkeys(SCHEME))
+    scheme_names = sorted(SCHEME.keys())
     version_str = pkg_resources.get_distribution('ansi2html').version
     parser = optparse.OptionParser(
         usage=main.__doc__,
@@ -574,25 +571,19 @@ def main():
         title=opts.output_title,
     )
 
-    if six.PY3:
-        try:
-            sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
-        except io.UnsupportedOperation:
-            # This only fails in the test suite...
-            pass
+    try:
+        sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
+    except io.UnsupportedOperation:
+        # This only fails in the test suite...
+        pass
 
     def _read(input_bytes):
-        if six.PY3:
-            return input_bytes
-        else:
-            return input_bytes.decode(opts.input_encoding)
+        return input_bytes
 
     def _print(output_unicode, end='\n'):
         if hasattr(sys.stdout, 'buffer'):
             output_bytes = (output_unicode + end).encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)
-        elif not six.PY3:
-            sys.stdout.write((output_unicode + end).encode(opts.output_encoding))
         else:
             sys.stdout.write(output_unicode + end)
 
@@ -602,11 +593,8 @@ def main():
         return
 
     full = not bool(opts.partial or opts.inline)
-    if six.PY3:
-        output = conv.convert("".join(sys.stdin.readlines()), full=full, ensure_trailing_newline=True)
-        _print(output, end='')
-    else:
-        output = conv.convert(six.u("").join(
-            map(_read, sys.stdin.readlines())
-        ), full=full, ensure_trailing_newline=True)
-        _print(output, end='')
+    output = conv.convert(
+        "".join(sys.stdin.readlines()),
+        full=full,
+        ensure_trailing_newline=True)
+    _print(output, end='')
