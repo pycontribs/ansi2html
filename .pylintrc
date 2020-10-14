@@ -1,0 +1,29 @@
+[MESSAGES CONTROL]
+
+disable =
+    # TODO(ssbarnea): remove temporary skips adding during initial adoption:
+    attribute-defined-outside-init,
+    consider-using-dict-comprehension,
+    consider-using-enumerate,
+    deprecated-module,
+    import-error,
+    invalid-name,
+    line-too-long,
+    missing-class-docstring,
+    missing-function-docstring,
+    missing-module-docstring,
+    no-self-use,
+    redefined-builtin,
+    redefined-outer-name,
+    too-few-public-methods,
+    too-many-arguments,
+    too-many-branches,
+    too-many-instance-attributes,
+    too-many-locals,
+    too-many-public-methods,
+    too-many-statements,
+    unused-argument,
+    unused-variable,
+
+[REPORTS]
+output-format = colorized

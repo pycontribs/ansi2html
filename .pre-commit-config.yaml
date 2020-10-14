@@ -1,0 +1,39 @@
+---
+repos:
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.6.4
+    hooks:
+      - id: isort
+  - repo: https://github.com/python/black.git
+    rev: 20.8b1
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/pre-commit/pre-commit-hooks.git
+    rev: v3.2.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: check-byte-order-marker
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: debug-statements
+        language_version: python3
+  - repo: https://gitlab.com/pycqa/flake8.git
+    rev: 3.8.4
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - pydocstyle>=5.1.1
+          - flake8-absolute-import
+          - flake8-black>=0.1.1
+          - flake8-docstrings>=1.5.0
+        language_version: python3
+  - repo: https://github.com/pre-commit/mirrors-pylint
+    rev: v2.6.0
+    hooks:
+      - id: pylint
+        additional_dependencies:
+          - ansible-base
+          - testinfra
