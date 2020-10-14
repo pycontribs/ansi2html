@@ -90,7 +90,7 @@ _latex_template = '''\\documentclass{scrartcl}
 
 \\title{%(title)s}
 
-\\fvset{commandchars=\\\\\\{\}}
+\\fvset{commandchars=\\\\\\{\\}}
 
 \\begin{document}
 
@@ -200,15 +200,17 @@ def linkify(line, latex_mode):
     url_matcher = re.compile(
         r'(((((https?|ftps?|gopher|telnet|nntp)://)|'
         r'(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*'
-        r'\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][[:blank:]])?)')
+        r'\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][\s])?)')
     if latex_mode:
         return url_matcher.sub(r'\\url{\1}', line)
     else:
         return url_matcher.sub(r'<a href="\1">\1</a>', line)
 
+
 def map_vt100_box_code(char):
     char_hex = hex(ord(char))
     return VT100_BOX_CODES[char_hex] if char_hex in VT100_BOX_CODES else char
+
 
 def _needs_extra_newline(text):
     if not text or text.endswith('\n'):
