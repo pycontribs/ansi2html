@@ -31,7 +31,6 @@ from ansi2html.converter import main, \
 from ansi2html.util import read_to_unicode
 
 from mock import patch
-from nose.tools import eq_
 
 import unittest
 import six
@@ -117,7 +116,8 @@ class TestAnsi2HTML(unittest.TestCase):
         with patch("sys.stdin", new_callable=lambda: six.StringIO(test_input)):
             main()
 
-        eq_(mock_stdout.getvalue(), test_input)
+        ms_val = mock_stdout.getvalue()
+        assert ms_val == test_input, "%r != %r" % (ms_val, test_input)
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html", "--partial"])
     @patch("sys.stdout", new_callable=six.StringIO)
