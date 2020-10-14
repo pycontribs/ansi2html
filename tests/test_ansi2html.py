@@ -21,28 +21,28 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
-from os.path import abspath, dirname, join
-from ansi2html import Ansi2HTMLConverter
-from ansi2html.converter import (
-    main,
-    ANSI_VISIBILITY_ON,
-    ANSI_VISIBILITY_OFF,
-    ANSI_BLINK_SLOW,
-    ANSI_BLINK_FAST,
-    ANSI_BLINK_OFF,
-    ANSI_NEGATIVE_ON,
-    ANSI_NEGATIVE_OFF,
-    ANSI_INTENSITY_INCREASED,
-    ANSI_INTENSITY_REDUCED,
-    ANSI_INTENSITY_NORMAL,
-)
-from ansi2html.util import read_to_unicode
+import textwrap
+import unittest
 from io import StringIO
+from os.path import abspath, dirname, join
 
 from mock import patch
 
-import unittest
-import textwrap
+from ansi2html import Ansi2HTMLConverter
+from ansi2html.converter import (
+    ANSI_BLINK_FAST,
+    ANSI_BLINK_OFF,
+    ANSI_BLINK_SLOW,
+    ANSI_INTENSITY_INCREASED,
+    ANSI_INTENSITY_NORMAL,
+    ANSI_INTENSITY_REDUCED,
+    ANSI_NEGATIVE_OFF,
+    ANSI_NEGATIVE_ON,
+    ANSI_VISIBILITY_OFF,
+    ANSI_VISIBILITY_ON,
+    main,
+)
+from ansi2html.util import read_to_unicode
 
 _here = dirname(abspath(__file__))
 
