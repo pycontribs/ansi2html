@@ -92,7 +92,8 @@ class TestAnsi2HTML(unittest.TestCase):
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = "".join(read_to_unicode(output))
 
-        f = lambda: StringIO(test_data)
+        def f():
+            return StringIO(test_data)
 
         with patch("sys.stdin", new_callable=f):
             main()

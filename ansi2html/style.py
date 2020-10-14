@@ -17,7 +17,7 @@
 #    <http://www.gnu.org/licenses/>.
 
 
-class Rule(object):
+class Rule:
     def __init__(self, klass, **kw):
 
         self.klass = klass
