@@ -114,7 +114,7 @@ _html_template = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//E
 """
 
 
-class _State(object):
+class _State:
     def __init__(self):
         self.reset()
 
@@ -228,8 +228,7 @@ def linkify(line, latex_mode):
     )
     if latex_mode:
         return url_matcher.sub(r"\\url{\1}", line)
-    else:
-        return url_matcher.sub(r'<a href="\1">\1</a>', line)
+    return url_matcher.sub(r'<a href="\1">\1</a>', line)
 
 
 def map_vt100_box_code(char):
@@ -243,11 +242,11 @@ def _needs_extra_newline(text):
     return True
 
 
-class CursorMoveUp(object):
+class CursorMoveUp:
     pass
 
 
-class Ansi2HTMLConverter(object):
+class Ansi2HTMLConverter:
     """Convert Ansi color codes to CSS+HTML
 
     Example:
@@ -508,24 +507,23 @@ class Ansi2HTMLConverter(object):
         attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
         if not full:
             return attrs["body"]
+        if self.latex:
+            _template = _latex_template
         else:
-            if self.latex:
-                _template = _latex_template
-            else:
-                _template = _html_template
-            all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
-            backgrounds = all_styles[:6]
-            used_styles = filter(
-                lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
-            )
+            _template = _html_template
+        all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
+        backgrounds = all_styles[:6]
+        used_styles = filter(
+            lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
+        )
 
-            return _template % {
-                "style": "\n".join(list(map(str, backgrounds + list(used_styles)))),
-                "title": self.title,
-                "font_size": self.font_size,
-                "content": attrs["body"],
-                "output_encoding": self.output_encoding,
-            }
+        return _template % {
+            "style": "\n".join(list(map(str, backgrounds + list(used_styles)))),
+            "title": self.title,
+            "font_size": self.font_size,
+            "content": attrs["body"],
+            "output_encoding": self.output_encoding,
+        }
 
     def produce_headers(self):
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
