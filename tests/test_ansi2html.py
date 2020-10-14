@@ -25,6 +25,7 @@ import textwrap
 import unittest
 from io import StringIO
 from os.path import abspath, dirname, join
+from subprocess import run
 
 from mock import patch
 
@@ -384,6 +385,14 @@ class TestAnsi2HTML(unittest.TestCase):
         target = "\\url{%s}" % ansi
         latex = Ansi2HTMLConverter(latex=True, inline=True, linkify=True).convert(ansi)
         assert target in latex
+
+    def test_command_script(self):
+        result = run(["ansi2html", "--version"], check=True)
+        assert result.returncode == 0
+
+    def test_command_module(self):
+        result = run(["python3", "-m", "ansi2html", "--version"], check=True)
+        assert result.returncode == 0
 
 
 if __name__ == "__main__":
