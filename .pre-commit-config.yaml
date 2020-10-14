@@ -1,5 +1,10 @@
 ---
 repos:
+  - repo: https://github.com/python/black.git
+    rev: 20.8b1
+    hooks:
+      - id: black
+        language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
     rev: v3.2.0
     hooks:
