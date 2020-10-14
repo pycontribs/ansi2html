@@ -16,13 +16,13 @@ Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 Build Status
 ------------
 
-.. |master| image:: https://secure.travis-ci.org/ralphbean/ansi2html.png?branch=master
+.. |master| image:: https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=master
    :alt: Build Status - master branch
-   :target: http://travis-ci.org/#!/ralphbean/ansi2html
+   :target: https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Amaster
 
-.. |develop| image:: https://secure.travis-ci.org/ralphbean/ansi2html.png?branch=develop
+.. |develop| image:: https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=develop
    :alt: Build Status - develop branch
-   :target: http://travis-ci.org/#!/ralphbean/ansi2html
+   :target: https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Adevelop
 
 +----------+-----------+
 | Branch   | Status    |
