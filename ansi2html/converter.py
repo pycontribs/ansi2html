@@ -20,19 +20,19 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
+import io
+import optparse
 import re
 import sys
-import optparse
+
 import pkg_resources
-import io
 
 try:
     from collections import OrderedDict
 except ImportError:
     from ordereddict import OrderedDict
 
-from ansi2html.style import get_styles, SCHEME
-
+from ansi2html.style import SCHEME, get_styles
 
 ANSI_FULL_RESET = 0
 ANSI_INTENSITY_INCREASED = 1
