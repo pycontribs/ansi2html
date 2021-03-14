@@ -104,8 +104,7 @@ SCHEME = {
         "#d338d3",
         "#33bbc8",
         "#cbcccd",
-    )
-    * 2,
+    ),
     # http://ethanschoonover.com/solarized
     "solarized": (
         "#262626",
