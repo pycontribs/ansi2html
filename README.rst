@@ -59,7 +59,7 @@ Get this project:
 
 ::
 
- $ sudo yum install python-ansi2html
+ $ pip3 install ansi2html
 
 Source:  http://github.com/ralphbean/ansi2html/
 
