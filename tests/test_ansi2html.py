@@ -63,6 +63,18 @@ class TestAnsi2HTML(unittest.TestCase):
         html = Ansi2HTMLConverter().convert(ansi)
         assert target not in html
 
+    def test_osc_link(self):
+        ansi = "[\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits\x07-Wtype-limits\x1b]8;;\x07\x1b[m\x1b[K]\n"
+        target = '[<span class="ansi1 ansi35"><a href="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits">-Wtype-limits</a></span>]'
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert target in html
+
+    def test_osc_link_latex(self):
+        ansi = "[\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits\x07-Wtype-limits\x1b]8;;\x07\x1b[m\x1b[K]\n"
+        target = '[\\textcolor{ansi1 ansi35}{\\href{https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits}{-Wtype-limits}}]'
+        html = Ansi2HTMLConverter(latex=True).convert(ansi)
+        assert target in html
+
     def test_conversion(self):
         for input_filename, expected_output_filename in (
             ("ansicolor.txt", "ansicolor.html"),
