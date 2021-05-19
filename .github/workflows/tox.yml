@@ -122,3 +122,23 @@ jobs:
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.pypi_password }}
+      - name: Build API documentation
+        run: tox -e apidocs
+      - name: Publish API documentation (stable)
+        if: >- 
+            github.event_name == 'create' &&
+            github.event.ref_type == 'tag'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/apidocs
+          destination_dir: stable
+          commit_message: "Update API documentation (stable)"
+      - name: Publish API documentation (latest)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/apidocs
+          destination_dir: latest
+          commit_message: "Update API documentation (latest)"
+      
