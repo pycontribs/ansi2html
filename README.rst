@@ -65,6 +65,17 @@ Source:  http://github.com/ralphbean/ansi2html/
 
 pypi:    http://pypi.python.org/pypi/ansi2html/
 
+API documentation
+-----------------
+
++----------+----------------------------------------------------------+
+| Status   | Link                                                     |
++==========+==========================================================+
+| latest   | `HERE <https://pycontribs.github.io/ansi2html/latest>`_  |
++----------+----------------------------------------------------------+
+| stable   | `HERE <https://pycontribs.github.io/ansi2html/stable>`_  |
++----------+----------------------------------------------------------+
+
 License
 -------
 
