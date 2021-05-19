@@ -29,7 +29,7 @@ pydoctor \
     --project-name="ansi2html ${project_version}" \
     --project-url="https://github.com/pycontribs/ansi2html/" \
     --html-viewsource-base="https://github.com/pycontribs/ansi2html/tree/${git_sha}" \
-    --make-html --quiet \
+    --make-html --quiet -W \
     --project-base-dir="$SCRIPT_DIR"\
     --docformat=restructuredtext \
     --intersphinx=https://docs.python.org/3/objects.inv \
