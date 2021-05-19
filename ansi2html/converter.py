@@ -250,6 +250,7 @@ class Ansi2HTMLConverter:
     """Convert Ansi color codes to CSS+HTML
 
     Example:
+    
     >>> conv = Ansi2HTMLConverter()
     >>> ansi = " ".join(sys.stdin.readlines())
     >>> html = conv.convert(ansi)
