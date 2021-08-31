@@ -16,7 +16,6 @@
 #    along with this program.  If not, see
 #    <http://www.gnu.org/licenses/>.
 
-
 class Rule:
     def __init__(self, klass, **kw):
 
