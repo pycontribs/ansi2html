@@ -389,13 +389,7 @@ class Ansi2HTMLConverter:
             if isinstance(part, OSC_Link):
                 yield part
             else:
-                if ((sys.version_info.major == 3 and sys.version_info.minor >= 3)
-                        or sys.version_info.major > 3):
-                    # yield from requires python >= 3.3
-                    yield from self._handle_ansi_code(part, styles_used, state)
-                else:
-                    for sub_part in self._handle_ansi_code(part, styles_used, state):
-                        yield sub_part
+                yield from self._handle_ansi_code(part, styles_used, state)
         if state.inside_span:
             if self.latex:
                 yield "}"
