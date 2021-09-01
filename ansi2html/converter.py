@@ -309,8 +309,7 @@ class Ansi2HTMLConverter:
         if self.latex:
             self.hyperref = True
             return """\\href{%s}{%s}""" % (part.url, part.text)
-        else:
-            return """<a href="%s">%s</a>""" % (part.url, part.text)
+        return """<a href="%s">%s</a>""" % (part.url, part.text)
 
     def apply_regex(self, ansi):
         styles_used = set()
