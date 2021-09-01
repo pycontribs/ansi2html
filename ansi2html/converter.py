@@ -455,7 +455,7 @@ class Ansi2HTMLConverter:
             inside_span = False
 
     def _collapse_cursor(self, parts):
-        """ Act on any CursorMoveUp commands by deleting preceding tokens """
+        """Act on any CursorMoveUp commands by deleting preceding tokens"""
 
         final_parts = []
         for part in parts:
@@ -480,7 +480,7 @@ class Ansi2HTMLConverter:
         return final_parts
 
     def prepare(self, ansi="", ensure_trailing_newline=False):
-        """ Load the contents of 'ansi' into this object """
+        """Load the contents of 'ansi' into this object"""
 
         body, styles = self.apply_regex(ansi)
 
@@ -498,7 +498,7 @@ class Ansi2HTMLConverter:
         return self._attrs
 
     def attrs(self):
-        """ Prepare attributes for the template """
+        """Prepare attributes for the template"""
         if not self._attrs:
             raise Exception("Method .prepare not yet called.")
         return self._attrs

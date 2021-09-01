@@ -104,7 +104,7 @@ class TestAnsi2HTML(unittest.TestCase):
         self.assertEqual(html, expected_data)
 
     def test_unicode(self):
-        """ Ensure that the converter returns unicode(py2)/str(py3) objs. """
+        """Ensure that the converter returns unicode(py2)/str(py3) objs."""
 
         with open(join(_here, "ansicolor.txt"), "rb") as input:
             test_data = "".join(read_to_unicode(input))
