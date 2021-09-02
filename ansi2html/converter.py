@@ -300,7 +300,7 @@ class Ansi2HTMLConverter:
     def do_linkify(self, line):
         if not isinstance(line, str):
             return line  # If line is an object, e.g. OSC_Link, it
-                         # will be expanded to a string later
+            # will be expanded to a string later
         if self.latex:
             return self.url_matcher.sub(r"\\url{\1}", line)
         return self.url_matcher.sub(r'<a href="\1">\1</a>', line)
@@ -372,6 +372,7 @@ class Ansi2HTMLConverter:
             yield ansi[last_end:]
 
         ansi = "".join(_vt100_box_drawing())
+
         def _osc_link(ansi):
             last_end = 0
             for match in self.osc_link_re.finditer(ansi):
@@ -562,7 +563,7 @@ class Ansi2HTMLConverter:
             "font_size": self.font_size,
             "content": attrs["body"],
             "output_encoding": self.output_encoding,
-            "hyperref" : "\\usepackage{hyperref}" if self.hyperref else ""
+            "hyperref": "\\usepackage{hyperref}" if self.hyperref else "",
         }
 
     def produce_headers(self):
