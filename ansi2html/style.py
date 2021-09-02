@@ -16,6 +16,7 @@
 #    along with this program.  If not, see
 #    <http://www.gnu.org/licenses/>.
 
+
 class Rule:
     def __init__(self, klass, **kw):
 
@@ -209,24 +210,25 @@ def get_styles(dark_bg=True, line_wrap=True, scheme="ansi2html"):
         for _index in range(8):
             css.append(Rule(".ansi9%s" % _index, color=intensify(pal[_index], dark_bg)))
             css.append(
-                Rule(".inv9%s" % _index, background_color=intensify(pal[_index], dark_bg))
+                Rule(
+                    ".inv9%s" % _index, background_color=intensify(pal[_index], dark_bg)
+                )
             )
         for _index in range(8):
             css.append(
-                Rule(".ansi10%s" % _index, background_color=intensify(pal[_index], dark_bg))
+                Rule(
+                    ".ansi10%s" % _index,
+                    background_color=intensify(pal[_index], dark_bg),
+                )
             )
             css.append(Rule(".inv10%s" % _index, color=intensify(pal[_index], dark_bg)))
     else:
         for _index in range(8):
-            css.append(Rule(".ansi9%s" % _index, color=pal[_index+8]))
-            css.append(
-                Rule(".inv9%s" % _index, background_color=pal[_index+8])
-            )
+            css.append(Rule(".ansi9%s" % _index, color=pal[_index + 8]))
+            css.append(Rule(".inv9%s" % _index, background_color=pal[_index + 8]))
         for _index in range(8):
-            css.append(
-                Rule(".ansi10%s" % _index, background_color=pal[_index+8])
-            )
-            css.append(Rule(".inv10%s" % _index, color=pal[_index+8]))
+            css.append(Rule(".ansi10%s" % _index, background_color=pal[_index + 8]))
+            css.append(Rule(".inv10%s" % _index, color=pal[_index + 8]))
 
     # set palette colors in 256 color encoding
     pal = SCHEME[scheme]
@@ -238,11 +240,25 @@ def get_styles(dark_bg=True, line_wrap=True, scheme="ansi2html"):
         css.append(Rule(".inv48-%s" % _index, color=pal[_index]))
     # generate bright colors if they are missing
     if len(pal) < 16:
-        for _index in range(8,16):
-            css.append(Rule(".ansi38-%s" % _index, color=intensify(pal[_index-8], dark_bg)))
-            css.append(Rule(".inv38-%s" % _index, background_color=intensify(pal[_index-8], dark_bg)))
-            css.append(Rule(".ansi48-%s" % _index, background_color=intensify(pal[_index-8], dark_bg)))
-            css.append(Rule(".inv48-%s" % _index, color=intensify(pal[_index-8], dark_bg)))
+        for _index in range(8, 16):
+            css.append(
+                Rule(".ansi38-%s" % _index, color=intensify(pal[_index - 8], dark_bg))
+            )
+            css.append(
+                Rule(
+                    ".inv38-%s" % _index,
+                    background_color=intensify(pal[_index - 8], dark_bg),
+                )
+            )
+            css.append(
+                Rule(
+                    ".ansi48-%s" % _index,
+                    background_color=intensify(pal[_index - 8], dark_bg),
+                )
+            )
+            css.append(
+                Rule(".inv48-%s" % _index, color=intensify(pal[_index - 8], dark_bg))
+            )
 
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
