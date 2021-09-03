@@ -84,7 +84,7 @@ _latex_template = """\\documentclass{scrartcl}
 \\usepackage{fancyvrb}
 \\usepackage[usenames,dvipsnames]{xcolor}
 %% \\definecolor{red-sd}{HTML}{7ed2d2}
-
+%(hyperref)s
 \\title{%(title)s}
 
 \\fvset{commandchars=\\\\\\{\\}}
@@ -116,6 +116,7 @@ _html_template = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//E
 
 class _State:
     def __init__(self):
+        self.inside_span = False
         self.reset()
 
     def reset(self):
@@ -220,15 +221,10 @@ class _State:
         return css_classes
 
 
-def linkify(line, latex_mode):
-    url_matcher = re.compile(
-        r"(((((https?|ftps?|gopher|telnet|nntp)://)|"
-        r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
-        r"\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][\s])?)"
-    )
-    if latex_mode:
-        return url_matcher.sub(r"\\url{\1}", line)
-    return url_matcher.sub(r'<a href="\1">\1</a>', line)
+class OSC_Link:
+    def __init__(self, url, text):
+        self.url = url
+        self.text = text
 
 
 def map_vt100_box_code(char):
@@ -282,6 +278,7 @@ class Ansi2HTMLConverter:
         self.scheme = scheme
         self.title = title
         self._attrs = None
+        self.hyperref = False
 
         if inline:
             self.styles = dict(
@@ -293,6 +290,26 @@ class Ansi2HTMLConverter:
 
         self.vt100_box_codes_prog = re.compile("\033\\(([B0])")
         self.ansi_codes_prog = re.compile("\033\\[" "([\\d;]*)" "([a-zA-z])")
+        self.url_matcher = re.compile(
+            r"(((((https?|ftps?|gopher|telnet|nntp)://)|"
+            r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
+            r"\';/?:@&=+$,A-Za-z0-9])+)([).!\';/?:,][\s])?)"
+        )
+        self.osc_link_re = re.compile("\033\\]8;;(.*?)\007(.*?)\033\\]8;;\007")
+
+    def do_linkify(self, line):
+        if not isinstance(line, str):
+            return line  # If line is an object, e.g. OSC_Link, it
+            # will be expanded to a string later
+        if self.latex:
+            return self.url_matcher.sub(r"\\url{\1}", line)
+        return self.url_matcher.sub(r'<a href="\1">\1</a>', line)
+
+    def handle_osc_links(self, part):
+        if self.latex:
+            self.hyperref = True
+            return """\\href{%s}{%s}""" % (part.url, part.text)
+        return """<a href="%s">%s</a>""" % (part.url, part.text)
 
     def apply_regex(self, ansi):
         styles_used = set()
@@ -300,11 +317,20 @@ class Ansi2HTMLConverter:
         parts = self._collapse_cursor(parts)
         parts = list(parts)
 
-        if self.linkify:
-            parts = [linkify(part, self.latex) for part in parts]
+        def _check_links(parts):
+            for part in parts:
+                if isinstance(part, str):
+                    if self.linkify:
+                        yield self.do_linkify(part)
+                    else:
+                        yield part
+                elif isinstance(part, OSC_Link):
+                    yield self.handle_osc_links(part)
+                else:
+                    yield part
 
+        parts = list(_check_links(parts))
         combined = "".join(parts)
-
         if self.markup_lines and not self.latex:
             combined = "\n".join(
                 [
@@ -312,7 +338,6 @@ class Ansi2HTMLConverter:
                     for i, line in enumerate(combined.split("\n"))
                 ]
             )
-
         return combined, styles_used
 
     def _apply_regex(self, ansi, styles_used):
@@ -348,8 +373,30 @@ class Ansi2HTMLConverter:
 
         ansi = "".join(_vt100_box_drawing())
 
+        def _osc_link(ansi):
+            last_end = 0
+            for match in self.osc_link_re.finditer(ansi):
+                trailer = ansi[last_end : match.start()]
+                yield trailer
+                url = match.groups()[0]
+                text = match.groups()[1]
+                yield OSC_Link(url, text)
+                last_end = match.end()
+            yield ansi[last_end:]
+
         state = _State()
-        inside_span = False
+        for part in _osc_link(ansi):
+            if isinstance(part, OSC_Link):
+                yield part
+            else:
+                yield from self._handle_ansi_code(part, styles_used, state)
+        if state.inside_span:
+            if self.latex:
+                yield "}"
+            else:
+                yield "</span>"
+
+    def _handle_ansi_code(self, ansi, styles_used, state):
         last_end = 0  # the index of the last end of a code we've seen
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end : match.start()]
@@ -385,8 +432,8 @@ class Ansi2HTMLConverter:
             # Process reset marker, drop everything before
             if last_null_index is not None:
                 params = params[last_null_index + 1 :]
-                if inside_span:
-                    inside_span = False
+                if state.inside_span:
+                    state.inside_span = False
                     if self.latex:
                         yield "}"
                     else:
@@ -412,12 +459,12 @@ class Ansi2HTMLConverter:
                     parameter = None
                 state.adjust(v, parameter=parameter)
 
-            if inside_span:
+            if state.inside_span:
                 if self.latex:
                     yield "}"
                 else:
                     yield "</span>"
-                inside_span = False
+                state.inside_span = False
 
             css_classes = state.to_css_classes()
             if not css_classes:
@@ -444,15 +491,8 @@ class Ansi2HTMLConverter:
                     yield "\\textcolor{%s}{" % " ".join(css_classes)
                 else:
                     yield '<span class="%s">' % " ".join(css_classes)
-            inside_span = True
-
+            state.inside_span = True
         yield ansi[last_end:]
-        if inside_span:
-            if self.latex:
-                yield "}"
-            else:
-                yield "</span>"
-            inside_span = False
 
     def _collapse_cursor(self, parts):
         """Act on any CursorMoveUp commands by deleting preceding tokens"""
@@ -523,6 +563,7 @@ class Ansi2HTMLConverter:
             "font_size": self.font_size,
             "content": attrs["body"],
             "output_encoding": self.output_encoding,
+            "hyperref": "\\usepackage{hyperref}" if self.hyperref else "",
         }
 
     def produce_headers(self):
