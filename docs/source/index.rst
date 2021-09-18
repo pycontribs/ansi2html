@@ -5,7 +5,7 @@
    :maxdepth: 1
    :caption: Contents:
    
-   index
+   self
    api
    changelog
 
