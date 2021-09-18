@@ -13,6 +13,8 @@ Convert text with ANSI color codes to HTML or to LaTeX.
 
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 
+`Read the docs <https://ansi2html.readthedocs.io/>`_ for more informations. 
+
 Build Status
 ------------
 
