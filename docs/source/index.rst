@@ -4,7 +4,7 @@
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
-   
+
    self
    api
    changelog

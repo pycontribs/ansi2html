@@ -8,21 +8,19 @@ from setuptools_scm import get_version
 
 # -- Project information -----------------------------------------------------
 
-project = 'ansi2html'
-copyright = '2021, Ralph Bean, Robin Schneider and various contributors'
-author = 'Ralph Bean, Robin Schneider and various contributors'
+project = "ansi2html"
+copyright = "2021, Ralph Bean, Robin Schneider and various contributors"
+author = "Ralph Bean, Robin Schneider and various contributors"
 
 # The full version, including alpha/beta/rc tags
-release = get_version(root='../..', relative_to=__file__)
+release = get_version(root="../..", relative_to=__file__)
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 
-              'sphinx.ext.doctest',
-              'sphinx_rtd_theme']
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.doctest", "sphinx_rtd_theme"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -34,4 +32,4 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
