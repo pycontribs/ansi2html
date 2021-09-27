@@ -246,6 +246,7 @@ class Ansi2HTMLConverter:
     """Convert Ansi color codes to CSS+HTML
 
     Example:
+
     >>> conv = Ansi2HTMLConverter()
     >>> ansi = " ".join(sys.stdin.readlines())
     >>> html = conv.convert(ansi)
@@ -544,6 +545,11 @@ class Ansi2HTMLConverter:
         return self._attrs
 
     def convert(self, ansi, full=True, ensure_trailing_newline=False):
+        r"""
+        :param ansi: ANSI sequence to convert.
+        :param full: Whether to include the full HTML document or only the body.
+        :param ensure_trailing_newline: Ensures that ``\n`` character is present at the end of the output.
+        """
         attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
         if not full:
             return attrs["body"]
