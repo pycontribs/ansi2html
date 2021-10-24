@@ -24,6 +24,7 @@ import io
 import optparse
 import re
 import sys
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 import pkg_resources
 
@@ -115,22 +116,22 @@ _html_template = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//E
 
 
 class _State:
-    def __init__(self):
+    def __init__(self) -> None:
         self.inside_span = False
         self.reset()
 
-    def reset(self):
-        self.intensity = ANSI_INTENSITY_NORMAL
-        self.style = ANSI_STYLE_NORMAL
-        self.blink = ANSI_BLINK_OFF
-        self.underline = ANSI_UNDERLINE_OFF
-        self.crossedout = ANSI_CROSSED_OUT_OFF
-        self.visibility = ANSI_VISIBILITY_ON
-        self.foreground = (ANSI_FOREGROUND_DEFAULT, None)
-        self.background = (ANSI_BACKGROUND_DEFAULT, None)
-        self.negative = ANSI_NEGATIVE_OFF
+    def reset(self) -> None:
+        self.intensity: int = ANSI_INTENSITY_NORMAL
+        self.style: int = ANSI_STYLE_NORMAL
+        self.blink: int = ANSI_BLINK_OFF
+        self.underline: int = ANSI_UNDERLINE_OFF
+        self.crossedout: int = ANSI_CROSSED_OUT_OFF
+        self.visibility: int = ANSI_VISIBILITY_ON
+        self.foreground: Tuple[int, Optional[int]] = (ANSI_FOREGROUND_DEFAULT, None)
+        self.background: Tuple[int, Optional[int]] = (ANSI_BACKGROUND_DEFAULT, None)
+        self.negative: int = ANSI_NEGATIVE_OFF
 
-    def adjust(self, ansi_code, parameter=None):
+    def adjust(self, ansi_code: int, parameter: Optional[int] = None) -> None:
         if ansi_code in (
             ANSI_INTENSITY_INCREASED,
             ANSI_INTENSITY_REDUCED,
@@ -174,8 +175,8 @@ class _State:
         elif ansi_code in (ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF):
             self.negative = ansi_code
 
-    def to_css_classes(self):
-        css_classes = []
+    def to_css_classes(self) -> List[str]:
+        css_classes: List[str] = []
 
         def append_unless_default(output, value, default):
             if value != default:
@@ -232,7 +233,7 @@ def map_vt100_box_code(char):
     return VT100_BOX_CODES[char_hex] if char_hex in VT100_BOX_CODES else char
 
 
-def _needs_extra_newline(text):
+def _needs_extra_newline(text: str) -> bool:
     if not text or text.endswith("\n"):
         return False
     return True
@@ -254,18 +255,18 @@ class Ansi2HTMLConverter:
 
     def __init__(
         self,
-        latex=False,
-        inline=False,
-        dark_bg=True,
-        line_wrap=True,
-        font_size="normal",
-        linkify=False,
-        escaped=True,
-        markup_lines=False,
-        output_encoding="utf-8",
-        scheme="ansi2html",
-        title="",
-    ):
+        latex: bool = False,
+        inline: bool = False,
+        dark_bg: bool = True,
+        line_wrap: bool = True,
+        font_size: str = "normal",
+        linkify: bool = False,
+        escaped: bool = True,
+        markup_lines: bool = False,
+        output_encoding: str = "utf-8",
+        scheme: str = "ansi2html",
+        title: str = "",
+    ) -> None:
 
         self.latex = latex
         self.inline = inline
@@ -278,7 +279,7 @@ class Ansi2HTMLConverter:
         self.output_encoding = output_encoding
         self.scheme = scheme
         self.title = title
-        self._attrs = None
+        self._attrs: Optional[Dict[str, Union[bool, str, Set[str]]]] = None
         self.hyperref = False
 
         if inline:
@@ -298,7 +299,7 @@ class Ansi2HTMLConverter:
         )
         self.osc_link_re = re.compile("\033\\]8;;(.*?)\007(.*?)\033\\]8;;\007")
 
-    def do_linkify(self, line):
+    def do_linkify(self, line: str) -> str:
         if not isinstance(line, str):
             return line  # If line is an object, e.g. OSC_Link, it
             # will be expanded to a string later
@@ -306,14 +307,14 @@ class Ansi2HTMLConverter:
             return self.url_matcher.sub(r"\\url{\1}", line)
         return self.url_matcher.sub(r'<a href="\1">\1</a>', line)
 
-    def handle_osc_links(self, part):
+    def handle_osc_links(self, part) -> str:
         if self.latex:
             self.hyperref = True
             return """\\href{%s}{%s}""" % (part.url, part.text)
         return """<a href="%s">%s</a>""" % (part.url, part.text)
 
-    def apply_regex(self, ansi):
-        styles_used = set()
+    def apply_regex(self, ansi: str) -> Tuple[str, Set[str]]:
+        styles_used: Set[str] = set()
         parts = self._apply_regex(ansi, styles_used)
         parts = self._collapse_cursor(parts)
         parts = list(parts)
@@ -341,7 +342,7 @@ class Ansi2HTMLConverter:
             )
         return combined, styles_used
 
-    def _apply_regex(self, ansi, styles_used):
+    def _apply_regex(self, ansi: str, styles_used: Set[str]):
         if self.escaped:
             if (
                 self.latex
@@ -397,12 +398,13 @@ class Ansi2HTMLConverter:
             else:
                 yield "</span>"
 
-    def _handle_ansi_code(self, ansi, styles_used, state):
+    def _handle_ansi_code(self, ansi: str, styles_used: Set[str], state: _State):
         last_end = 0  # the index of the last end of a code we've seen
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end : match.start()]
             last_end = match.end()
 
+            params: Union[str, List[int]]
             params, command = match.groups()
 
             if command not in "mMA":
@@ -452,7 +454,7 @@ class Ansi2HTMLConverter:
 
                 if v in (ANSI_FOREGROUND_256, ANSI_BACKGROUND_256):
                     try:
-                        parameter = params[i + 2]
+                        parameter: Optional[int] = params[i + 2]
                     except IndexError:
                         continue
                     skip_after_index = i + 2
@@ -498,7 +500,7 @@ class Ansi2HTMLConverter:
     def _collapse_cursor(self, parts):
         """Act on any CursorMoveUp commands by deleting preceding tokens"""
 
-        final_parts = []
+        final_parts: List[str] = []
         for part in parts:
 
             # Throw out empty string tokens ("")
@@ -520,7 +522,9 @@ class Ansi2HTMLConverter:
 
         return final_parts
 
-    def prepare(self, ansi="", ensure_trailing_newline=False):
+    def prepare(
+        self, ansi: str = "", ensure_trailing_newline: bool = False
+    ) -> Dict[str, Union[bool, str, Set[str]]]:
         """Load the contents of 'ansi' into this object"""
 
         body, styles = self.apply_regex(ansi)
@@ -544,7 +548,9 @@ class Ansi2HTMLConverter:
             raise Exception("Method .prepare not yet called.")
         return self._attrs
 
-    def convert(self, ansi, full=True, ensure_trailing_newline=False):
+    def convert(
+        self, ansi: str, full: bool = True, ensure_trailing_newline: bool = False
+    ) -> str:
         r"""
         :param ansi: ANSI sequence to convert.
         :param full: Whether to include the full HTML document or only the body.
@@ -572,7 +578,7 @@ class Ansi2HTMLConverter:
             "hyperref": "\\usepackage{hyperref}" if self.hyperref else "",
         }
 
-    def produce_headers(self):
+    def produce_headers(self) -> str:
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
             "style": "\n".join(
                 map(str, get_styles(self.dark_bg, self.line_wrap, self.scheme))
@@ -580,7 +586,7 @@ class Ansi2HTMLConverter:
         }
 
 
-def main():
+def main() -> None:
     """
     $ ls --color=always | ansi2html > directories.html
     $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
