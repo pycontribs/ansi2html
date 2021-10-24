@@ -26,9 +26,12 @@ import sys
 from collections import OrderedDict
 from typing import Iterator, List, Optional, Set, Tuple, Union
 
-import pkg_resources
-
 from ansi2html.style import SCHEME, get_styles
+
+if sys.version_info >= (3, 8):
+    from importlib.metadata import version
+else:
+    from importlib_metadata import version
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict
@@ -566,12 +569,6 @@ class Ansi2HTMLConverter:
 
         return self._attrs
 
-    def attrs(self) -> Attributes:
-        """Prepare attributes for the template"""
-        if not self._attrs:
-            raise Exception("Method .prepare not yet called.")
-        return self._attrs
-
     def convert(
         self, ansi: str, full: bool = True, ensure_trailing_newline: bool = False
     ) -> str:
@@ -618,7 +615,7 @@ def main() -> None:
     """
 
     scheme_names = sorted(SCHEME.keys())
-    version_str = pkg_resources.get_distribution("ansi2html").version
+    version_str = version("ansi2html")
     parser = optparse.OptionParser(
         usage=main.__doc__, version="%%prog %s" % version_str
     )
