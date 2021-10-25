@@ -29,6 +29,7 @@ repos:
           - flake8-docstrings>=1.6.0
           - flake8-absolute-import>=1.0
           - flake8-black>=0.2.3
+          - flake8-pytest-style>=1.5.0
         language_version: python3
   - repo: https://github.com/pycqa/pylint
     rev: v2.10.2
