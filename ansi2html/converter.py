@@ -24,14 +24,14 @@ import io
 import optparse
 import re
 import sys
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
 
 import pkg_resources
 
 try:
     from collections import OrderedDict
 except ImportError:
-    from ordereddict import OrderedDict
+    from ordereddict import OrderedDict  # type: ignore
 
 from ansi2html.style import SCHEME, get_styles
 
@@ -178,14 +178,18 @@ class _State:
     def to_css_classes(self) -> List[str]:
         css_classes: List[str] = []
 
-        def append_unless_default(output, value, default):
+        def append_unless_default(output: List[str], value: int, default: int) -> None:
             if value != default:
                 css_class = "ansi%d" % value
                 output.append(css_class)
 
         def append_color_unless_default(
-            output, color, default, negative, neg_css_class
-        ):
+            output: List[str],
+            color: Tuple[int, Optional[int]],
+            default: int,
+            negative: bool,
+            neg_css_class: str,
+        ) -> None:
             value, parameter = color
             if value != default:
                 prefix = "inv" if negative else "ansi"
@@ -223,12 +227,12 @@ class _State:
 
 
 class OSC_Link:
-    def __init__(self, url, text):
+    def __init__(self, url: str, text: str) -> None:
         self.url = url
         self.text = text
 
 
-def map_vt100_box_code(char):
+def map_vt100_box_code(char: str) -> str:
     char_hex = hex(ord(char))
     return VT100_BOX_CODES[char_hex] if char_hex in VT100_BOX_CODES else char
 
@@ -307,7 +311,7 @@ class Ansi2HTMLConverter:
             return self.url_matcher.sub(r"\\url{\1}", line)
         return self.url_matcher.sub(r'<a href="\1">\1</a>', line)
 
-    def handle_osc_links(self, part) -> str:
+    def handle_osc_links(self, part: OSC_Link) -> str:
         if self.latex:
             self.hyperref = True
             return """\\href{%s}{%s}""" % (part.url, part.text)
@@ -319,7 +323,7 @@ class Ansi2HTMLConverter:
         parts = self._collapse_cursor(parts)
         parts = list(parts)
 
-        def _check_links(parts):
+        def _check_links(parts: List[str]) -> Iterator[str]:
             for part in parts:
                 if isinstance(part, str):
                     if self.linkify:
@@ -342,7 +346,9 @@ class Ansi2HTMLConverter:
             )
         return combined, styles_used
 
-    def _apply_regex(self, ansi: str, styles_used: Set[str]):
+    def _apply_regex(
+        self, ansi: str, styles_used: Set[str]
+    ) -> Iterator[Union[str, OSC_Link, CursorMoveUp]]:
         if self.escaped:
             if (
                 self.latex
@@ -359,7 +365,7 @@ class Ansi2HTMLConverter:
             for pattern, special in specials.items():
                 ansi = ansi.replace(pattern, special)
 
-        def _vt100_box_drawing():
+        def _vt100_box_drawing() -> Iterator[str]:
             last_end = 0  # the index of the last end of a code we've seen
             box_drawing_mode = False
             for match in self.vt100_box_codes_prog.finditer(ansi):
@@ -375,7 +381,7 @@ class Ansi2HTMLConverter:
 
         ansi = "".join(_vt100_box_drawing())
 
-        def _osc_link(ansi):
+        def _osc_link(ansi: str) -> Iterator[Union[str, OSC_Link]]:
             last_end = 0
             for match in self.osc_link_re.finditer(ansi):
                 trailer = ansi[last_end : match.start()]
@@ -398,7 +404,9 @@ class Ansi2HTMLConverter:
             else:
                 yield "</span>"
 
-    def _handle_ansi_code(self, ansi: str, styles_used: Set[str], state: _State):
+    def _handle_ansi_code(
+        self, ansi: str, styles_used: Set[str], state: _State
+    ) -> Union[str, CursorMoveUp]:
         last_end = 0  # the index of the last end of a code we've seen
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end : match.start()]
@@ -497,7 +505,9 @@ class Ansi2HTMLConverter:
             state.inside_span = True
         yield ansi[last_end:]
 
-    def _collapse_cursor(self, parts):
+    def _collapse_cursor(
+        self, parts: Iterator[Union[str, OSC_Link, CursorMoveUp]]
+    ) -> List[str]:
         """Act on any CursorMoveUp commands by deleting preceding tokens"""
 
         final_parts: List[str] = []
@@ -542,7 +552,7 @@ class Ansi2HTMLConverter:
 
         return self._attrs
 
-    def attrs(self):
+    def attrs(self) -> Dict[str, Union[bool, str, Set[str]]]:
         """Prepare attributes for the template"""
         if not self._attrs:
             raise Exception("Method .prepare not yet called.")
@@ -730,10 +740,7 @@ def main() -> None:
         # This only fails in the test suite...
         pass
 
-    def _read(input_bytes):
-        return input_bytes
-
-    def _print(output_unicode, end="\n"):
+    def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
             output_bytes = (output_unicode + end).encode(opts.output_encoding)
             sys.stdout.buffer.write(output_bytes)

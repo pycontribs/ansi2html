@@ -21,7 +21,7 @@ from typing import List
 
 
 class Rule:
-    def __init__(self, klass: str, **kw) -> None:
+    def __init__(self, klass: str, **kw: str) -> None:
 
         self.klass = klass
         self.kw = "; ".join(

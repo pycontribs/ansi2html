@@ -51,31 +51,31 @@ _here = dirname(abspath(__file__))
 class TestAnsi2HTML(unittest.TestCase):
     maxDiff = None
 
-    def test_linkify(self):
+    def test_linkify(self) -> None:
         ansi = "http://threebean.org"
         target = '<a href="http://threebean.org">http://threebean.org</a>'
         html = Ansi2HTMLConverter(linkify=True).convert(ansi)
         assert target in html
 
-    def test_not_linkify(self):
+    def test_not_linkify(self) -> None:
         ansi = "http://threebean.org"
         target = '<a href="http://threebean.org">http://threebean.org</a>'
         html = Ansi2HTMLConverter().convert(ansi)
         assert target not in html
 
-    def test_osc_link(self):
+    def test_osc_link(self) -> None:
         ansi = "[\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits\x07-Wtype-limits\x1b]8;;\x07\x1b[m\x1b[K]\n"
         target = '[<span class="ansi1 ansi35"><a href="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits">-Wtype-limits</a></span>]'
         html = Ansi2HTMLConverter().convert(ansi)
         assert target in html
 
-    def test_osc_link_latex(self):
+    def test_osc_link_latex(self) -> None:
         ansi = "[\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits\x07-Wtype-limits\x1b]8;;\x07\x1b[m\x1b[K]\n"
         target = "[\\textcolor{ansi1 ansi35}{\\href{https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits}{-Wtype-limits}}]"
         html = Ansi2HTMLConverter(latex=True).convert(ansi)
         assert target in html
 
-    def test_conversion(self):
+    def test_conversion(self) -> None:
         for input_filename, expected_output_filename in (
             ("ansicolor.txt", "ansicolor.html"),
             ("ansicolor_eix.txt", "ansicolor_eix.html"),
@@ -98,14 +98,14 @@ class TestAnsi2HTML(unittest.TestCase):
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html"])
     @patch("sys.stdout", new_callable=StringIO)
-    def test_conversion_as_command(self, mock_stdout, mock_argv):
+    def test_conversion_as_command(self, mock_stdout, mock_argv) -> None:
         with open(join(_here, "ansicolor.txt"), "rb") as input:
             test_data = "".join(read_to_unicode(input))
 
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = "".join(read_to_unicode(output))
 
-        def f():
+        def f() -> StringIO:
             return StringIO(test_data)
 
         with patch("sys.stdin", new_callable=f):
@@ -115,7 +115,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(html, expected_data)
 
-    def test_unicode(self):
+    def test_unicode(self) -> None:
         """Ensure that the converter returns unicode(py2)/str(py3) objs."""
 
         with open(join(_here, "ansicolor.txt"), "rb") as input:
@@ -128,7 +128,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html", "--inline"])
     @patch("sys.stdout", new_callable=StringIO)
-    def test_inline_as_command(self, mock_stdout, mock_argv):
+    def test_inline_as_command(self, mock_stdout, mock_argv) -> None:
         test_input = textwrap.dedent(
             """
         this is
@@ -144,7 +144,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html", "--partial"])
     @patch("sys.stdout", new_callable=StringIO)
-    def test_partial_as_command(self, mock_stdout, mock_argv):
+    def test_partial_as_command(self, mock_stdout, mock_argv) -> None:
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n"
         with patch("sys.stdin", new_callable=lambda: StringIO(rainbow)):
             main()
@@ -169,7 +169,7 @@ class TestAnsi2HTML(unittest.TestCase):
         assert isinstance(expected, str)
         self.assertEqual(expected, html)
 
-    def test_partial(self):
+    def test_partial(self) -> None:
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n"
 
         html = Ansi2HTMLConverter().convert(rainbow, full=False).strip()
@@ -186,7 +186,7 @@ class TestAnsi2HTML(unittest.TestCase):
         )
         self.assertEqual(expected, html)
 
-    def test_inline(self):
+    def test_inline(self) -> None:
 
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m"
 
@@ -205,7 +205,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(expected, html)
 
-    def test_produce_headers(self):
+    def test_produce_headers(self) -> None:
         conv = Ansi2HTMLConverter()
         headers = conv.produce_headers()
 
@@ -215,37 +215,37 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertMultiLineEqual(headers, "".join(expected_data))
 
-    def test_escaped_implicit(self):
+    def test_escaped_implicit(self) -> None:
         test = "<p>awesome</p>"
         expected = "&lt;p&gt;awesome&lt;/p&gt;"
         html = Ansi2HTMLConverter().convert(test, full=False)
         self.assertEqual(expected, html)
 
-    def test_escaped_explicit(self):
+    def test_escaped_explicit(self) -> None:
         test = "<p>awesome</p>"
         expected = "&lt;p&gt;awesome&lt;/p&gt;"
         html = Ansi2HTMLConverter(escaped=True).convert(test, full=False)
         self.assertEqual(expected, html)
 
-    def test_unescaped(self):
+    def test_unescaped(self) -> None:
         test = "<p>awesome</p>"
         expected = "<p>awesome</p>"
         html = Ansi2HTMLConverter(escaped=False).convert(test, full=False)
         self.assertEqual(expected, html)
 
-    def test_markup_lines(self):
+    def test_markup_lines(self) -> None:
         test = "  wat  \n "
         expected = '<span id="line-0">  wat  </span>\n<span id="line-1"> </span>'
         html = Ansi2HTMLConverter(markup_lines=True).convert(test, full=False)
         self.assertEqual(expected, html)
 
-    def test_no_markup_lines(self):
+    def test_no_markup_lines(self) -> None:
         test = "  wat  \n "
         expected = test
         html = Ansi2HTMLConverter().convert(test, full=False)
         self.assertEqual(expected, html)
 
-    def test_issue_25(self):
+    def test_issue_25(self) -> None:
         sample = "\x1b[0;38;5;238;48;5;231mTEXT\x1b[0m"
 
         html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)
@@ -253,7 +253,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(expected, html)
 
-    def test_italic(self):
+    def test_italic(self) -> None:
         sample = "\x1b[3mITALIC\x1b[0m"
 
         html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
@@ -261,7 +261,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(expected, html)
 
-    def test_hidden_text(self):
+    def test_hidden_text(self) -> None:
         sample = "\x1b[%dmHIDDEN\x1b[%dmVISIBLE\x1b[0m" % (
             ANSI_VISIBILITY_OFF,
             ANSI_VISIBILITY_ON,
@@ -272,7 +272,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(expected, html)
 
-    def test_lighter_text(self):
+    def test_lighter_text(self) -> None:
         sample = "NORMAL\x1b[%dmLIGHTER\x1b[%dmBOLD\x1b[%dmNORMAL" % (
             ANSI_INTENSITY_REDUCED,
             ANSI_INTENSITY_INCREASED,
@@ -284,7 +284,7 @@ class TestAnsi2HTML(unittest.TestCase):
 
         self.assertEqual(expected, html)
 
-    def test_blinking_text(self):
+    def test_blinking_text(self) -> None:
         sample = "\x1b[%dm555\x1b[%dm666\x1b[%dmNOBLINK\x1b[0m" % (
             ANSI_BLINK_SLOW,
             ANSI_BLINK_FAST,
@@ -299,7 +299,7 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = '<span class="ansi5">555</span><span class="ansi6">666</span>NOBLINK'
         self.assertEqual(expected, html)
 
-    def test_inverse_text(self):
+    def test_inverse_text(self) -> None:
         sample = "NORMAL\x1b[%dmINVERSE\x1b[%dmNORMAL\x1b[0m" % (
             ANSI_NEGATIVE_ON,
             ANSI_NEGATIVE_OFF,
@@ -327,7 +327,7 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = 'NORMAL<span class="ansi31">313131</span><span class="inv31 inv_foreground">!31!31!31</span><span class="inv31 inv43">!31!43</span><span class="ansi31 ansi43">31+43</span>NORMAL'
         self.assertEqual(expected, html)
 
-    def test_cross_line_state(self):  # covers issue 36, too
+    def test_cross_line_state(self) -> None:  # covers issue 36, too
         sample = "\x1b[31mRED\nSTILL RED"
         html = Ansi2HTMLConverter(inline=True).convert(
             sample, full=False, ensure_trailing_newline=False
@@ -363,7 +363,7 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = '<span style="color: #aa0000">RED\nSTILL RED</span>\n'
         self.assertEqual(expected, html)
 
-    def test_scheme(self):  # covers issue 36, too
+    def test_scheme(self) -> None:  # covers issue 36, too
         sample = "\x1b[33mYELLOW/BROWN"
         # ansi2html scheme is brown #aa5500
         html = Ansi2HTMLConverter(inline=True).convert(
@@ -379,30 +379,30 @@ class TestAnsi2HTML(unittest.TestCase):
         expected = '<span style="color: #cdcd00">YELLOW/BROWN</span>'
         self.assertEqual(expected, html)
 
-    def test_latex_inline(self):
+    def test_latex_inline(self) -> None:
         ansi = "\x1b[33mYELLOW/BROWN"
         target = "\\textcolor[HTML]{aa5500}{YELLOW/BROWN}"
         latex = Ansi2HTMLConverter(latex=True, inline=True).convert(ansi)
         assert target in latex
 
-    def test_latex_title(self):
+    def test_latex_title(self) -> None:
         ansi = ""
         title = "testing"
         target = "\\title{%s}" % title
         latex = Ansi2HTMLConverter(latex=True, inline=True, title=title).convert(ansi)
         assert target in latex
 
-    def test_latex_linkify(self):
+    def test_latex_linkify(self) -> None:
         ansi = "http://python.org/"
         target = "\\url{%s}" % ansi
         latex = Ansi2HTMLConverter(latex=True, inline=True, linkify=True).convert(ansi)
         assert target in latex
 
-    def test_command_script(self):
+    def test_command_script(self) -> None:
         result = run(["ansi2html", "--version"], check=True)
         assert result.returncode == 0
 
-    def test_command_module(self):
+    def test_command_module(self) -> None:
         result = run(["python3", "-m", "ansi2html", "--version"], check=True)
         assert result.returncode == 0
 
