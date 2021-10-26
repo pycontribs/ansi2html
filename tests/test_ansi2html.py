@@ -26,6 +26,7 @@ import unittest
 from io import StringIO
 from os.path import abspath, dirname, join
 from subprocess import run
+from typing import List
 
 from mock import patch
 
@@ -98,7 +99,9 @@ class TestAnsi2HTML(unittest.TestCase):
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html"])
     @patch("sys.stdout", new_callable=StringIO)
-    def test_conversion_as_command(self, mock_stdout, mock_argv) -> None:
+    def test_conversion_as_command(
+        self, mock_stdout: StringIO, mock_argv: List[str]
+    ) -> None:
         with open(join(_here, "ansicolor.txt"), "rb") as input:
             test_data = "".join(read_to_unicode(input))
 
@@ -128,7 +131,9 @@ class TestAnsi2HTML(unittest.TestCase):
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html", "--inline"])
     @patch("sys.stdout", new_callable=StringIO)
-    def test_inline_as_command(self, mock_stdout, mock_argv) -> None:
+    def test_inline_as_command(
+        self, mock_stdout: StringIO, mock_argv: List[str]
+    ) -> None:
         test_input = textwrap.dedent(
             """
         this is
@@ -144,15 +149,14 @@ class TestAnsi2HTML(unittest.TestCase):
 
     @patch("sys.argv", new_callable=lambda: ["ansi2html", "--partial"])
     @patch("sys.stdout", new_callable=StringIO)
-    def test_partial_as_command(self, mock_stdout, mock_argv) -> None:
+    def test_partial_as_command(
+        self, mock_stdout: StringIO, mock_argv: List[str]
+    ) -> None:
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n"
         with patch("sys.stdin", new_callable=lambda: StringIO(rainbow)):
             main()
 
         html = mock_stdout.getvalue().strip()
-
-        if hasattr(html, "decode"):
-            html = html.decode("utf-8")
 
         expected = (
             '<span class="ansi1"></span>'

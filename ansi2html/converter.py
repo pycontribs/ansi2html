@@ -20,7 +20,6 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
-import io
 import optparse
 import re
 import sys
@@ -319,11 +318,11 @@ class Ansi2HTMLConverter:
 
     def apply_regex(self, ansi: str) -> Tuple[str, Set[str]]:
         styles_used: Set[str] = set()
-        parts = self._apply_regex(ansi, styles_used)
-        parts = self._collapse_cursor(parts)
-        parts = list(parts)
+        all_parts = self._apply_regex(ansi, styles_used)
+        no_cursor_parts = self._collapse_cursor(all_parts)
+        no_cursor_parts = list(no_cursor_parts)
 
-        def _check_links(parts: List[str]) -> Iterator[str]:
+        def _check_links(parts: List[Union[str, OSC_Link]]) -> Iterator[str]:
             for part in parts:
                 if isinstance(part, str):
                     if self.linkify:
@@ -335,7 +334,7 @@ class Ansi2HTMLConverter:
                 else:
                     yield part
 
-        parts = list(_check_links(parts))
+        parts = list(_check_links(no_cursor_parts))
         combined = "".join(parts)
         if self.markup_lines and not self.latex:
             combined = "\n".join(
@@ -406,7 +405,7 @@ class Ansi2HTMLConverter:
 
     def _handle_ansi_code(
         self, ansi: str, styles_used: Set[str], state: _State
-    ) -> Union[str, CursorMoveUp]:
+    ) -> Iterator[Union[str, CursorMoveUp]]:
         last_end = 0  # the index of the last end of a code we've seen
         for match in self.ansi_codes_prog.finditer(ansi):
             yield ansi[last_end : match.start()]
@@ -507,10 +506,10 @@ class Ansi2HTMLConverter:
 
     def _collapse_cursor(
         self, parts: Iterator[Union[str, OSC_Link, CursorMoveUp]]
-    ) -> List[str]:
+    ) -> List[Union[str, OSC_Link]]:
         """Act on any CursorMoveUp commands by deleting preceding tokens"""
 
-        final_parts: List[str] = []
+        final_parts: List[Union[str, OSC_Link]] = []
         for part in parts:
 
             # Throw out empty string tokens ("")
@@ -518,7 +517,7 @@ class Ansi2HTMLConverter:
                 continue
 
             # Go back, deleting every token in the last 'line'
-            if part == CursorMoveUp:
+            if isinstance(part, CursorMoveUp):
                 if final_parts:
                     final_parts.pop()
 
@@ -733,12 +732,6 @@ def main() -> None:
         scheme=opts.scheme,
         title=opts.output_title,
     )
-
-    try:
-        sys.stdin = io.TextIOWrapper(sys.stdin.detach(), opts.input_encoding, "replace")
-    except io.UnsupportedOperation:
-        # This only fails in the test suite...
-        pass
 
     def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
