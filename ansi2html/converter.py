@@ -419,7 +419,7 @@ class Ansi2HTMLConverter:
 
             # Special cursor-moving code.  The only supported one.
             if command == "A":
-                yield CursorMoveUp
+                yield CursorMoveUp  # type: ignore
                 continue
 
             try:
@@ -521,7 +521,7 @@ class Ansi2HTMLConverter:
                 if final_parts:
                     final_parts.pop()
 
-                while final_parts and "\n" not in final_parts[-1]:
+                while final_parts and "\n" not in final_parts[-1]:  # type: ignore
                     final_parts.pop()
 
                 continue
@@ -567,7 +567,7 @@ class Ansi2HTMLConverter:
         """
         attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
         if not full:
-            return attrs["body"]
+            return attrs["body"]  # type: ignore
         if self.latex:
             _template = _latex_template
         else:
@@ -575,7 +575,7 @@ class Ansi2HTMLConverter:
         all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
         backgrounds = all_styles[:6]
         used_styles = filter(
-            lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
+            lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles  # type: ignore
         )
 
         return _template % {
