@@ -1,3 +1,7 @@
+.. image:: https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=main
+   :alt: Build Status - main branch
+   :target: https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Amain
+
 ansi2html
 =========
 
@@ -14,26 +18,6 @@ Convert text with ANSI color codes to HTML or to LaTeX.
 Inspired by and developed off of the work of `pixelbeat`_ and `blackjack`_.
 
 `Read the docs <https://ansi2html.readthedocs.io/>`_ for more informations.
-
-Build Status
-------------
-
-.. |master| image:: https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=master
-   :alt: Build Status - master branch
-   :target: https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Amaster
-
-.. |develop| image:: https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=develop
-   :alt: Build Status - develop branch
-   :target: https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Adevelop
-
-+----------+-----------+
-| Branch   | Status    |
-+==========+===========+
-| master   | |master|  |
-+----------+-----------+
-| develop  | |develop| |
-+----------+-----------+
-
 
 Example - Python API
 --------------------
