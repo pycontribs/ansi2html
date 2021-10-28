@@ -429,7 +429,7 @@ class Ansi2HTMLConverter:
 
             # Special cursor-moving code.  The only supported one.
             if command == "A":
-                yield CursorMoveUp  # type: ignore
+                yield CursorMoveUp()
                 continue
 
             try:
