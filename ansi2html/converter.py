@@ -23,14 +23,10 @@
 import optparse
 import re
 import sys
+from collections import OrderedDict
 from typing import Iterator, List, Optional, Set, Tuple, Union
 
 import pkg_resources
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # type: ignore
 
 from ansi2html.style import SCHEME, get_styles
 
