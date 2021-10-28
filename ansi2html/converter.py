@@ -23,16 +23,18 @@
 import optparse
 import re
 import sys
-from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
+from collections import OrderedDict
+from typing import Iterator, List, Optional, Set, Tuple, Union
 
 import pkg_resources
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # type: ignore
-
 from ansi2html.style import SCHEME, get_styles
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
+
 
 ANSI_FULL_RESET = 0
 ANSI_INTENSITY_INCREASED = 1
@@ -246,6 +248,14 @@ class CursorMoveUp:
     pass
 
 
+class Attributes(TypedDict):
+    dark_bg: bool
+    line_wrap: bool
+    font_size: str
+    body: str
+    styles: Set[str]
+
+
 class Ansi2HTMLConverter:
     """Convert Ansi color codes to CSS+HTML
 
@@ -282,7 +292,7 @@ class Ansi2HTMLConverter:
         self.output_encoding = output_encoding
         self.scheme = scheme
         self.title = title
-        self._attrs: Optional[Dict[str, Union[bool, str, Set[str]]]] = None
+        self._attrs: Attributes
         self.hyperref = False
 
         if inline:
@@ -419,7 +429,7 @@ class Ansi2HTMLConverter:
 
             # Special cursor-moving code.  The only supported one.
             if command == "A":
-                yield CursorMoveUp  # type: ignore
+                yield CursorMoveUp()
                 continue
 
             try:
@@ -521,7 +531,12 @@ class Ansi2HTMLConverter:
                 if final_parts:
                     final_parts.pop()
 
-                while final_parts and "\n" not in final_parts[-1]:  # type: ignore
+                while final_parts and (
+                    isinstance(final_parts[-1], OSC_Link)
+                    or (
+                        isinstance(final_parts[-1], str) and "\n" not in final_parts[-1]
+                    )
+                ):
                     final_parts.pop()
 
                 continue
@@ -533,7 +548,7 @@ class Ansi2HTMLConverter:
 
     def prepare(
         self, ansi: str = "", ensure_trailing_newline: bool = False
-    ) -> Dict[str, Union[bool, str, Set[str]]]:
+    ) -> Attributes:
         """Load the contents of 'ansi' into this object"""
 
         body, styles = self.apply_regex(ansi)
@@ -551,7 +566,7 @@ class Ansi2HTMLConverter:
 
         return self._attrs
 
-    def attrs(self) -> Dict[str, Union[bool, str, Set[str]]]:
+    def attrs(self) -> Attributes:
         """Prepare attributes for the template"""
         if not self._attrs:
             raise Exception("Method .prepare not yet called.")
@@ -567,7 +582,7 @@ class Ansi2HTMLConverter:
         """
         attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
         if not full:
-            return attrs["body"]  # type: ignore
+            return attrs["body"]
         if self.latex:
             _template = _latex_template
         else:
@@ -575,7 +590,7 @@ class Ansi2HTMLConverter:
         all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
         backgrounds = all_styles[:6]
         used_styles = filter(
-            lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles  # type: ignore
+            lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
         )
 
         return _template % {
