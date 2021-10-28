@@ -531,7 +531,12 @@ class Ansi2HTMLConverter:
                 if final_parts:
                     final_parts.pop()
 
-                while final_parts and "\n" not in final_parts[-1]:
+                while final_parts and (
+                    isinstance(final_parts[-1], OSC_Link)
+                    or (
+                        isinstance(final_parts[-1], str) and "\n" not in final_parts[-1]
+                    )
+                ):
                     final_parts.pop()
 
                 continue
