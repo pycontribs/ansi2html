@@ -22,7 +22,6 @@
 #  <http://www.gnu.org/licenses/>.
 
 import textwrap
-import unittest
 from io import StringIO
 from os.path import abspath, dirname, join
 from subprocess import run
@@ -49,7 +48,7 @@ from ansi2html.util import read_to_unicode
 _here = dirname(abspath(__file__))
 
 
-class TestAnsi2HTML(unittest.TestCase):
+class TestAnsi2HTML:
     maxDiff = None
 
     def test_linkify(self) -> None:
@@ -409,7 +408,3 @@ class TestAnsi2HTML(unittest.TestCase):
     def test_command_module(self) -> None:
         result = run(["python3", "-m", "ansi2html", "--version"], check=True)
         assert result.returncode == 0
-
-
-if __name__ == "__main__":
-    unittest.main()
