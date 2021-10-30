@@ -173,6 +173,22 @@ class TestAnsi2HTML(unittest.TestCase):
         assert isinstance(expected, str)
         self.assertEqual(expected, html)
 
+    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--headers"])
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_headers_as_command(
+        self, mock_stdout: StringIO, mock_argv: List[str]
+    ) -> None:
+
+        main()
+
+        with open(join(_here, "produce_headers.txt"), "rb") as produce_headers:
+            expected = read_to_unicode(produce_headers)
+
+        html = mock_stdout.getvalue()
+
+        assert isinstance(html, str)
+        assert html == "".join(expected)
+
     def test_partial(self) -> None:
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n"
 
