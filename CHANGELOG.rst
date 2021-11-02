@@ -1,3 +1,48 @@
+1.6.0
+-----
+
+Changes
+
+* add support for vt100 box drawing mode and high-intensity ansi codes (`#90 <https://github.com/ralphbean/ansi2html/pull/90>`_) @p-sherratt
+* Fix undefined behavior with linkify when same url is repeated in same line (`#85 <https://github.com/ralphbean/ansi2html/pull/85>`_) @sujanadiga
+* Prune CSS classes from output that are not used (`#84 <https://github.com/ralphbean/ansi2html/pull/84>`_) @cfstras
+* LGPLv3+ (`#80 <https://github.com/ralphbean/ansi2html/pull/80>`_) @ralphbean
+* Revert "six is called six, not python-six" (`#73 <https://github.com/ralphbean/ansi2html/pull/73>`_) @JensTimmerman
+* Update style.py (`#69 <https://github.com/ralphbean/ansi2html/pull/69>`_) @karjaneth
+* Give more useful TaskWarrior example (`#68 <https://github.com/ralphbean/ansi2html/pull/68>`_) @AloisMahdal
+* Fix handling cursor move up with unique and empty lines (`#67 <https://github.com/ralphbean/ansi2html/pull/67>`_) @gberaudo
+* enable python 3 input decoding (`#64 <https://github.com/ralphbean/ansi2html/pull/64>`_) @kaspar030
+* six is called six, not python-six (`#61 <https://github.com/ralphbean/ansi2html/pull/61>`_) @JensTimmerman
+* Fix missing color CSS definitions (`#57 <https://github.com/ralphbean/ansi2html/pull/57>`_) @tbabej
+* Prevent IndexError while handling CursorMoveUp (`#56 <https://github.com/ralphbean/ansi2html/pull/56>`_) @lqez
+* added setup.cfg (`#55 <https://github.com/ralphbean/ansi2html/pull/55>`_) @JensTimmerman
+* the css (`#52 <https://github.com/ralphbean/ansi2html/pull/52>`_) @szepeviktor
+* fix long lines (`#50 <https://github.com/ralphbean/ansi2html/pull/50>`_) @szepeviktor
+* Started to implement LaTeX support (`#48 <https://github.com/ralphbean/ansi2html/pull/48>`_) @ypid
+* add option --title for filling in the title (`#44 <https://github.com/ralphbean/ansi2html/pull/44>`_) @CBke
+* add empty title element to head section in html output (`#43 <https://github.com/ralphbean/ansi2html/pull/43>`_) @CBke
+* Generic approach to issue 39 (`#42 <https://github.com/ralphbean/ansi2html/pull/42>`_) @hartwork
+* added 2 color-schemes (solarized, osx). improved optparse handling schemes. (`#41 <https://github.com/ralphbean/ansi2html/pull/41>`_) @schettino72
+* added support to select a color-scheme. added schemes 'xterm' and 'xterm... (`#40 <https://github.com/ralphbean/ansi2html/pull/40>`_) @schettino72
+* Improve Makefile (`#38 <https://github.com/ralphbean/ansi2html/pull/38>`_) @hartwork
+* Add and ship AsciiDoc manpage, improve --help, add --version (`#35 <https://github.com/ralphbean/ansi2html/pull/35>`_) @hartwork
+* Fix README example to not produce unwanted spaces (issue 26) (`#34 <https://github.com/ralphbean/ansi2html/pull/34>`_) @hartwork
+* Add missing license headers (`#33 <https://github.com/ralphbean/ansi2html/pull/33>`_) @hartwork
+* Fix line handling (including issue #36) (`#37 <https://github.com/ralphbean/ansi2html/pull/37>`_) @hartwork
+* Add support for previously unhandled ANSI codes, improve approach on handling color state (`#32 <https://github.com/ralphbean/ansi2html/pull/32>`_) @hartwork
+* Fix italic to be font-style (rather than font-weight) (`#31 <https://github.com/ralphbean/ansi2html/pull/31>`_) @hartwork
+* Fix issue 25 (`#28 <https://github.com/ralphbean/ansi2html/pull/28>`_) @hartwork
+* Stop adding unwanted spaces (issue 26) (`#27 <https://github.com/ralphbean/ansi2html/pull/27>`_) @hartwork
+* Fix writing to sys.stdout.buffer (`#29 <https://github.com/ralphbean/ansi2html/pull/29>`_) @hartwork
+* Add convenience Makefile (`#30 <https://github.com/ralphbean/ansi2html/pull/30>`_) @hartwork
+* Python2.4 (`#23 <https://github.com/ralphbean/ansi2html/pull/23>`_) @JensTimmerman
+* Fix some bugs (`#18 <https://github.com/ralphbean/ansi2html/pull/18>`_) @iksaif
+* add --inline style (`#16 <https://github.com/ralphbean/ansi2html/pull/16>`_) @posativ
+* Fix for issue #2 UnicodeDecodeError exception when Unicode characters appear in input (`#3 <https://github.com/ralphbean/ansi2html/pull/3>`_) @dbravender
+
+Bugfixes
+
+* Correct author metadata (`#122 <https://github.com/ralphbean/ansi2html/pull/122>`_) @ssbarnea
 
 1.5.2
 -----
