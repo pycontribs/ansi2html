@@ -1,4 +1,4 @@
 Changelog
 =========
 
-.. include:: ../../changelog.rst
+.. include:: ../../CHANGELOG.rst
