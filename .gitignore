@@ -8,3 +8,4 @@ README.pdf
 .tox
 coverage_html_report
 .coverage
+docs/source/_build
