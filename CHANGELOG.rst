@@ -4,8 +4,7 @@
 
 Commits
 
-- 5688d50ae Update pypi python versions.
-  https://github.com/ralphbean/ansi2html/commit/5688d50ae
+- Update pypi python versions. `5688d50ae <https://github\.com/ralphbean/ansi2html/commit/5688d50ae>`_
 
 1.5.1
 -----
@@ -17,50 +16,39 @@ Include manpage in release.
 
 Pull Requests
 
--                   #90, Merge pull request #90 from p-sherratt/develop
+- #90, Merge pull request #90 from p-sherratt/develop
   https://github.com/ralphbean/ansi2html/pull/90
 
 Commits
 
-- bf327d216 add support for vt100 box drawing mode and high-intensity ansi codes
-  https://github.com/ralphbean/ansi2html/commit/bf327d216
-- d9bf45f81 make 'intense' colors more 'intense'
-  https://github.com/ralphbean/ansi2html/commit/d9bf45f81
-- 3bf89663a restore css ordering for unit tests
-  https://github.com/ralphbean/ansi2html/commit/3bf89663a
-- 289d01595 trivial fix/update
-  https://github.com/ralphbean/ansi2html/commit/289d01595
-- 0ea0a71f7 update test_produce_headers unit test
-  https://github.com/ralphbean/ansi2html/commit/0ea0a71f7
-- ed942a5d2 another fix/update for box drawing & high-intensity patch
-  https://github.com/ralphbean/ansi2html/commit/ed942a5d2
+- add support for vt100 box drawing mode and high-intensity ansi codes `bf327d216 <https://github.com/ralphbean/ansi2html/commit/bf327d216>`_
+- make 'intense' colors more 'intense' `d9bf45f81 <https://github.com/ralphbean/ansi2html/commit/d9bf45f81>`_
+- restore css ordering for unit tests `3bf89663a <https://github\.com/ralphbean/ansi2html/commit/3bf89663a>`_
+- trivial fix/update `289d01595 <https://github\.com/ralphbean/ansi2html/commit/289d01595>`_
+- update test_produce_headers unit test `0ea0a71f7 <https://github\.com/ralphbean/ansi2html/commit/0ea0a71f7>`_
+- another fix/update for box drawing & high-intensity patch `ed942a5d2 <https://github\.com/ralphbean/ansi2html/commit/ed942a5d2>`_
 
 1.4.2
 -----
 
 Commits
 
-- efb491f09 py36
-  https://github.com/ralphbean/ansi2html/commit/efb491f09
-- 947f813a3 Restore CSS styles for background colors.
-  https://github.com/ralphbean/ansi2html/commit/947f813a3
+- py36 `efb491f09 <https://github\.com/ralphbean/ansi2html/commit/efb491f09>`_
+- Restore CSS styles for background colors. `947f813a3 <https://github\.com/ralphbean/ansi2html/commit/947f813a3>`_
 
 1.4.1
 -----
 
 Pull Requests
 
--                   #85, Merge pull request #85 from sujanadiga-practo/patch-1
+- #85, Merge pull request #85 from sujanadiga-practo/patch-1
   https://github.com/ralphbean/ansi2html/pull/85
 
 Commits
 
-- 9adc3ddef Update converter.py
-  https://github.com/ralphbean/ansi2html/commit/9adc3ddef
-- 11cb73657 Fix linkify with latex
-  https://github.com/ralphbean/ansi2html/commit/11cb73657
-- 190835f4f Update url regex
-  https://github.com/ralphbean/ansi2html/commit/190835f4f
+- Update converter.py `9adc3ddef <https://github\.com/ralphbean/ansi2html/commit/9adc3ddef>`_
+- Fix linkify with latex `11cb73657 <https://github\.com/ralphbean/ansi2html/commit/11cb73657>`_
+- Update url regex `190835f4f <https://github\.com/ralphbean/ansi2html/commit/190835f4f>`_
 
 1.4.0
 -----
@@ -72,10 +60,8 @@ Pull Requests
 
 Commits
 
-- 61f4b5368 Prune CSS classes from output that are not used
-  https://github.com/ralphbean/ansi2html/commit/61f4b5368
-- 753220215 fix tests: remove unused CSS
-  https://github.com/ralphbean/ansi2html/commit/753220215
+- Prune CSS classes from output that are not used `61f4b5368 <https://github\.com/ralphbean/ansi2html/commit/61f4b5368>`_
+- fix tests: remove unused CSS `753220215 <https://github\.com/ralphbean/ansi2html/commit/753220215>`_
 
 1.3.0
 -----
@@ -84,13 +70,12 @@ Commits
 
 Pull Requests
 
--                   #80, Merge pull request #80 from ralphbean/feature/lgplv3
+- #80, Merge pull request #80 from ralphbean/feature/lgplv3
   https://github.com/ralphbean/ansi2html/pull/80
 
 Commits
 
-- f74316174 LGPLv3+
-  https://github.com/ralphbean/ansi2html/commit/f74316174
+- LGPLv3+ `f74316174 <https://github\.com/ralphbean/ansi2html/commit/f74316174>`_
 
 1.2.0
 -----
@@ -110,20 +95,13 @@ Pull Requests
 
 Commits
 
-- d6e4bc0aa enable python 3 input decoding
-  https://github.com/ralphbean/ansi2html/commit/d6e4bc0aa
-- 1e6a3b81f Fix handling cursor move up with unique and empty lines
-  https://github.com/ralphbean/ansi2html/commit/1e6a3b81f
-- 46e480143 Give more useful TaskWarrior example
-  https://github.com/ralphbean/ansi2html/commit/46e480143
-- 0c975b60b Update style.py
-  https://github.com/ralphbean/ansi2html/commit/0c975b60b
-- 168805a00 Revert "six is called six, not python-six"
-  https://github.com/ralphbean/ansi2html/commit/168805a00
-- 90c8c2303 Tox for tests.
-  https://github.com/ralphbean/ansi2html/commit/90c8c2303
-- 1366309e1 Merge branch 'develop' of github.com:ralphbean/ansi2html into develop
-  https://github.com/ralphbean/ansi2html/commit/1366309e1
+- enable python 3 input decoding `d6e4bc0aa <https://github\.com/ralphbean/ansi2html/commit/d6e4bc0aa>`_
+- Fix handling cursor move up with unique and empty lines `1e6a3b81f <https://github\.com/ralphbean/ansi2html/commit/1e6a3b81f>`_
+- Give more useful TaskWarrior example `46e480143 <https://github\.com/ralphbean/ansi2html/commit/46e480143>`_
+- Update style.py `0c975b60b <https://github\.com/ralphbean/ansi2html/commit/0c975b60b>`_
+- Revert "six is called six, not python-six" `168805a00 <https://github\.com/ralphbean/ansi2html/commit/168805a00>`_
+- Tox for tests. `90c8c2303 <https://github\.com/ralphbean/ansi2html/commit/90c8c2303>`_
+- Merge branch 'develop' of github.com:ralphbean/ansi2html into develop `1366309e1 <https://github\.com/ralphbean/ansi2html/commit/1366309e1>`_
 
 1.1.1
 -----
@@ -135,14 +113,10 @@ Pull Requests
 
 Commits
 
-- 81bb739b1 Drop 2.6
-  https://github.com/ralphbean/ansi2html/commit/81bb739b1
-- cec1dd933 six is called six, not python-six
-  https://github.com/ralphbean/ansi2html/commit/cec1dd933
-- 0dfd66b0b Exclude .pyc files from the release tarball.
-  https://github.com/ralphbean/ansi2html/commit/0dfd66b0b
-- 7b8643066 Remove CHANGELOG header.
-  https://github.com/ralphbean/ansi2html/commit/7b8643066
+- Drop 2.6 `81bb739b1 <https://github\.com/ralphbean/ansi2html/commit/81bb739b1>`_
+- six is called six, not python-six `cec1dd933 <https://github\.com/ralphbean/ansi2html/commit/cec1dd933>`_
+- Exclude .pyc files from the release tarball. `0dfd66b0b <https://github\.com/ralphbean/ansi2html/commit/0dfd66b0b>`_
+- Remove CHANGELOG header. `7b8643066 <https://github\.com/ralphbean/ansi2html/commit/7b8643066>`_
 
 1.1.0
 -----
