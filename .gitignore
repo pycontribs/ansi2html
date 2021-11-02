@@ -6,3 +6,4 @@ dist
 *.egg*
 README.pdf
 .tox
+docs/source/_build
