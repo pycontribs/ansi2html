@@ -417,6 +417,26 @@ class TestAnsi2HTML:
         latex = Ansi2HTMLConverter(latex=True, inline=True, linkify=True).convert(ansi)
         assert target in latex
 
+    def test_truecolor(self) -> None:
+        ansi = "\u001b[38;2;255;102;102m 1 \u001b[0m " + \
+            "\u001b[38;2;0;0;255m 2 \u001b[0m " + \
+            "\u001b[48;2;65;105;225m 3 \u001b[0m"
+        target = '<span class="ansi38-255102102"> 1 </span> ' + \
+            '<span class="ansi38-000000255"> 2 </span> ' + \
+            '<span class="ansi48-065105225"> 3 </span>'
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert target in html
+
+    def test_truecolor_inline(self) -> None:
+        ansi = "\u001b[38;2;255;102;102m 1 \u001b[0m " + \
+            "\u001b[38;2;0;0;255m 2 \u001b[0m " + \
+            "\u001b[48;2;65;105;225m 3 \u001b[0m"
+        target = '<span style="color: #FF6666"> 1 </span> ' + \
+            '<span style="color: #0000FF"> 2 </span> ' + \
+            '<span style="background-color: #4169E1"> 3 </span>'
+        html = Ansi2HTMLConverter(inline=True).convert(ansi)
+        assert target in html
+
     def test_command_script(self) -> None:
         result = run(["ansi2html", "--version"], check=True)
         assert result.returncode == 0
