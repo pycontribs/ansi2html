@@ -26,7 +26,12 @@ import sys
 from collections import OrderedDict
 from typing import Iterator, List, Optional, Set, Tuple, Union
 
-from ansi2html.style import SCHEME, get_styles, add_trucolor_style_rule, pop_truecolor_styles
+from ansi2html.style import (
+    SCHEME,
+    add_trucolor_style_rule,
+    get_styles,
+    pop_truecolor_styles,
+)
 
 if sys.version_info >= (3, 8):
     from importlib.metadata import version
@@ -182,15 +187,16 @@ class _State:
             self.negative = ansi_code
 
     def adjust_truecolor(self, ansi_code, r, g, b):
-        parameter = "{:03d}{:03d}{:03d}".format(r, g, b)  # r=1, g=64, b=255 -> 001064255
+        parameter = "{:03d}{:03d}{:03d}".format(
+            r, g, b
+        )  # r=1, g=64, b=255 -> 001064255
 
-        is_foreground = (ansi_code == ANSI_FOREGROUND)
+        is_foreground = ansi_code == ANSI_FOREGROUND
         add_trucolor_style_rule(is_foreground, ansi_code, r, g, b, parameter)
         if is_foreground:
             self.foreground = (ansi_code, parameter)
         else:
             self.background = (ansi_code, parameter)
-
 
     def to_css_classes(self) -> List[str]:
         css_classes: List[str] = []
@@ -466,7 +472,7 @@ class Ansi2HTMLConverter:
                         x_bit_color_id = params[i + 1]
                     except IndexError:
                         x_bit_color_id = -1
-                    is_256_color = (x_bit_color_id == ANSI_256_COLOR_ID)
+                    is_256_color = x_bit_color_id == ANSI_256_COLOR_ID
                     shift = 2 if is_256_color else 4
                     skip_after_index = i + shift
 
@@ -495,8 +501,8 @@ class Ansi2HTMLConverter:
                     x_bit_color_id = params[i + 1]
                 except IndexError:
                     x_bit_color_id = -1
-                is_256_color = (x_bit_color_id == ANSI_256_COLOR_ID)
-                is_truecolor = (x_bit_color_id == ANSI_TRUECOLOR_ID)
+                is_256_color = x_bit_color_id == ANSI_256_COLOR_ID
+                is_truecolor = x_bit_color_id == ANSI_TRUECOLOR_ID
                 if is_x_bit_color and is_256_color:
                     try:
                         parameter: Optional[str] = params[i + 2]
@@ -505,7 +511,9 @@ class Ansi2HTMLConverter:
                     skip_after_index = i + 2
                 elif is_x_bit_color and is_truecolor:
                     try:
-                        state.adjust_truecolor(v, params[i + 2], params[i + 3], params[i + 4])
+                        state.adjust_truecolor(
+                            v, params[i + 2], params[i + 3], params[i + 4]
+                        )
                     except IndexError:
                         continue
                     skip_after_index = i + 4

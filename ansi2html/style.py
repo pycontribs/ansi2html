@@ -288,11 +288,6 @@ def add_trucolor_style_rule(is_foreground, ansi_code, r, g, b, parameter):
 
 def pop_truecolor_styles():
     global truecolor_rules
-    styles = dict(
-        [
-            (item.klass.strip("."), item)
-            for item in truecolor_rules
-        ]
-    )
+    styles = dict([(item.klass.strip("."), item) for item in truecolor_rules])
     truecolor_rules = []
     return styles
