@@ -17,7 +17,7 @@
 #    <http://www.gnu.org/licenses/>.
 
 
-from typing import List, Dict
+from typing import Dict, List
 
 
 class Rule:
@@ -276,7 +276,9 @@ def get_styles(
 
 
 # as truecolor encoding has 16 millions colors, adding only used colors during parsing
-def add_trucolor_style_rule(is_foreground: bool, ansi_code: int, r: int, g: int, b: int, parameter: str) -> None:
+def add_trucolor_style_rule(
+    is_foreground: bool, ansi_code: int, r: int, g: int, b: int, parameter: str
+) -> None:
     rule_name = ".ansi{}-{}".format(ansi_code, parameter)
     color = "#{:02X}{:02X}{:02X}".format(r, g, b)
     if is_foreground:
