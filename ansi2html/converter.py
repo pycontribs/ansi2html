@@ -208,7 +208,7 @@ class _State:
 
         def append_color_unless_default(
             output: List[str],
-            color: Tuple[int, Optional[int]],
+            color: Tuple[int, Optional[str]],
             default: int,
             negative: bool,
             neg_css_class: str,
