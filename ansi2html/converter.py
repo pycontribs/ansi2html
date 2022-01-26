@@ -138,8 +138,8 @@ class _State:
         self.underline: int = ANSI_UNDERLINE_OFF
         self.crossedout: int = ANSI_CROSSED_OUT_OFF
         self.visibility: int = ANSI_VISIBILITY_ON
-        self.foreground: Tuple[int, Optional[int]] = (ANSI_FOREGROUND_DEFAULT, None)
-        self.background: Tuple[int, Optional[int]] = (ANSI_BACKGROUND_DEFAULT, None)
+        self.foreground: Tuple[int, Optional[str]] = (ANSI_FOREGROUND_DEFAULT, None)
+        self.background: Tuple[int, Optional[str]] = (ANSI_BACKGROUND_DEFAULT, None)
         self.negative: int = ANSI_NEGATIVE_OFF
 
     def adjust(self, ansi_code: int, parameter: Optional[str] = None) -> None:
@@ -186,7 +186,7 @@ class _State:
         elif ansi_code in (ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF):
             self.negative = ansi_code
 
-    def adjust_truecolor(self, ansi_code, r, g, b):
+    def adjust_truecolor(self, ansi_code: int, r: int, g: int, b: int) -> None:
         parameter = "{:03d}{:03d}{:03d}".format(
             r, g, b
         )  # r=1, g=64, b=255 -> 001064255
@@ -505,7 +505,7 @@ class Ansi2HTMLConverter:
                 is_truecolor = x_bit_color_id == ANSI_TRUECOLOR_ID
                 if is_x_bit_color and is_256_color:
                     try:
-                        parameter: Optional[str] = params[i + 2]
+                        parameter: Optional[str] = str(params[i + 2])
                     except IndexError:
                         continue
                     skip_after_index = i + 2

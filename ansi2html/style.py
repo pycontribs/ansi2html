@@ -17,7 +17,7 @@
 #    <http://www.gnu.org/licenses/>.
 
 
-from typing import List
+from typing import List, Dict
 
 
 class Rule:
@@ -167,7 +167,7 @@ SCHEME = {
 }
 
 # to be filled in runtime, when truecolor found
-truecolor_rules = []
+truecolor_rules: List[Rule] = []
 
 
 def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
@@ -276,7 +276,7 @@ def get_styles(
 
 
 # as truecolor encoding has 16 millions colors, adding only used colors during parsing
-def add_trucolor_style_rule(is_foreground, ansi_code, r, g, b, parameter):
+def add_trucolor_style_rule(is_foreground: bool, ansi_code: int, r: int, g: int, b: int, parameter: str) -> None:
     rule_name = ".ansi{}-{}".format(ansi_code, parameter)
     color = "#{:02X}{:02X}{:02X}".format(r, g, b)
     if is_foreground:
@@ -286,7 +286,7 @@ def add_trucolor_style_rule(is_foreground, ansi_code, r, g, b, parameter):
     truecolor_rules.append(rule)
 
 
-def pop_truecolor_styles():
+def pop_truecolor_styles() -> Dict[str, Rule]:
     global truecolor_rules
     styles = dict([(item.klass.strip("."), item) for item in truecolor_rules])
     truecolor_rules = []
