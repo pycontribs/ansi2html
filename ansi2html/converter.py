@@ -28,7 +28,7 @@ from typing import Iterator, List, Optional, Set, Tuple, Union
 
 from ansi2html.style import (
     SCHEME,
-    add_trucolor_style_rule,
+    add_truecolor_style_rule,
     get_styles,
     pop_truecolor_styles,
 )
@@ -192,7 +192,7 @@ class _State:
         )  # r=1, g=64, b=255 -> 001064255
 
         is_foreground = ansi_code == ANSI_FOREGROUND
-        add_trucolor_style_rule(is_foreground, ansi_code, r, g, b, parameter)
+        add_truecolor_style_rule(is_foreground, ansi_code, r, g, b, parameter)
         if is_foreground:
             self.foreground = (ansi_code, parameter)
         else:

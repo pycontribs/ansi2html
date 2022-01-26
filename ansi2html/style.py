@@ -276,7 +276,7 @@ def get_styles(
 
 
 # as truecolor encoding has 16 millions colors, adding only used colors during parsing
-def add_trucolor_style_rule(
+def add_truecolor_style_rule(
     is_foreground: bool, ansi_code: int, r: int, g: int, b: int, parameter: str
 ) -> None:
     rule_name = ".ansi{}-{}".format(ansi_code, parameter)
@@ -289,7 +289,7 @@ def add_trucolor_style_rule(
 
 
 def pop_truecolor_styles() -> Dict[str, Rule]:
-    global truecolor_rules
+    global truecolor_rules  # pylint: disable=global-statement
     styles = dict([(item.klass.strip("."), item) for item in truecolor_rules])
     truecolor_rules = []
     return styles
