@@ -17,8 +17,11 @@
 #    <http://www.gnu.org/licenses/>.
 
 
+from typing import List
+
+
 class Rule:
-    def __init__(self, klass, **kw):
+    def __init__(self, klass: str, **kw: str) -> None:
 
         self.klass = klass
         self.kw = "; ".join(
@@ -26,21 +29,21 @@ class Rule:
         ).strip()
         self.kwl = [(k.replace("_", "-"), kw[k][1:]) for k in sorted(kw.keys())]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s { %s; }" % (self.klass, self.kw)
 
 
-def index(r, g, b):
+def index(r: int, g: int, b: int) -> str:
     return str(16 + (r * 36) + (g * 6) + b)
 
 
-def color_component(x):
+def color_component(x: int) -> int:
     if x == 0:
         return 0
     return 0x37 + (0x28 * x)
 
 
-def color(r, g, b):
+def color(r: int, g: int, b: int) -> str:
     return "#%.2x%.2x%.2x" % (
         color_component(r),
         color_component(g),
@@ -48,11 +51,11 @@ def color(r, g, b):
     )
 
 
-def level(grey):
+def level(grey: int) -> str:
     return "#%.2x%.2x%.2x" % (((grey * 10) + 8,) * 3)
 
 
-def index2(grey):
+def index2(grey: int) -> str:
     return str(232 + grey)
 
 
@@ -163,14 +166,16 @@ SCHEME = {
 }
 
 
-def intensify(color, dark_bg, amount=64):
+def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
     if not dark_bg:
         amount = -amount
     rgb = tuple(max(0, min(255, amount + int(color[i : i + 2], 16))) for i in (1, 3, 5))
     return "#%.2x%.2x%.2x" % rgb
 
 
-def get_styles(dark_bg=True, line_wrap=True, scheme="ansi2html"):
+def get_styles(
+    dark_bg: bool = True, line_wrap: bool = True, scheme: str = "ansi2html"
+) -> List[Rule]:
     css = [
         Rule(
             ".ansi2html-content",

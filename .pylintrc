@@ -5,6 +5,7 @@ disable =
     attribute-defined-outside-init,
     consider-using-dict-comprehension,
     consider-using-enumerate,
+    consider-using-f-string,
     deprecated-module,
     import-error,
     invalid-name,
