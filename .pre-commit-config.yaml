@@ -1,5 +1,27 @@
 ---
+ci:
+  autoupdate_commit_msg: "chore: pre-commit autoupdate"
+  autoupdate_schedule: monthly
+  autofix_commit_msg: |
+    chore: auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  skip:
+    # https://github.com/pre-commit-ci/issues/issues/55
+    - codecov
 repos:
+  - repo: local
+    hooks:
+      - id: codecov
+        name: Check codecov.yml
+        # https://superuser.com/a/1587813/3004
+        entry: >
+          bash -c '[ $(
+          curl --silent -o /dev/stderr -w "%{http_code}" -X POST --data-binary @codecov.yml https://codecov.io/validate
+          ) -eq 200 ]'
+        language: system
+        files: "codecov.yml"
+        pass_filenames: false
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
