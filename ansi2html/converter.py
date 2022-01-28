@@ -26,7 +26,12 @@ import sys
 from collections import OrderedDict
 from typing import Iterator, List, Optional, Set, Tuple, Union
 
-from ansi2html.style import SCHEME, get_styles
+from ansi2html.style import (
+    SCHEME,
+    add_truecolor_style_rule,
+    get_styles,
+    pop_truecolor_styles,
+)
 
 if sys.version_info >= (3, 8):
     from importlib.metadata import version
@@ -56,11 +61,11 @@ ANSI_VISIBILITY_ON = 28
 ANSI_VISIBILITY_OFF = 8
 ANSI_FOREGROUND_CUSTOM_MIN = 30
 ANSI_FOREGROUND_CUSTOM_MAX = 37
-ANSI_FOREGROUND_256 = 38
+ANSI_FOREGROUND = 38
 ANSI_FOREGROUND_DEFAULT = 39
 ANSI_BACKGROUND_CUSTOM_MIN = 40
 ANSI_BACKGROUND_CUSTOM_MAX = 47
-ANSI_BACKGROUND_256 = 48
+ANSI_BACKGROUND = 48
 ANSI_BACKGROUND_DEFAULT = 49
 ANSI_NEGATIVE_ON = 7
 ANSI_NEGATIVE_OFF = 27
@@ -68,6 +73,8 @@ ANSI_FOREGROUND_HIGH_INTENSITY_MIN = 90
 ANSI_FOREGROUND_HIGH_INTENSITY_MAX = 97
 ANSI_BACKGROUND_HIGH_INTENSITY_MIN = 100
 ANSI_BACKGROUND_HIGH_INTENSITY_MAX = 107
+ANSI_256_COLOR_ID = 5
+ANSI_TRUECOLOR_ID = 2
 
 VT100_BOX_CODES = {
     "0x71": "─",
@@ -131,11 +138,11 @@ class _State:
         self.underline: int = ANSI_UNDERLINE_OFF
         self.crossedout: int = ANSI_CROSSED_OUT_OFF
         self.visibility: int = ANSI_VISIBILITY_ON
-        self.foreground: Tuple[int, Optional[int]] = (ANSI_FOREGROUND_DEFAULT, None)
-        self.background: Tuple[int, Optional[int]] = (ANSI_BACKGROUND_DEFAULT, None)
+        self.foreground: Tuple[int, Optional[str]] = (ANSI_FOREGROUND_DEFAULT, None)
+        self.background: Tuple[int, Optional[str]] = (ANSI_BACKGROUND_DEFAULT, None)
         self.negative: int = ANSI_NEGATIVE_OFF
 
-    def adjust(self, ansi_code: int, parameter: Optional[int] = None) -> None:
+    def adjust(self, ansi_code: int, parameter: Optional[str] = None) -> None:
         if ansi_code in (
             ANSI_INTENSITY_INCREASED,
             ANSI_INTENSITY_REDUCED,
@@ -160,7 +167,7 @@ class _State:
             <= ANSI_FOREGROUND_HIGH_INTENSITY_MAX
         ):
             self.foreground = (ansi_code, None)
-        elif ansi_code == ANSI_FOREGROUND_256:
+        elif ansi_code == ANSI_FOREGROUND:
             self.foreground = (ansi_code, parameter)
         elif ansi_code == ANSI_FOREGROUND_DEFAULT:
             self.foreground = (ansi_code, None)
@@ -172,12 +179,24 @@ class _State:
             <= ANSI_BACKGROUND_HIGH_INTENSITY_MAX
         ):
             self.background = (ansi_code, None)
-        elif ansi_code == ANSI_BACKGROUND_256:
+        elif ansi_code == ANSI_BACKGROUND:
             self.background = (ansi_code, parameter)
         elif ansi_code == ANSI_BACKGROUND_DEFAULT:
             self.background = (ansi_code, None)
         elif ansi_code in (ANSI_NEGATIVE_ON, ANSI_NEGATIVE_OFF):
             self.negative = ansi_code
+
+    def adjust_truecolor(self, ansi_code: int, r: int, g: int, b: int) -> None:
+        parameter = "{:03d}{:03d}{:03d}".format(
+            r, g, b
+        )  # r=1, g=64, b=255 -> 001064255
+
+        is_foreground = ansi_code == ANSI_FOREGROUND
+        add_truecolor_style_rule(is_foreground, ansi_code, r, g, b, parameter)
+        if is_foreground:
+            self.foreground = (ansi_code, parameter)
+        else:
+            self.background = (ansi_code, parameter)
 
     def to_css_classes(self) -> List[str]:
         css_classes: List[str] = []
@@ -189,7 +208,7 @@ class _State:
 
         def append_color_unless_default(
             output: List[str],
-            color: Tuple[int, Optional[int]],
+            color: Tuple[int, Optional[str]],
             default: int,
             negative: bool,
             neg_css_class: str,
@@ -198,7 +217,7 @@ class _State:
             if value != default:
                 prefix = "inv" if negative else "ansi"
                 css_class_index = (
-                    str(value) if (parameter is None) else "%d-%d" % (value, parameter)
+                    str(value) if (parameter is None) else "%d-%s" % (value, parameter)
                 )
                 output.append(prefix + css_class_index)
             elif negative:
@@ -297,7 +316,6 @@ class Ansi2HTMLConverter:
         self.title = title
         self._attrs: Attributes
         self.hyperref = False
-
         if inline:
             self.styles = dict(
                 [
@@ -449,8 +467,14 @@ class Ansi2HTMLConverter:
 
                 if v == ANSI_FULL_RESET:
                     last_null_index = i
-                elif v in (ANSI_FOREGROUND_256, ANSI_BACKGROUND_256):
-                    skip_after_index = i + 2
+                elif v in (ANSI_FOREGROUND, ANSI_BACKGROUND):
+                    try:
+                        x_bit_color_id = params[i + 1]
+                    except IndexError:
+                        x_bit_color_id = -1
+                    is_256_color = x_bit_color_id == ANSI_256_COLOR_ID
+                    shift = 2 if is_256_color else 4
+                    skip_after_index = i + shift
 
             # Process reset marker, drop everything before
             if last_null_index is not None:
@@ -472,12 +496,28 @@ class Ansi2HTMLConverter:
                 if i <= skip_after_index:
                     continue
 
-                if v in (ANSI_FOREGROUND_256, ANSI_BACKGROUND_256):
+                is_x_bit_color = v in (ANSI_FOREGROUND, ANSI_BACKGROUND)
+                try:
+                    x_bit_color_id = params[i + 1]
+                except IndexError:
+                    x_bit_color_id = -1
+                is_256_color = x_bit_color_id == ANSI_256_COLOR_ID
+                is_truecolor = x_bit_color_id == ANSI_TRUECOLOR_ID
+                if is_x_bit_color and is_256_color:
                     try:
-                        parameter: Optional[int] = params[i + 2]
+                        parameter: Optional[str] = str(params[i + 2])
                     except IndexError:
                         continue
                     skip_after_index = i + 2
+                elif is_x_bit_color and is_truecolor:
+                    try:
+                        state.adjust_truecolor(
+                            v, params[i + 2], params[i + 3], params[i + 4]
+                        )
+                    except IndexError:
+                        continue
+                    skip_after_index = i + 4
+                    continue
                 else:
                     parameter = None
                 state.adjust(v, parameter=parameter)
@@ -495,6 +535,7 @@ class Ansi2HTMLConverter:
             styles_used.update(css_classes)
 
             if self.inline:
+                self.styles.update(pop_truecolor_styles())
                 if self.latex:
                     style = [
                         self.styles[klass].kwl[0][1]
