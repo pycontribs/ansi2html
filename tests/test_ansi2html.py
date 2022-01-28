@@ -445,6 +445,27 @@ class TestAnsi2HTML:
         html = Ansi2HTMLConverter(inline=True).convert(ansi)
         assert target in html
 
+    def test_truecolor_malformed(self) -> None:
+        ansi = "\u001b[38;2;255;102m malformed \u001b[0m "
+        #                         ^ e.g. ";102" missed
+        target = '<span class="ansi2 ansi102"> malformed </span> '
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert target in html
+
+    def test_256_color_malformed(self) -> None:
+        ansi = "\u001b[38;5m malformed \u001b[0m "
+        #                 ^ e.g. ";255" missed
+        target = '<span class="ansi5"> malformed </span> '
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert target in html
+
+    def test_x_bit_color_malformed(self) -> None:
+        ansi = "\u001b[38m malformed \u001b[0m "
+        #               ^ e.g. ";5;255m" missed
+        target = '<span class="ansi38"> malformed </span> '
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert target in html
+
     def test_command_script(self) -> None:
         result = run(["ansi2html", "--version"], check=True)
         assert result.returncode == 0
