@@ -34,10 +34,18 @@ class Rule:
 
 
 def index(r: int, g: int, b: int) -> str:
+    """
+    Implements the 6x6x6 color cube location of 8bit mode described at
+    https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    """
     return str(16 + (r * 36) + (g * 6) + b)
 
 
 def color_component(x: int) -> int:
+    """
+    Implements the 6x6x6 color cube values of 8bit mode described at
+    https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    """
     if x == 0:
         return 0
     return 0x37 + (0x28 * x)
@@ -52,10 +60,18 @@ def color(r: int, g: int, b: int) -> str:
 
 
 def level(grey: int) -> str:
+    """
+    Implements 24 grey values of 8bit mode described at
+    https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    """
     return "#%.2x%.2x%.2x" % (((grey * 10) + 8,) * 3)
 
 
 def index2(grey: int) -> str:
+    """
+    Implements 24 grey location of 8bit mode described at
+    https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    """
     return str(232 + grey)
 
 
@@ -196,6 +212,8 @@ def get_styles(
         ),
         Rule(".inv_foreground", color=("#000000", "#FFFFFF")[not dark_bg]),
         Rule(".inv_background", background_color=("#AAAAAA", "#000000")[not dark_bg]),
+        # These effects are "SGR (Select Graphic Rendition) parameters"
+        # https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
         Rule(".ansi1", font_weight="bold"),
         Rule(".ansi2", font_weight="lighter"),
         Rule(".ansi3", font_style="italic"),
@@ -206,7 +224,10 @@ def get_styles(
         Rule(".ansi9", text_decoration="line-through"),
     ]
 
-    # set palette
+    # This is 8x2 palette of 3/4-bit color mode described at
+    # https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
+    # .ansi{30..37} is foreground
+    # .ansi{40..47} is background
     pal = SCHEME[scheme]
     for _index in range(8):
         css.append(Rule(".ansi3%s" % _index, color=pal[_index]))
@@ -214,6 +235,11 @@ def get_styles(
     for _index in range(8):
         css.append(Rule(".ansi4%s" % _index, background_color=pal[_index]))
         css.append(Rule(".inv4%s" % _index, color=pal[_index]))
+
+    # This is the 8x2 bright(!) palette of 4-bit color mode described at
+    # https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
+    # .ansi{90..97} is foreground
+    # .ansi{100..107} is background
     for _index in range(8):
         css.append(Rule(".ansi9%s" % _index, color=intensify(pal[_index], dark_bg)))
         css.append(
@@ -225,7 +251,8 @@ def get_styles(
         )
         css.append(Rule(".inv10%s" % _index, color=intensify(pal[_index], dark_bg)))
 
-    # set palette colors in 256 color encoding
+    # This is the first 16 palette slots of 8-bit color mode described at
+    # https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
     pal = SCHEME[scheme]
     for _index in range(len(pal)):
         css.append(Rule(".ansi38-%s" % _index, color=pal[_index]))
@@ -236,6 +263,10 @@ def get_styles(
 
     # css.append("/* Define the explicit color codes (obnoxious) */\n\n")
 
+    # This is the 6x6x6 color cube of 8-bit mode described at
+    # https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    # .ansi38-{16..231} is foreground
+    # .ansi48-{16..231} is background
     for green in range(0, 6):
         for red in range(0, 6):
             for blue in range(0, 6):
@@ -264,6 +295,10 @@ def get_styles(
                     )
                 )
 
+    # This is the 24 shades of grey of 8-bit mode described at
+    # https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    # .ansi38-{232..255} is foreground
+    # .ansi48-{232..255} is background
     for grey in range(0, 24):
         css.append(Rule(".ansi38-%s" % index2(grey), color=level(grey)))
         css.append(Rule(".inv38-%s" % index2(grey), background=level(grey)))
