@@ -1,3 +1,28 @@
+1.7.0
+-----
+
+Minor Changes
+^^^^^^^^^^^^^
+
+* Replace recommendation of using system packages with pip3 (`#129 <https://github.com/pycontribs/ansi2html/pull/129>`_) @ssbarnea
+* Add truecolor support (`#155 <https://github.com/pycontribs/ansi2html/pull/155>`_) @miltolstoy
+* Generate documentation with Sphinx and use Read the Docs (`#141 <https://github.com/pycontribs/ansi2html/pull/141>`_) @tristanlatr
+* Adds support for OSC hyperlink sequences. (`#131 <https://github.com/pycontribs/ansi2html/pull/131>`_) @hakonhagland
+
+Bugfixes
+^^^^^^^^
+
+* Add test coverage (`#148 <https://github.com/pycontribs/ansi2html/pull/148>`_) @ziegenberg
+* Replace pkg_resources with importlib.metadata (`#144 <https://github.com/pycontribs/ansi2html/pull/144>`_) @ziegenberg
+* fix including of CHANGELOG.rst (`#151 <https://github.com/pycontribs/ansi2html/pull/151>`_) @ziegenberg
+* Update linting dependencies (`#147 <https://github.com/pycontribs/ansi2html/pull/147>`_) @ziegenberg
+* Upgrade the build process (`#145 <https://github.com/pycontribs/ansi2html/pull/145>`_) @ziegenberg
+* Add type hinting (`#143 <https://github.com/pycontribs/ansi2html/pull/143>`_) @ziegenberg
+* Update CI badges in readme (`#142 <https://github.com/pycontribs/ansi2html/pull/142>`_) @ssbarnea
+* Bump setuptools-scm version (`#138 <https://github.com/pycontribs/ansi2html/pull/138>`_) @ssbarnea
+
+Kudos goes to: @hakonhagland, @miltolstoy, @pre-commit-ci, @pre-commit-ci[bot], @ssbarnea, @tristanlatr and @ziegenberg
+
 1.6.0
 -----
 
