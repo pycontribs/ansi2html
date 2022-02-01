@@ -17,7 +17,7 @@ Bugfixes
 Deprecations
 ^^^^^^^^^^^^
 
-* Officialy retire support for python <= 3.6 (`#112 <https://github.com/pycontribs/ansi2html/pull/112>`__) @ssbarnea
+* Officially retire support for Python <=3.5 (`#112 <https://github.com/pycontribs/ansi2html/pull/112>`__) @ssbarnea
 
 1.5.2
 -----
