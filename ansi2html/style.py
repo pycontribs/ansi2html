@@ -210,7 +210,7 @@ def get_styles(
             color=("#000000", "#FFFFFF")[dark_bg],
             font_weight=("bold", "normal")[dark_bg],
         ),
-        Rule(".inv_foreground", color=("#000000", "#FFFFFF")[not dark_bg]),
+        Rule(".inv_foreground", color=("#000000", "#AAAAAA")[not dark_bg]),
         Rule(".inv_background", background_color=("#AAAAAA", "#000000")[not dark_bg]),
         # These effects are "SGR (Select Graphic Rendition) parameters"
         # https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
