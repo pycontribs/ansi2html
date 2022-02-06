@@ -96,8 +96,8 @@ class TestAnsi2HTML:
 
             assert "\n".join(html) == "\n".join(expected_data)
 
-    @patch("sys.argv", new_callable=lambda: ["ansi2html"])
-    @patch("sys.stdout", new_callable=StringIO)
+    @patch("sys.argv", new=["ansi2html"])
+    @patch("sys.stdout", new=StringIO())
     def test_conversion_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
@@ -107,10 +107,7 @@ class TestAnsi2HTML:
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = "".join(read_to_unicode(output))
 
-        def f() -> StringIO:
-            return StringIO(test_data)
-
-        with patch("sys.stdin", new_callable=f):
+        with patch("sys.stdin", new=StringIO(test_data)):
             main()
 
         html = mock_stdout.getvalue()
@@ -128,8 +125,8 @@ class TestAnsi2HTML:
         for chunk in html:
             assert isinstance(chunk, str)
 
-    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--inline"])
-    @patch("sys.stdout", new_callable=StringIO)
+    @patch("sys.argv", new=["ansi2html", "--inline"])
+    @patch("sys.stdout", new=StringIO())
     def test_inline_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
@@ -140,19 +137,19 @@ class TestAnsi2HTML:
         """
         )
 
-        with patch("sys.stdin", new_callable=lambda: StringIO(test_input)):
+        with patch("sys.stdin", new=StringIO(test_input)):
             main()
 
         ms_val = mock_stdout.getvalue()
         assert ms_val == test_input, "%r != %r" % (ms_val, test_input)
 
-    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--partial"])
-    @patch("sys.stdout", new_callable=StringIO)
+    @patch("sys.argv", new=["ansi2html", "--partial"])
+    @patch("sys.stdout", new=StringIO())
     def test_partial_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n"
-        with patch("sys.stdin", new_callable=lambda: StringIO(rainbow)):
+        with patch("sys.stdin", new=StringIO(rainbow)):
             main()
 
         html = mock_stdout.getvalue().strip()
@@ -172,8 +169,8 @@ class TestAnsi2HTML:
         assert isinstance(expected, str)
         assert expected == html
 
-    @patch("sys.argv", new_callable=lambda: ["ansi2html", "--headers"])
-    @patch("sys.stdout", new_callable=StringIO)
+    @patch("sys.argv", new=["ansi2html", "--headers"])
+    @patch("sys.stdout", new=StringIO())
     def test_headers_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
