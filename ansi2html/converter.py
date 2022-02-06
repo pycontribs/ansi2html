@@ -20,6 +20,7 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
+import io
 import optparse
 import re
 import sys
@@ -786,6 +787,8 @@ def main() -> None:
         title=opts.output_title,
     )
 
+    reader = io.TextIOWrapper(sys.stdin.buffer, opts.input_encoding, "replace")
+
     def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
             output_bytes = (output_unicode + end).encode(opts.output_encoding)
@@ -800,6 +803,6 @@ def main() -> None:
 
     full = not bool(opts.partial or opts.inline)
     output = conv.convert(
-        "".join(sys.stdin.readlines()), full=full, ensure_trailing_newline=True
+        "".join(reader.readlines()), full=full, ensure_trailing_newline=True
     )
     _print(output, end="")

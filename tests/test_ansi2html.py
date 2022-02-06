@@ -22,7 +22,7 @@
 #  <http://www.gnu.org/licenses/>.
 
 import textwrap
-from io import StringIO
+from io import BytesIO, StringIO, TextIOWrapper
 from os.path import abspath, dirname, join
 from subprocess import run
 from typing import List
@@ -107,10 +107,10 @@ class TestAnsi2HTML:
         with open(join(_here, "ansicolor.html"), "rb") as output:
             expected_data = "".join(read_to_unicode(output))
 
-        def f() -> StringIO:
-            return StringIO(test_data)
-
-        with patch("sys.stdin", new_callable=f):
+        with patch(
+            "sys.stdin",
+            new_callable=lambda: TextIOWrapper(BytesIO(test_data.encode("utf-8"))),
+        ):
             main()
 
         html = mock_stdout.getvalue()
@@ -140,7 +140,10 @@ class TestAnsi2HTML:
         """
         )
 
-        with patch("sys.stdin", new_callable=lambda: StringIO(test_input)):
+        with patch(
+            "sys.stdin",
+            new_callable=lambda: TextIOWrapper(BytesIO(test_input.encode("utf-8"))),
+        ):
             main()
 
         ms_val = mock_stdout.getvalue()
@@ -151,8 +154,13 @@ class TestAnsi2HTML:
     def test_partial_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
+
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m\n"
-        with patch("sys.stdin", new_callable=lambda: StringIO(rainbow)):
+
+        with patch(
+            "sys.stdin",
+            new_callable=lambda: TextIOWrapper(BytesIO(rainbow.encode("utf-8"))),
+        ):
             main()
 
         html = mock_stdout.getvalue().strip()
@@ -178,7 +186,10 @@ class TestAnsi2HTML:
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
 
-        main()
+        with patch(
+            "sys.stdin", new_callable=lambda: TextIOWrapper(BytesIO("".encode("utf-8")))
+        ):
+            main()
 
         with open(join(_here, "produce_headers.txt"), "rb") as produce_headers:
             expected = read_to_unicode(produce_headers)
