@@ -109,7 +109,7 @@ class TestAnsi2HTML:
 
         with patch(
             "sys.stdin",
-            new_callable=lambda: TextIOWrapper(BytesIO(test_data.encode("utf-8"))),
+            TextIOWrapper(BytesIO(test_data.encode("utf-8"))),
         ):
             main()
 
@@ -142,7 +142,7 @@ class TestAnsi2HTML:
 
         with patch(
             "sys.stdin",
-            new_callable=lambda: TextIOWrapper(BytesIO(test_input.encode("utf-8"))),
+            TextIOWrapper(BytesIO(test_input.encode("utf-8"))),
         ):
             main()
 
@@ -159,7 +159,7 @@ class TestAnsi2HTML:
 
         with patch(
             "sys.stdin",
-            new_callable=lambda: TextIOWrapper(BytesIO(rainbow.encode("utf-8"))),
+            TextIOWrapper(BytesIO(rainbow.encode("utf-8"))),
         ):
             main()
 
@@ -186,9 +186,7 @@ class TestAnsi2HTML:
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
 
-        with patch(
-            "sys.stdin", new_callable=lambda: TextIOWrapper(BytesIO("".encode("utf-8")))
-        ):
+        with patch("sys.stdin", TextIOWrapper(BytesIO("".encode("utf-8")))):
             main()
 
         with open(join(_here, "produce_headers.txt"), "rb") as produce_headers:
