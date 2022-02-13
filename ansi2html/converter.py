@@ -635,9 +635,7 @@ class Ansi2HTMLConverter:
                 return attrs["body"]
 
             return _html_template_small % {
-                "style": "\n".join(
-                    list(map(str, list(used_styles)))
-                ),
+                "style": "\n".join(list(map(str, list(used_styles)))),
                 "content": attrs["body"],
             }
         _template = _latex_template if self.latex else _html_template
