@@ -125,6 +125,10 @@ _html_template = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//E
 </html>
 """
 
+_html_template_small = """<style type="text/css">\n%(style)s\n</style>
+%(content)s
+"""
+
 
 class _State:
     def __init__(self) -> None:
@@ -619,17 +623,24 @@ class Ansi2HTMLConverter:
         :param ensure_trailing_newline: Ensures that ``\n`` character is present at the end of the output.
         """
         attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
-        if not full:
-            return attrs["body"]
-        if self.latex:
-            _template = _latex_template
-        else:
-            _template = _html_template
+
         all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
         backgrounds = all_styles[:6]
         used_styles = filter(
             lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
         )
+
+        if not full:
+            if self.inline or self.latex:
+                return attrs["body"]
+
+            return _html_template_small % {
+                "style": "\n".join(
+                    list(map(str, list(used_styles)))
+                ),
+                "content": attrs["body"],
+            }
+        _template = _latex_template if self.latex else _html_template
 
         return _template % {
             "style": "\n".join(list(map(str, backgrounds + list(used_styles)))),
