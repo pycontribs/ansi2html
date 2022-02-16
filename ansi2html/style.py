@@ -234,7 +234,7 @@ def get_styles(
     for _index in range(8):
         css.append(Rule(".ansi4%s" % _index, background_color=pal[_index]))
         css.append(Rule(".inv4%s" % _index, color=pal[_index]))
-    
+
     # This is the 8x2 bright(!) palette of 4-bit color mode described at
     # https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
     # .ansi{90..97} is foreground
