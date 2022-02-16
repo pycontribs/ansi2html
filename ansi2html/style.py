@@ -193,7 +193,10 @@ def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
 
 
 def get_styles(
-    dark_bg: bool = True, line_wrap: bool = True, scheme: str = "ansi2html", auto_darken: bool = False,
+    dark_bg: bool = True,
+    line_wrap: bool = True,
+    scheme: str = "ansi2html",
+    auto_darken: bool = False,
 ) -> List[Rule]:
     css = [
         Rule(
@@ -226,15 +229,19 @@ def get_styles(
     try:
         pal = SCHEME[scheme]
     except KeyError:
-        raise ValueError(f'Unsupported color scheme {scheme!r}')
+        raise ValueError(f"Unsupported color scheme {scheme!r}")
 
     if len(pal) < 16:
-        raise Exception(f'Color scheme {scheme!r} specifies fewer than 16 colors. 16 colors are required.')
+        raise Exception(
+            f"Color scheme {scheme!r} specifies fewer than 16 colors. 16 colors are required."
+        )
 
     if auto_darken:
         # Replace the upper half of the palette (colors 9 to 16) by a darkened copy
         # of the lower half (colors 1 to 8). Mostly of interest with a light background.
-        pal = tuple(pal[:8]) + tuple(intensify(color, dark_bg=False) for color in pal[8:])
+        pal = tuple(pal[:8]) + tuple(
+            intensify(color, dark_bg=False) for color in pal[8:]
+        )
 
     # This is 8x2 palette of 3/4-bit color mode described at
     # https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
