@@ -191,12 +191,17 @@ def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
     rgb = tuple(max(0, min(255, amount + int(color[i : i + 2], 16))) for i in (1, 3, 5))
     return "#%.2x%.2x%.2x" % rgb
 
+def darken_bright_colors(pal):
+    # Replace the upper half of the palette (colors 9 to 16) by a darkened copy
+    # of the lower half (colors 1 to 8). Mostly of interest with a light background.
+    return tuple(pal[:8]) + tuple(
+        intensify(color, dark_bg=False) for color in pal[8:]
+    )
 
 def get_styles(
     dark_bg: bool = True,
     line_wrap: bool = True,
     scheme: str = "ansi2html",
-    auto_darken: bool = False,
 ) -> List[Rule]:
     css = [
         Rule(
@@ -234,13 +239,6 @@ def get_styles(
     if len(pal) < 16:
         raise Exception(
             f"Color scheme {scheme!r} specifies fewer than 16 colors. 16 colors are required."
-        )
-
-    if auto_darken:
-        # Replace the upper half of the palette (colors 9 to 16) by a darkened copy
-        # of the lower half (colors 1 to 8). Mostly of interest with a light background.
-        pal = tuple(pal[:8]) + tuple(
-            intensify(color, dark_bg=False) for color in pal[8:]
         )
 
     # This is 8x2 palette of 3/4-bit color mode described at
