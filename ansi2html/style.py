@@ -191,12 +191,12 @@ def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
     rgb = tuple(max(0, min(255, amount + int(color[i : i + 2], 16))) for i in (1, 3, 5))
     return "#%.2x%.2x%.2x" % rgb
 
+
 def darken_bright_colors(pal):
     # Replace the upper half of the palette (colors 8 to 15) by a darkened copy
     # of the lower half (colors 0 to 7). Mostly of interest with a light background.
-    return tuple(pal[:8]) + tuple(
-        intensify(color, dark_bg=False) for color in pal[:8]
-    )
+    return tuple(pal[:8]) + tuple(intensify(color, dark_bg=False) for color in pal[:8])
+
 
 def get_styles(
     dark_bg: bool = True,
