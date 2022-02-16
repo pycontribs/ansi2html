@@ -454,7 +454,11 @@ class Ansi2HTMLConverter:
                 continue
 
             try:
-                params = [ int(item) for subitem in [ x.split(":") for x in params.split(";") ] for item in subitem ]
+                params = [
+                    int(item)
+                    for subitem in [x.split(":") for x in params.split(";")]
+                    for item in subitem
+                ]
             except ValueError:
                 params = [ANSI_FULL_RESET]
 
