@@ -114,6 +114,7 @@ SCHEME = {
         "#00ffff",
         "#ffffff",
     ),
+    # Based on the "osx" palette in previous versions of ansi2html.
     "osx": (
         "#000000",
         "#c23621",
@@ -123,8 +124,54 @@ SCHEME = {
         "#d338d3",
         "#33bbc8",
         "#cbcccd",
-    )
-    * 2,
+        "#404040",
+        "#ff7661",
+        "#65fc64",
+        "#eded67",
+        "#896eff",
+        "#ff78ff",
+        "#73fbff",
+        "#ffffff",
+    ),
+    # Based on the "Basic" palette in macOS Terminal.
+    "osx-basic": (
+        "#000000",
+        "#800000",
+        "#008000",
+        "#808000",
+        "#000080",
+        "#800080",
+        "#008080",
+        "#808080",
+        "#666666",
+        "#e60000",
+        "#00d900",
+        "#e6e600",
+        "#0000ff",
+        "#e600e6",
+        "#00e6e6",
+        "#e6e6e6",
+    ),
+    # Based on the "Solid Colors" palette in macOS Terminal.
+    # The colors are brighter than osx-basic.
+    "osx-solid-colors": (
+        "#000000",
+        "#990000",
+        "#00a600",
+        "#999900",
+        "#0000b3",
+        "#b300b3",
+        "#00a6b3",
+        "#bfbfbf",
+        "#666666",
+        "#e60000",
+        "#00d900",
+        "#e6e600",
+        "#0000ff",
+        "#e600e6",
+        "#00e6e6",
+        "#e6e6e6",
+    ),
     # http://ethanschoonover.com/solarized
     "solarized": (
         "#262626",
@@ -194,7 +241,9 @@ def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
 
 
 def get_styles(
-    dark_bg: bool = True, line_wrap: bool = True, scheme: str = "ansi2html"
+    dark_bg: bool = True,
+    line_wrap: bool = True,
+    scheme: str = "ansi2html",
 ) -> List[Rule]:
     css = [
         Rule(
@@ -224,11 +273,20 @@ def get_styles(
         Rule(".ansi9", text_decoration="line-through"),
     ]
 
+    try:
+        pal = SCHEME[scheme]
+    except KeyError as e:
+        raise ValueError(f"Unsupported color scheme {scheme!r}") from e
+
+    if len(pal) < 16:
+        raise Exception(
+            f"Color scheme {scheme!r} specifies fewer than 16 colors. 16 colors are required."
+        )
+
     # This is 8x2 palette of 3/4-bit color mode described at
     # https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
     # .ansi{30..37} is foreground
     # .ansi{40..47} is background
-    pal = SCHEME[scheme]
     for _index in range(8):
         css.append(Rule(".ansi3%s" % _index, color=pal[_index]))
         css.append(Rule(".inv3%s" % _index, background_color=pal[_index]))
@@ -241,19 +299,14 @@ def get_styles(
     # .ansi{90..97} is foreground
     # .ansi{100..107} is background
     for _index in range(8):
-        css.append(Rule(".ansi9%s" % _index, color=intensify(pal[_index], dark_bg)))
-        css.append(
-            Rule(".inv9%s" % _index, background_color=intensify(pal[_index], dark_bg))
-        )
+        css.append(Rule(".ansi9%s" % _index, color=pal[_index + 8]))
+        css.append(Rule(".inv9%s" % _index, background_color=pal[_index + 8]))
     for _index in range(8):
-        css.append(
-            Rule(".ansi10%s" % _index, background_color=intensify(pal[_index], dark_bg))
-        )
-        css.append(Rule(".inv10%s" % _index, color=intensify(pal[_index], dark_bg)))
+        css.append(Rule(".ansi10%s" % _index, background_color=pal[_index + 8]))
+        css.append(Rule(".inv10%s" % _index, color=pal[_index + 8]))
 
     # This is the first 16 palette slots of 8-bit color mode described at
     # https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
-    pal = SCHEME[scheme]
     for _index in range(len(pal)):
         css.append(Rule(".ansi38-%s" % _index, color=pal[_index]))
         css.append(Rule(".inv38-%s" % _index, background_color=pal[_index]))
