@@ -17,7 +17,7 @@
 #    <http://www.gnu.org/licenses/>.
 
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 
 class Rule:
@@ -240,7 +240,7 @@ def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
     return "#%.2x%.2x%.2x" % rgb
 
 
-def darken_bright_colors(pal):
+def darken_bright_colors(pal: Tuple[str, ...]) -> Tuple[str, ...]:
     # Replace the upper half of the palette (colors 8 to 15) by a darkened copy
     # of the lower half (colors 0 to 7). Mostly of interest with a light background.
     return tuple(pal[:8]) + tuple(intensify(color, dark_bg=False) for color in pal[:8])
