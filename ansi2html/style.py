@@ -114,6 +114,7 @@ SCHEME = {
         "#00ffff",
         "#ffffff",
     ),
+    # Based on the "osx" palette in previous versions of ansi2html.
     "osx": (
         '#000000',
         '#c23621',
@@ -132,6 +133,7 @@ SCHEME = {
         '#73fbff',
         '#ffffff',
     ),
+    # Based on the "Basic" palette in macOS Terminal.
     "osx-basic": (
         "#000000",
         "#800000",
@@ -150,6 +152,8 @@ SCHEME = {
         "#00e6e6",
         "#e6e6e6",
     ),
+    # Based on the "Solid Colors" palette in macOS Terminal.
+    # The colors are brighter than osx-basic.
     "osx-solid-colors": (
         "#000000",
         "#990000",
