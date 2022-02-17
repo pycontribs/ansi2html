@@ -281,8 +281,8 @@ def get_styles(
 
     try:
         pal = SCHEME[scheme]
-    except KeyError:
-        raise ValueError(f"Unsupported color scheme {scheme!r}")
+    except KeyError as e:
+        raise ValueError(f"Unsupported color scheme {scheme!r}") from e
 
     if len(pal) < 16:
         raise Exception(
