@@ -20,6 +20,7 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
+import io
 import optparse
 import re
 import sys
@@ -329,7 +330,7 @@ class Ansi2HTMLConverter:
             )
 
         self.vt100_box_codes_prog = re.compile("\033\\(([B0])")
-        self.ansi_codes_prog = re.compile("\033\\[" "([\\d;]*)" "([a-zA-z])")
+        self.ansi_codes_prog = re.compile("\033\\[" "([\\d;:]*)" "([a-zA-z])")
         self.url_matcher = re.compile(
             r"(((((https?|ftps?|gopher|telnet|nntp)://)|"
             r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
@@ -458,7 +459,7 @@ class Ansi2HTMLConverter:
                 continue
 
             try:
-                params = list(map(int, params.split(";")))
+                params = [int(x) for x in re.split("[;:]", params)]
             except ValueError:
                 params = [ANSI_FULL_RESET]
 
@@ -794,6 +795,12 @@ def main() -> None:
         scheme=opts.scheme,
         title=opts.output_title,
     )
+
+    if hasattr(sys.stdin, "detach") and not isinstance(
+        sys.stdin, io.StringIO
+    ):  # e.g. during tests
+        input_buffer = sys.stdin.detach()  # type: ignore
+        sys.stdin = io.TextIOWrapper(input_buffer, opts.input_encoding, "replace")
 
     def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
