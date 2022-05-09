@@ -24,7 +24,7 @@
 import textwrap
 from io import StringIO
 from os.path import abspath, dirname, join
-from subprocess import run
+from subprocess import PIPE, Popen, run
 from typing import List
 from unittest.mock import patch
 
@@ -468,6 +468,35 @@ class TestAnsi2HTML:
     def test_command_script(self) -> None:
         result = run(["ansi2html", "--version"], check=True)
         assert result.returncode == 0
+
+    def test_command_input_output_encoding(self) -> None:
+        input_encoding = "utf-16"
+        input_bytes = "regular \033[31mred\033[0m regular".encode(input_encoding)
+        output_encoding = "utf-32"
+        output_bytes_expected = (
+            'regular <span style="color: #aa0000">red</span> regular\n'.encode(
+                output_encoding
+            )
+        )
+
+        with Popen(
+            [
+                "ansi2html",
+                "--inline",
+                f"--input-encoding={input_encoding}",
+                f"--output-encoding={output_encoding}",
+            ],
+            stdin=PIPE,
+            stdout=PIPE,
+        ) as process:
+            assert process.stdin  # for mypy
+            assert process.stdout  # for mypy
+            process.stdin.write(input_bytes)
+            process.stdin.close()
+            stdout_bytes_actual = process.stdout.read()
+
+        assert stdout_bytes_actual == output_bytes_expected
+        assert process.returncode == 0
 
     def test_command_module(self) -> None:
         result = run(["python3", "-m", "ansi2html", "--version"], check=True)

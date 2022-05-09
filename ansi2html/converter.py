@@ -20,6 +20,7 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
+import io
 import optparse
 import re
 import sys
@@ -785,6 +786,12 @@ def main() -> None:
         scheme=opts.scheme,
         title=opts.output_title,
     )
+
+    if hasattr(sys.stdin, "detach") and not isinstance(
+        sys.stdin, io.StringIO
+    ):  # e.g. during tests
+        input_buffer = sys.stdin.detach()  # type: ignore
+        sys.stdin = io.TextIOWrapper(input_buffer, opts.input_encoding, "replace")
 
     def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
