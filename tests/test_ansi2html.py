@@ -26,8 +26,7 @@ from io import StringIO
 from os.path import abspath, dirname, join
 from subprocess import run
 from typing import List
-
-from mock import patch
+from unittest.mock import patch
 
 from ansi2html import Ansi2HTMLConverter
 from ansi2html.converter import (
