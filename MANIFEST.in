@@ -1,6 +1,5 @@
 include README.rst
 include LICENSE
-include Makefile
 include man/asciidoc.conf
 include man/ansi2html.1
 include man/ansi2html.1.txt
