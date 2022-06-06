@@ -326,7 +326,7 @@ class Ansi2HTMLConverter:
             )
 
         self.vt100_box_codes_prog = re.compile("\033\\(([B0])")
-        self.ansi_codes_prog = re.compile("\033\\[" "([\\d;:]*)" "([a-zA-z])")
+        self.ansi_codes_prog = re.compile("\033\\[([\\d;:]*)([a-zA-z])")
         self.url_matcher = re.compile(
             r"(((((https?|ftps?|gopher|telnet|nntp)://)|"
             r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
