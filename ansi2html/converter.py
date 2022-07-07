@@ -627,7 +627,7 @@ class Ansi2HTMLConverter:
         else:
             _template = _html_template
         all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
-        backgrounds = all_styles[:6]
+        backgrounds = all_styles[:5]
         used_styles = filter(
             lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
         )
