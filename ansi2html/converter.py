@@ -454,8 +454,15 @@ class Ansi2HTMLConverter:
                 yield CursorMoveUp()
                 continue
 
+            while True:
+                param_len = len(params)
+                params = params.replace("::", ":")
+                params = params.replace(";;", ";")
+                if len(params) == param_len:
+                    break
+
             try:
-                params = [int(x) for x in re.split("[;:]", params) if len(x) > 0]
+                params = [int(x) for x in re.split("[;:]", params)]
             except ValueError:
                 params = [ANSI_FULL_RESET]
 
