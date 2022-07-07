@@ -330,7 +330,7 @@ class Ansi2HTMLConverter:
             )
 
         self.vt100_box_codes_prog = re.compile("\033\\(([B0])")
-        self.ansi_codes_prog = re.compile("\033\\[" "([\\d;:]*)" "([a-zA-z])")
+        self.ansi_codes_prog = re.compile("\033\\[([\\d;:]*)([a-zA-z])")
         self.url_matcher = re.compile(
             r"(((((https?|ftps?|gopher|telnet|nntp)://)|"
             r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
@@ -626,7 +626,7 @@ class Ansi2HTMLConverter:
         attrs = self.prepare(ansi, ensure_trailing_newline=ensure_trailing_newline)
 
         all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
-        backgrounds = all_styles[:6]
+        backgrounds = all_styles[:5]
         used_styles = filter(
             lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
         )
