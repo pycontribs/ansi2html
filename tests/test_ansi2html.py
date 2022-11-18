@@ -51,8 +51,8 @@ class TestAnsi2HTML:
     maxDiff = None
 
     def test_linkify(self) -> None:
-        ansi = "http://threebean.org"
-        target = '<a href="http://threebean.org">http://threebean.org</a>'
+        ansi = "http://threebean.org#foobar"
+        target = '<a href="http://threebean.org#foobar">http://threebean.org#foobar</a>'
         html = Ansi2HTMLConverter(linkify=True).convert(ansi)
         assert target in html
 
