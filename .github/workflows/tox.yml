@@ -36,11 +36,6 @@ jobs:
           tox_env: packaging
           name: packaging
         - os: ubuntu-latest
-          python-version: 3.6
-          tox_env: py36
-          name: py36
-          cover: true
-        - os: ubuntu-latest
           python-version: 3.7
           tox_env: py37
           name: py37
@@ -64,11 +59,6 @@ jobs:
           python-version: "~3.11.0-0" # see https://github.com/actions/setup-python/issues/213#issuecomment-1146676713
           tox_env: py311
           name: py311
-          cover: true
-        - os: macOS-latest
-          python-version: 3.6
-          tox_env: py36
-          name: py36-macos
           cover: true
         - os: macOS-latest
           python-version: "~3.11.0-0" # see https://github.com/actions/setup-python/issues/213#issuecomment-1146676713
