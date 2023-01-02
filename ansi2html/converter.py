@@ -797,7 +797,7 @@ def main() -> None:
     if hasattr(sys.stdin, "detach") and not isinstance(
         sys.stdin, io.StringIO
     ):  # e.g. during tests
-        input_buffer = sys.stdin.detach()  # type: ignore
+        input_buffer = sys.stdin.detach()
         sys.stdin = io.TextIOWrapper(input_buffer, opts.input_encoding, "replace")
 
     def _print(output_unicode: str, end: str = "\n") -> None:
