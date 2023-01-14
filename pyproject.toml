@@ -41,7 +41,7 @@ keywords = ["ansi", "html", "color"]
 dependencies = [
   'importlib-metadata; python_version<"3.8"',
   'typing_extensions; python_version<"3.8"'
-  ]
+]
 
 [project.urls]
 homepage = "https://github.com/pycontribs/ansi2html"
