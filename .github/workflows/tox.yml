@@ -1,103 +1,152 @@
+---
 name: tox
 
 on:
-  create:  # is used for publishing to PyPI and TestPyPI
-    tags:  # any tag regardless of its name, no branches
-  push:  # only publishes pushes to the main branch to TestPyPI
-    branches:  # any integration branch but not tag
-      - "master"
-      - "main"
-      - "develop"
-    tags-ignore:
+  create: # is used for publishing to PyPI and TestPyPI
+    tags: # any tag regardless of its name, no branches
       - "**"
+  push: # only publishes pushes to the main branch to TestPyPI
+    branches: # any integration branch but not tag
+      - "main"
   pull_request:
+    branches:
+      - "main"
+  release:
+    types:
+      - published # It seems that you can publish directly without creating
   schedule:
-    - cron: 1 0 * * *  # Run daily at 0:01 UTC
+    - cron: 1 0 * * * # Run daily at 0:01 UTC
+  # Run every Friday at 18:02 UTC
+  # https://crontab.guru/#2_18_*_*_5
+  # - cron: 2 18 * * 5
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 1 # tox, pytest, ansible-lint
+  PY_COLORS: 1
 
 jobs:
+  pre:
+    name: pre
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.generate_matrix.outputs.matrix }}
+    steps:
+      - name: Determine matrix
+        id: generate_matrix
+        uses: coactions/dynamic-matrix@v1
+        with:
+          min_python: "3.9"
+          max_python: "3.11"
+          other_names: |
+            lint
+            pkg,docs
+          platforms: linux,macos
+
   build:
-    name: ${{ matrix.name || matrix.tox_env }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os || 'ubuntu-22.04' }}
+    needs: pre
+    defaults:
+      run:
+        shell: ${{ matrix.shell || 'bash'}}
     strategy:
       fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-        python-version:
-          - 3.9
-        tox_env:
-          - lint
-          - packaging
-        cover:
-          - false
-        include:
-        - os: ubuntu-latest
-          python-version: 3.9
-          tox_env: packaging
-          name: packaging
-        - os: ubuntu-latest
-          python-version: 3.7
-          tox_env: py37
-          name: py37
-          cover: true
-        - os: ubuntu-latest
-          python-version: 3.8
-          tox_env: py38
-          name: py38
-          cover: true
-        - os: ubuntu-latest
-          python-version: 3.9
-          tox_env: py39
-          name: py39
-          cover: true
-        - os: ubuntu-latest
-          python-version: "3.10"
-          tox_env: py310
-          name: py310
-          cover: true
-        - os: ubuntu-latest
-          python-version: "~3.11.0-0" # see https://github.com/actions/setup-python/issues/213#issuecomment-1146676713
-          tox_env: py311
-          name: py311
-          cover: true
-        - os: macOS-latest
-          python-version: "~3.11.0-0" # see https://github.com/actions/setup-python/issues/213#issuecomment-1146676713
-          tox_env: py311
-          name: py311-macos
-          cover: true
+      matrix: ${{ fromJson(needs.pre.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python version
-        uses: actions/setup-python@v2
+
+      - uses: actions/checkout@v3
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install non-PyPI dependencies (Linux only)
-        if: runner.os == 'Linux'
+          fetch-depth: 0 # needed by setuptools-scm
+
+      - name: Set pre-commit cache
+        uses: actions/cache@v3
+        if: ${{ matrix.passed_name == 'lint' }}
+        with:
+          path: |
+            ~/.cache/pre-commit
+          key: pre-commit-${{ matrix.name || matrix.passed_name }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Set up Python ${{ matrix.python_version || '3.9' }}
+        uses: actions/setup-python@v4
+        with:
+          cache: pip
+          python-version: ${{ matrix.python_version || '3.9' }}
+
+      - name: Install tox
         run: |
-          set -x
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends -V \
-            docbook-xml \
-            docbook-xsl \
-            libxml2-utils \
-            xsltproc
-      - name: Install PyPI dependencies
-        run: |
-          set -x
-          python -m pip install -U pip
-          pip install tox coverage
-      - name: Run tox -e ${{ matrix.tox_env }}
-        run: |
-          echo "${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }}"
-          ${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }}
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --upgrade "tox>=4.0.0"
+
+      - name: Log installed dists
+        run: python3 -m pip freeze --all
+
+      - name: Initialize tox envs ${{ matrix.passed_name }}
+        run: python3 -m tox --notest --skip-missing-interpreters false -vv -e ${{ matrix.passed_name }}
+        timeout-minutes: 5 # average is under 1, but macos can be over 3
+
+      # sequential run improves browsing experience (almost no speed impact)
+      - name: tox -e ${{ matrix.passed_name }}
+        run: python3 -m tox -e ${{ matrix.passed_name }}
+
+      - name: Combine coverage data
+        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        # produce a single .coverage file at repo root
+        run: tox -e coverage
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v2
+        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        uses: codecov/codecov-action@v3
         with:
-          directory: .tox
-          files: 'coverage-*.xml'
-          name: ${{ matrix.tox_env }}
-          fail_ci_if_error: true  # optional (default = false)
-          verbose: true  # optional (default = false)
-        if: ${{ matrix.cover }}
+          name: ${{ matrix.passed_name }}
+          fail_ci_if_error: false # see https://github.com/codecov/codecov-action/issues/598
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true # optional (default = false)
+
+      - name: Archive logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs.zip
+          path: .tox/**/log/
+        # https://github.com/actions/upload-artifact/issues/123
+        continue-on-error: true
+
+      - name: Report failure if git reports dirty status
+        run: |
+          if [[ -n $(git status -s) ]]; then
+            # shellcheck disable=SC2016
+            echo -n '::error file=git-status::'
+            printf '### Failed as git reported modified and/or untracked files\n```\n%s\n```\n' "$(git status -s)" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 99
+          fi
+        # https://github.com/actions/toolkit/issues/193
+
+  check: # This job does nothing and is only used for the branch protection
+    if: always()
+    permissions:
+      pull-requests: write # allow codenotify to comment on pull-request
+
+    needs:
+      - build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+      - name: Check out src from Git
+        uses: actions/checkout@v3
+
+      - name: Notify repository owners about lint change affecting them
+        uses: sourcegraph/codenotify@v0.6.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # https://github.com/sourcegraph/codenotify/issues/19
+        continue-on-error: true
