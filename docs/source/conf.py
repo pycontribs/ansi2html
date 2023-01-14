@@ -4,16 +4,13 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-from setuptools_scm import get_version
+from ansi2html import __version__ as release  # mypy: ignore # noqa: 401
 
 # -- Project information -----------------------------------------------------
 
 project = "ansi2html"
 copyright = "2021, Ralph Bean, Robin Schneider and various contributors"
 author = "Ralph Bean, Robin Schneider and various contributors"
-
-# The full version, including alpha/beta/rc tags
-release = get_version(root="../..", relative_to=__file__)
 
 # -- General configuration ---------------------------------------------------
 

@@ -2,12 +2,69 @@
 requires = ["setuptools >= 45.0.0", "setuptools_scm[toml] >= 7.0.0"]
 build-backend = "setuptools.build_meta"
 
+[project]
+# https://peps.python.org/pep-0621/#readme
+requires-python = ">=3.6"
+dynamic = ["version"]
+name = "ansi2html"
+description = "Checks playbooks for practices and behavior that could potentially be improved"
+readme = "README.rst"
+authors = [{ "name" = "Ralph Bean", "email" = "rbean@redhat.com" }]
+maintainers = [{ "name" = "Ralph Bean", "email" = "rbean@redhat.com" }]
+license = { text = "LGPLv3+" }
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+  "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
+  "Topic :: System :: Systems Administration",
+  "Topic :: Text Processing :: Markup :: HTML",
+  "Topic :: Text Processing :: Markup",
+  "Topic :: Text Processing",
+  "Topic :: Utilities",
+]
+keywords = ["ansi", "html", "color"]
+dependencies = ['importlib-metadata; python_version<"3.8"']
+
+[project.urls]
+homepage = "https://github.com/pycontribs/ansi2html"
+documentation = "https://ansi2html.readthedocs.io/"
+repository = "https://github.com/pycontribs/ansi2html"
+changelog = "https://github.com/pycontribs/ansi2html/releases"
+
+[project.scripts]
+ansi2html = "ansi2html.__main__:main"
+
+[project.optional-dependencies]
+docs = ["sphinx", "sphinx_rtd_theme"]
+test = ["pytest", "pytest-cov"]
+
 [tool.isort]
 profile = "black"
 
 [tool.mypy]
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["ansi2html._version"]
+ignore_missing_imports = true
+ignore_errors = true
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = [
@@ -41,3 +98,4 @@ output-format = "colorized"
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"
+write_to = "src/ansi2html/_version.py"

@@ -1,0 +1,4 @@
+[flake8]
+format = pylint
+# E203: https://github.com/python/black/issues/315
+ignore = E741,W503,W504,H,E501,E203,D
