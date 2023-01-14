@@ -1,8 +1,5 @@
 [build-system]
-requires = [
-  "setuptools >= 45.0.0",
-  "setuptools_scm[toml] >= 7.0.0",
-]
+requires = ["setuptools >= 45.0.0", "setuptools_scm[toml] >= 7.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.isort]
@@ -13,31 +10,30 @@ warn_return_any = true
 warn_unused_configs = true
 
 [tool.pylint."MESSAGES CONTROL"]
-
 disable = [
-    # TODO(ssbarnea): remove temporary skips adding during initial adoption:
-    "attribute-defined-outside-init",
-    "consider-using-dict-comprehension",
-    "consider-using-enumerate",
-    "consider-using-f-string",
-    "deprecated-module",
-    "import-error",
-    "invalid-name",
-    "line-too-long",
-    "missing-class-docstring",
-    "missing-function-docstring",
-    "missing-module-docstring",
-    "redefined-builtin",
-    "redefined-outer-name",
-    "too-few-public-methods",
-    "too-many-arguments",
-    "too-many-branches",
-    "too-many-instance-attributes",
-    "too-many-locals",
-    "too-many-public-methods",
-    "too-many-statements",
-    "unused-argument",
-    "unused-variable",
+  # TODO(ssbarnea): remove temporary skips adding during initial adoption:
+  "attribute-defined-outside-init",
+  "consider-using-dict-comprehension",
+  "consider-using-enumerate",
+  "consider-using-f-string",
+  "deprecated-module",
+  "import-error",
+  "invalid-name",
+  "line-too-long",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "redefined-builtin",
+  "redefined-outer-name",
+  "too-few-public-methods",
+  "too-many-arguments",
+  "too-many-branches",
+  "too-many-instance-attributes",
+  "too-many-locals",
+  "too-many-public-methods",
+  "too-many-statements",
+  "unused-argument",
+  "unused-variable",
 ]
 
 [tool.pylint.REPORTS]
