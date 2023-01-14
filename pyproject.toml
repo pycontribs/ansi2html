@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 # https://peps.python.org/pep-0621/#readme
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 dynamic = ["version"]
 name = "ansi2html"
 description = "Checks playbooks for practices and behavior that could potentially be improved"
@@ -22,7 +22,6 @@ classifiers = [
   "Operating System :: POSIX",
   "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.6",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
@@ -39,7 +38,10 @@ classifiers = [
   "Topic :: Utilities",
 ]
 keywords = ["ansi", "html", "color"]
-dependencies = ['importlib-metadata; python_version<"3.8"']
+dependencies = [
+  'importlib-metadata; python_version<"3.8"',
+  'typing_extensions; python_version<"3.8"'
+  ]
 
 [project.urls]
 homepage = "https://github.com/pycontribs/ansi2html"
