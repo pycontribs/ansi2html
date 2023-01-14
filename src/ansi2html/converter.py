@@ -312,7 +312,7 @@ class Ansi2HTMLConverter:
         title: str = "",
         custom_bg: Optional[str] = None,
         custom_fg: Optional[str] = None,
-        custom_content_css_dict: Optional[dict] = None
+        custom_content_css_dict: Optional[dict] = None,
     ) -> None:
 
         self.latex = latex
@@ -330,13 +330,20 @@ class Ansi2HTMLConverter:
         self.hyperref = False
         self.custom_bg = custom_bg
         self.custom_fg = custom_fg
-        self.custom_content_css_dict = (custom_content_css_dict or {})
+        self.custom_content_css_dict = custom_content_css_dict or {}
 
         if inline:
             self.styles = dict(
                 [
                     (item.klass.strip("."), item)
-                    for item in get_styles(self.dark_bg, self.line_wrap, self.scheme, custom_bg=self.custom_bg, custom_fg=self.custom_fg, custom_content_css_dict=self.custom_content_css_dict)
+                    for item in get_styles(
+                        self.dark_bg,
+                        self.line_wrap,
+                        self.scheme,
+                        custom_bg=self.custom_bg,
+                        custom_fg=self.custom_fg,
+                        custom_content_css_dict=self.custom_content_css_dict,
+                    )
                 ]
             )
 
@@ -648,7 +655,14 @@ class Ansi2HTMLConverter:
             _template = _latex_template
         else:
             _template = _html_template
-        all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme, custom_bg=self.custom_bg, custom_fg=self.custom_fg, custom_content_css_dict=self.custom_content_css_dict)
+        all_styles = get_styles(
+            self.dark_bg,
+            self.line_wrap,
+            self.scheme,
+            custom_bg=self.custom_bg,
+            custom_fg=self.custom_fg,
+            custom_content_css_dict=self.custom_content_css_dict,
+        )
         backgrounds = all_styles[:5]
         used_styles = filter(
             lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
@@ -666,7 +680,17 @@ class Ansi2HTMLConverter:
     def produce_headers(self) -> str:
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
             "style": "\n".join(
-                map(str, get_styles(self.dark_bg, self.line_wrap, self.scheme, custom_bg=self.custom_bg, custom_fg=self.custom_fg, custom_content_css_dict=self.custom_content_css_dict))
+                map(
+                    str,
+                    get_styles(
+                        self.dark_bg,
+                        self.line_wrap,
+                        self.scheme,
+                        custom_bg=self.custom_bg,
+                        custom_fg=self.custom_fg,
+                        custom_content_css_dict=self.custom_content_css_dict,
+                    ),
+                )
             )
         }
 

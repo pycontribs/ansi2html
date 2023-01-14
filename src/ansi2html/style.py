@@ -244,9 +244,9 @@ def get_styles(
     dark_bg: bool = True,
     line_wrap: bool = True,
     scheme: str = "ansi2html",
-    custom_bg = None,
-    custom_fg = None,
-    custom_content_css_dict = None
+    custom_bg=None,
+    custom_fg=None,
+    custom_content_css_dict=None,
 ) -> List[Rule]:
     css = [
         Rule(
@@ -254,10 +254,13 @@ def get_styles(
             white_space=("pre", "pre-wrap")[line_wrap],
             word_wrap="break-word",
             display="inline",
-            **(custom_content_css_dict or {})
+            **(custom_content_css_dict or {}),
         ),
         Rule(".body_foreground", color=custom_fg or ("#000000", "#AAAAAA")[dark_bg]),
-        Rule(".body_background", background_color=custom_bg or ("#AAAAAA", "#000000")[dark_bg]),
+        Rule(
+            ".body_background",
+            background_color=custom_bg or ("#AAAAAA", "#000000")[dark_bg],
+        ),
         Rule(".inv_foreground", color=("#000000", "#AAAAAA")[not dark_bg]),
         Rule(".inv_background", background_color=("#AAAAAA", "#000000")[not dark_bg]),
         # These effects are "SGR (Select Graphic Rendition) parameters"
