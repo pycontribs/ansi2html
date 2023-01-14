@@ -70,6 +70,17 @@ jobs:
             ~/.cache/pre-commit
           key: pre-commit-${{ matrix.name || matrix.passed_name }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
+      - name: Install non-PyPI dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          set -x
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends -V \
+            docbook-xml \
+            docbook-xsl \
+            libxml2-utils \
+            xsltproc
+
       - name: Set up Python ${{ matrix.python_version || '3.9' }}
         uses: actions/setup-python@v4
         with:
