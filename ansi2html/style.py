@@ -274,7 +274,7 @@ def get_styles(
         raise ValueError(f"Unsupported color scheme {scheme!r}") from e
 
     if len(pal) < 16:
-        raise Exception(
+        raise RuntimeError(
             f"Color scheme {scheme!r} specifies fewer than 16 colors. 16 colors are required."
         )
 
