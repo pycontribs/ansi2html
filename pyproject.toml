@@ -8,7 +8,7 @@ requires-python = ">=3.7"
 dynamic = ["version"]
 name = "ansi2html"
 description = "Checks playbooks for practices and behavior that could potentially be improved"
-readme = "README.rst"
+readme = "README.md"
 authors = [{ "name" = "Ralph Bean", "email" = "rbean@redhat.com" }]
 maintainers = [{ "name" = "Ralph Bean", "email" = "rbean@redhat.com" }]
 license = { text = "LGPLv3+" }
@@ -53,7 +53,14 @@ changelog = "https://github.com/pycontribs/ansi2html/releases"
 ansi2html = "ansi2html.__main__:main"
 
 [project.optional-dependencies]
-docs = ["sphinx", "sphinx_rtd_theme"]
+docs = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocs-material-extensions",
+  "mkdocstrings",
+  "mkdocstrings-python",
+  "pymdown-extensions",
+]
 test = ["pytest", "pytest-cov"]
 
 [tool.isort]
