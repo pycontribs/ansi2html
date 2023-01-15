@@ -9,6 +9,6 @@ README.pdf
 coverage_html_report
 .coverage
 docs/source/_build
-man/ansi2html.1.xml
+man/ansi2html.1
 src/ansi2html/_version.py
 site

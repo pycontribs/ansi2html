@@ -54,6 +54,7 @@ ansi2html = "ansi2html.__main__:main"
 
 [project.optional-dependencies]
 docs = [
+  "argparse-manpage",
   "mkdocs",
   "mkdocs-material",
   "mkdocs-material-extensions",

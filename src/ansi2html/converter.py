@@ -654,16 +654,16 @@ class Ansi2HTMLConverter:
         }
 
 
-def main() -> None:
-    """
+def get_parser() -> argparse.ArgumentParser:
+    """Return an argument parser for the command line interface."""
+    usage = """
     $ ls --color=always | ansi2html > directories.html
     $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
     $ task burndown | ansi2html > burndown.html
     """
-
     scheme_names = sorted(SCHEME.keys())
     version_str = version("ansi2html")
-    parser = argparse.ArgumentParser(usage=main.__doc__)
+    parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {version_str}"
     )
@@ -769,13 +769,17 @@ def main() -> None:
         default="ansi2html",
         choices=scheme_names,
         help=(
-            "Specify color palette scheme. Default: %%default. Choices: %s"
-            % scheme_names
+            f"Specify color palette scheme. Default: %(default)s. Choices: {scheme_names}"
         ),
     )
     parser.add_argument(
         "-t", "--title", dest="output_title", default="", help="Specify output title"
     )
+    return parser
+
+
+def main() -> None:
+    parser = get_parser()
 
     opts = parser.parse_args(sys.argv[1:])
 
