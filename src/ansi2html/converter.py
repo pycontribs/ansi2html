@@ -656,14 +656,16 @@ class Ansi2HTMLConverter:
 
 def get_parser() -> argparse.ArgumentParser:
     """Return an argument parser for the command line interface."""
-    usage = """
-    $ ls --color=always | ansi2html > directories.html
-    $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
-    $ task burndown | ansi2html > burndown.html
-    """
+    description = """
+$ ls --color=always | ansi2html > directories.html\n
+$ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html\n
+$ task burndown | ansi2html > burndown.html
+"""
     scheme_names = sorted(SCHEME.keys())
     version_str = version("ansi2html")
-    parser = argparse.ArgumentParser(usage=usage)
+    parser = argparse.ArgumentParser(
+        description=description, formatter_class=argparse.RawTextHelpFormatter
+    )
     parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {version_str}"
     )
