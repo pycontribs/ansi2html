@@ -22,7 +22,6 @@ from typing import Dict, List
 
 class Rule:
     def __init__(self, klass: str, **kw: str) -> None:
-
         self.klass = klass
         self.kw = "; ".join(
             [(k.replace("_", "-") + ": " + kw[k]) for k in sorted(kw.keys())]

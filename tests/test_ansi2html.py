@@ -176,7 +176,6 @@ class TestAnsi2HTML:
     def test_headers_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
-
         main()
 
         with open(join(_here, "produce_headers.txt"), "rb") as produce_headers:
@@ -205,7 +204,6 @@ class TestAnsi2HTML:
         assert expected == html
 
     def test_inline(self) -> None:
-
         rainbow = "\x1b[1m\x1b[40m\x1b[31mr\x1b[32ma\x1b[33mi\x1b[34mn\x1b[35mb\x1b[36mo\x1b[37mw\x1b[0m"
 
         html = Ansi2HTMLConverter(inline=True).convert(rainbow, full=False)

@@ -6,7 +6,6 @@ try:
     # pyright: reportMissingImport=false
     from ansi2html._version import __version__  # mypy: disable
 except ImportError:  # pragma: no branch
-
     try:
         import pkg_resources
 

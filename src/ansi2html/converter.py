@@ -303,7 +303,6 @@ class Ansi2HTMLConverter:
         scheme: str = "ansi2html",
         title: str = "",
     ) -> None:
-
         self.latex = latex
         self.inline = inline
         self.dark_bg = dark_bg
@@ -573,7 +572,6 @@ class Ansi2HTMLConverter:
 
         final_parts: List[Union[str, OSC_Link]] = []
         for part in parts:
-
             # Throw out empty string tokens ("")
             if not part:
                 continue
