@@ -21,6 +21,7 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import sys
 import textwrap
 from io import StringIO
 from os.path import abspath, dirname, join
@@ -497,5 +498,5 @@ class TestAnsi2HTML:
         assert process.returncode == 0
 
     def test_command_module(self) -> None:
-        result = run(["python3", "-m", "ansi2html", "--version"], check=True)
+        result = run([sys.executable, "-m", "ansi2html", "--version"], check=True)
         assert result.returncode == 0
