@@ -5,7 +5,6 @@ mkdocs:
 
 python:
   version: 3.8
-  system_packages: false
   install:
     - method: pip
       path: .
