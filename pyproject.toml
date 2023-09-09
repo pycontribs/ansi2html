@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 requires-python = ">=3.7"
 dynamic = ["version"]
 name = "ansi2html"
-description = "Checks playbooks for practices and behavior that could potentially be improved"
+description = "Convert text with ANSI color codes to HTML or to LaTeX"
 readme = "README.md"
 authors = [{ "name" = "Ralph Bean", "email" = "rbean@redhat.com" }]
 maintainers = [{ "name" = "Ralph Bean", "email" = "rbean@redhat.com" }]
