@@ -95,7 +95,7 @@ jobs:
       - name: Combine coverage data
         if: ${{ startsWith(matrix.passed_name, 'py') }}
         # produce a single .coverage file at repo root
-        run: tox -e coverage
+        run: tox -e py
 
       - name: Upload coverage data
         if: ${{ startsWith(matrix.passed_name, 'py') }}
