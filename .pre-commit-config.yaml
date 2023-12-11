@@ -12,7 +12,7 @@ ci:
 repos:
   - repo: https://github.com/pre-commit/mirrors-prettier
     # keep it before yamllint
-    rev: v3.0.0-alpha.4
+    rev: v4.0.0-alpha.3
     hooks:
       - id: prettier
         # Temporary excludes so we can gradually normalize the formatting
@@ -38,16 +38,16 @@ repos:
         files: "codecov.yml"
         pass_filenames: false
   - repo: https://github.com/PyCQA/isort
-    rev: 5.11.4
+    rev: 5.12.0
     hooks:
       - id: isort
   - repo: https://github.com/psf/black.git
-    rev: 22.12.0
+    rev: 23.11.0
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -58,7 +58,7 @@ repos:
       - id: debug-statements
         language_version: python3
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+    rev: 6.1.0
     hooks:
       - id: flake8
         additional_dependencies:
@@ -69,11 +69,11 @@ repos:
           - flake8-pytest-style>=1.5.0
         language_version: python3
   - repo: https://github.com/pycqa/pylint
-    rev: v2.16.0b0
+    rev: v3.0.1
     hooks:
       - id: pylint
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.991
+    rev: v1.7.1
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior

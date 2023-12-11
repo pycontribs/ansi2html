@@ -20,8 +20,8 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import argparse
 import io
-import optparse
 import re
 import sys
 from collections import OrderedDict
@@ -314,7 +314,6 @@ class Ansi2HTMLConverter:
         custom_fg: Optional[str] = None,
         custom_content_css_dict: Optional[dict] = None,
     ) -> None:
-
         self.latex = latex
         self.inline = inline
         self.dark_bg = dark_bg
@@ -595,7 +594,6 @@ class Ansi2HTMLConverter:
 
         final_parts: List[Union[str, OSC_Link]] = []
         for part in parts:
-
             # Throw out empty string tokens ("")
             if not part:
                 continue
@@ -704,10 +702,11 @@ def main() -> None:
 
     scheme_names = sorted(SCHEME.keys())
     version_str = version("ansi2html")
-    parser = optparse.OptionParser(
-        usage=main.__doc__, version="%%prog %s" % version_str
+    parser = argparse.ArgumentParser(usage=main.__doc__)
+    parser.add_argument(
+        "-V", "--version", action="version", version=f"%(prog)s {version_str}"
     )
-    parser.add_option(
+    parser.add_argument(
         "-p",
         "--partial",
         dest="partial",
@@ -715,7 +714,7 @@ def main() -> None:
         action="store_true",
         help="Process lines as them come in.  No headers are produced.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-L",
         "--latex",
         dest="latex",
@@ -723,7 +722,7 @@ def main() -> None:
         action="store_true",
         help="Export as LaTeX instead of HTML.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-i",
         "--inline",
         dest="inline",
@@ -731,7 +730,7 @@ def main() -> None:
         action="store_true",
         help="Inline style without headers or template.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-H",
         "--headers",
         dest="headers",
@@ -739,7 +738,7 @@ def main() -> None:
         action="store_true",
         help="Just produce the <style> tag.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-f",
         "--font-size",
         dest="font_size",
@@ -747,7 +746,7 @@ def main() -> None:
         default="normal",
         help="Set the global font size in the output.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-l",
         "--light-background",
         dest="light_background",
@@ -755,7 +754,7 @@ def main() -> None:
         action="store_true",
         help="Set output to 'light background' mode.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-W",
         "--no-line-wrap",
         dest="no_line_wrap",
@@ -763,7 +762,7 @@ def main() -> None:
         action="store_true",
         help="Disable line wrapping.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-a",
         "--linkify",
         dest="linkify",
@@ -771,7 +770,7 @@ def main() -> None:
         action="store_true",
         help="Transform URLs into <a> links.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-u",
         "--unescape",
         dest="escaped",
@@ -779,7 +778,7 @@ def main() -> None:
         action="store_false",
         help="Do not escape XML tags found in the input.",
     )
-    parser.add_option(
+    parser.add_argument(
         "-m",
         "--markup-lines",
         dest="markup_lines",
@@ -787,21 +786,21 @@ def main() -> None:
         action="store_true",
         help="Surround lines with <span id='line-n'>..</span>.",
     )
-    parser.add_option(
+    parser.add_argument(
         "--input-encoding",
         dest="input_encoding",
         metavar="ENCODING",
         default="utf-8",
         help="Specify input encoding",
     )
-    parser.add_option(
+    parser.add_argument(
         "--output-encoding",
         dest="output_encoding",
         metavar="ENCODING",
         default="utf-8",
         help="Specify output encoding",
     )
-    parser.add_option(
+    parser.add_argument(
         "-s",
         "--scheme",
         dest="scheme",
@@ -813,11 +812,11 @@ def main() -> None:
             % scheme_names
         ),
     )
-    parser.add_option(
+    parser.add_argument(
         "-t", "--title", dest="output_title", default="", help="Specify output title"
     )
 
-    opts, args = parser.parse_args()
+    opts = parser.parse_args(sys.argv[1:])
 
     conv = Ansi2HTMLConverter(
         latex=opts.latex,

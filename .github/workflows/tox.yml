@@ -58,7 +58,7 @@ jobs:
       matrix: ${{ fromJson(needs.pre.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # needed by setuptools-scm
 
@@ -95,7 +95,7 @@ jobs:
       - name: Combine coverage data
         if: ${{ startsWith(matrix.passed_name, 'py') }}
         # produce a single .coverage file at repo root
-        run: tox -e coverage
+        run: tox -e py
 
       - name: Upload coverage data
         if: ${{ startsWith(matrix.passed_name, 'py') }}
@@ -141,7 +141,7 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
       - name: Check out src from Git
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Notify repository owners about lint change affecting them
         uses: sourcegraph/codenotify@v0.6.4

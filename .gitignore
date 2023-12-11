@@ -11,3 +11,5 @@ coverage_html_report
 docs/source/_build
 man/ansi2html.1.xml
 src/ansi2html/_version.py
+site
+_readthedocs
