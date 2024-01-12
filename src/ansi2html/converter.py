@@ -769,7 +769,7 @@ def main() -> None:
         default="ansi2html",
         choices=scheme_names,
         help=(
-            "Specify color palette scheme. Default: %%default. Choices: %s"
+            "Specify color palette scheme. Default: '%%(default)s'. Choices: %s"
             % scheme_names
         ),
     )
