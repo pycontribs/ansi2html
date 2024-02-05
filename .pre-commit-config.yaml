@@ -42,7 +42,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/psf/black.git
-    rev: 23.12.1
+    rev: 24.1.1
     hooks:
       - id: black
         language_version: python3
@@ -58,7 +58,7 @@ repos:
       - id: debug-statements
         language_version: python3
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+    rev: 7.0.0
     hooks:
       - id: flake8
         additional_dependencies:
