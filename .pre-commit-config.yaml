@@ -42,12 +42,12 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/psf/black.git
-    rev: 24.1.1
+    rev: 24.4.2
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -69,11 +69,11 @@ repos:
           - flake8-pytest-style>=1.5.0
         language_version: python3
   - repo: https://github.com/pycqa/pylint
-    rev: v3.0.3
+    rev: v3.2.2
     hooks:
       - id: pylint
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+    rev: v1.10.0
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
