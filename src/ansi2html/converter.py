@@ -547,7 +547,7 @@ class Ansi2HTMLConverter:
                     style = [
                         self.styles[klass].kwl[0][1]
                         for klass in css_classes
-                        if self.styles[klass].kwl[0][0] == "color"
+                        if self.styles.get(klass) and self.styles[klass].kwl[0][0] == "color"
                     ]
                     yield "\\textcolor[HTML]{%s}{" % style[0]
                 else:
