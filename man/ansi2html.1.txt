@@ -15,10 +15,19 @@ SYNOPSIS
 --------
 *ansi2html* ['OPTIONS'] [*--inline*] [*--partial*]
 
+*ansi2html* ['OPTIONS'] [*--*] *COMMAND* [*ARGS*...]
+
 
 DESCRIPTION
 -----------
-Tool to convert text with ANSI color codes to HTML.
+Tool to convert text with ANSI color codes to HTML (or LaTeX).
+
+In addition to reading from standard input, `ansi2html` can run a command
+inside a pseudo-terminal (PTY) to capture its colored output and convert it
+to HTML. This enables natural usage like converting `git log` with colors
+without forcing color flags. When running a command in a PTY, `ansi2html`
+sets `GIT_PAGER=cat` and `PAGER=cat` by default to avoid interactive pagers
+that could block execution. Set these explicitly to override.
 
 
 OPTIONS
@@ -30,6 +39,10 @@ OPTIONS
 *-i*, *--inline*::
 	Inline style without headers or template.
 
+
+*-S*, *--standalone*::
+	Like --inline, but wrap the snippet in a "<code>" element (HTML output only).
+
 *-H*, *--headers*::
 	Just produce the "<style>" tag.
 
@@ -38,6 +51,12 @@ OPTIONS
 
 *-l*, *--light-background*::
 	Set output to "light background" mode.
+
+*-W*, *--no-line-wrap*::
+	Disable line wrapping.
+
+*-L*, *--latex*::
+	Export as LaTeX instead of HTML.
 
 *-a*, *--linkify*::
 	Transform URLs into "<a>" links.
@@ -54,6 +73,12 @@ OPTIONS
 *--output-encoding='ENCODING'*::
 	Specify output encoding.
 
+*-s* 'SCHEME', *--scheme*='SCHEME'::
+	Specify color palette scheme. See `--help` for choices.
+
+*-t* 'TITLE', *--title*='TITLE'::
+	Specify output title.
+
 *-h*, *--help*::
 	Show this help message and exit.
 
@@ -69,6 +94,21 @@ $ ls --color=always | ansi2html > directories.html
 $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
 
 $ task burndown | ansi2html > burndown.html
+-------------------
+
+Run a command and convert its colored output (PTY-backed):
+
+-------------------
+$ ansi2html git log -p > git-log.html
+
+# Separate options from the command explicitly:
+$ ansi2html --inline -- git log -p > inline-git-log.html
+
+# Disable pager explicitly (optional; ansi2html defaults to no pager):
+$ GIT_PAGER=cat ansi2html -- git show HEAD
+
+# Produce an inline snippet wrapped in <code> (no full HTML):
+$ echo $'\e[31mRED\e[0m' | ansi2html --standalone
 -------------------
 
 

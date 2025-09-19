@@ -22,7 +22,11 @@
 
 import argparse
 import io
+import os
+import pty
 import re
+import select
+import subprocess
 import sys
 from collections import OrderedDict
 from typing import Iterator, List, Optional, Set, Tuple, Union
@@ -656,14 +660,38 @@ class Ansi2HTMLConverter:
 
 def main() -> None:
     """
-    $ ls --color=always | ansi2html > directories.html
-    $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
-    $ task burndown | ansi2html > burndown.html
+    Usage:
+      ansi2html [OPTIONS] [--] COMMAND [ARGS...]
+      ansi2html [OPTIONS]              # read from stdin
+
+    Examples:
+      $ ls --color=always | ansi2html > directories.html
+      $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
+      $ ansi2html git log -p > git-log.html
+      $ ansi2html --inline -- git log -p > inline-git-log.html
     """
 
     scheme_names = sorted(SCHEME.keys())
     version_str = version("ansi2html")
-    parser = argparse.ArgumentParser(usage=main.__doc__)
+    parser = argparse.ArgumentParser(
+        description=(
+            "Convert text with ANSI color codes to HTML/LaTeX.\n\n"
+            "Can also run a command inside a PTY (pseudo‑terminal) and convert\n"
+            "its colored output. After '--', or after the first non-option,\n"
+            "arguments are treated as the command to run."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  ls --color=always | ansi2html > directories.html\n"
+            "  ansi2html git log -p > git-log.html\n"
+            "  ansi2html --inline -- git log -p > inline-git-log.html\n\n"
+            "Notes:\n"
+            "  - In PTY mode, ansi2html sets GIT_PAGER=cat and PAGER=cat by default\n"
+            "    to avoid hanging pagers; set them explicitly to override."
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+        usage=main.__doc__,
+    )
     parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {version_str}"
     )
@@ -690,6 +718,17 @@ def main() -> None:
         default=False,
         action="store_true",
         help="Inline style without headers or template.",
+    )
+    parser.add_argument(
+        "-S",
+        "--standalone",
+        dest="standalone",
+        default=False,
+        action="store_true",
+        help=(
+            "Like --inline, but wrap the snippet in a <code> element. "
+            "(HTML output only)"
+        ),
     )
     parser.add_argument(
         "-H",
@@ -777,11 +816,38 @@ def main() -> None:
         "-t", "--title", dest="output_title", default="", help="Specify output title"
     )
 
-    opts = parser.parse_args(sys.argv[1:])
+    # Split args to support running a command in a PTY for colored output.
+    # Examples:
+    #  - ansi2html --inline -- git log -p
+    #  - ansi2html git log -p
+    argv = sys.argv[1:]
+    ansi_args: List[str]
+    cmd_args: List[str]
+    if "--" in argv:
+        sep = argv.index("--")
+        ansi_args = argv[:sep]
+        cmd_args = argv[sep + 1 :]
+    else:
+        # Treat the first non-option token as the start of the command
+        split_at = None
+        for i, tok in enumerate(argv):
+            if not tok.startswith("-"):
+                split_at = i
+                break
+        if split_at is not None:
+            ansi_args = argv[:split_at]
+            cmd_args = argv[split_at:]
+        else:
+            ansi_args = argv
+            cmd_args = []
+
+    opts = parser.parse_args(ansi_args)
+
+    inline_mode = bool(opts.inline or opts.standalone)
 
     conv = Ansi2HTMLConverter(
         latex=opts.latex,
-        inline=opts.inline,
+        inline=inline_mode,
         dark_bg=not opts.light_background,
         line_wrap=not opts.no_line_wrap,
         font_size=opts.font_size,
@@ -793,11 +859,12 @@ def main() -> None:
         title=opts.output_title,
     )
 
-    if hasattr(sys.stdin, "detach") and not isinstance(
-        sys.stdin, io.StringIO
-    ):  # e.g. during tests
-        input_buffer = sys.stdin.detach()
-        sys.stdin = io.TextIOWrapper(input_buffer, opts.input_encoding, "replace")
+    if not cmd_args:
+        if hasattr(sys.stdin, "detach") and not isinstance(
+            sys.stdin, io.StringIO
+        ):  # e.g. during tests
+            input_buffer = sys.stdin.detach()
+            sys.stdin = io.TextIOWrapper(input_buffer, opts.input_encoding, "replace")
 
     def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
@@ -807,12 +874,74 @@ def main() -> None:
             sys.stdout.write(output_unicode + end)
 
     # Produce only the headers and quit
-    if opts.headers:
+    if opts.headers and not cmd_args:
         _print(conv.produce_headers(), end="")
         return
 
-    full = not bool(opts.partial or opts.inline)
-    output = conv.convert(
-        "".join(sys.stdin.readlines()), full=full, ensure_trailing_newline=True
-    )
+    full = not bool(opts.partial or inline_mode)
+
+    if cmd_args:
+        # Run the command inside a PTY so it emits color, capture output
+        env = os.environ.copy()
+        env.setdefault("TERM", "xterm-256color")
+        # Disable interactive pagers when running commands in a PTY, to avoid hangs
+        # with tools like git that default to paging when stdout is a TTY.
+        env.setdefault("GIT_PAGER", "cat")
+        env.setdefault("PAGER", "cat")
+        # Keep color passthrough if a pager is still used for some reason
+        env.setdefault("LESS", "-R")
+
+        master_fd, slave_fd = pty.openpty()
+        try:
+            try:
+                with subprocess.Popen(
+                    cmd_args,
+                    stdin=slave_fd,
+                    stdout=slave_fd,
+                    stderr=slave_fd,
+                    env=env,
+                    close_fds=True,
+                ) as proc:
+                    # Parent does not use the slave end
+                    os.close(slave_fd)
+
+                    chunks: List[bytes] = []
+                    while True:
+                        rlist, _, _ = select.select([master_fd], [], [], 0.1)
+                        if master_fd in rlist:
+                            try:
+                                data = os.read(master_fd, 4096)
+                            except OSError:
+                                break
+                            if not data:
+                                break
+                            chunks.append(data)
+                        # Break when the process exits and the PTY drained
+                        if proc.poll() is not None and not rlist:
+                            # Try one last read; if nothing, break
+                            try:
+                                data = os.read(master_fd, 4096)
+                                if data:
+                                    chunks.append(data)
+                                    continue
+                            except OSError:
+                                pass
+                            break
+            except FileNotFoundError:
+                os.close(master_fd)
+                os.close(slave_fd)
+                raise
+        finally:
+            try:
+                os.close(master_fd)
+            except OSError:
+                pass
+
+        ansi_text = b"".join(chunks).decode(opts.input_encoding, "replace")
+    else:
+        ansi_text = "".join(sys.stdin.readlines())
+
+    output = conv.convert(ansi_text, full=full, ensure_trailing_newline=True)
+    if opts.standalone and not opts.latex:
+        output = f'<code style="white-space: pre;">{output}</code>'
     _print(output, end="")

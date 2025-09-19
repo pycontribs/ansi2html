@@ -28,6 +28,28 @@ $ sudo tail /var/log/messages | ccze -A | ansi2html > logs.html
 $ task rc._forcecolor:yes limit:0 burndown | ansi2html > burndown.html
 ```
 
+### Running a command with colors
+
+You can also have `ansi2html` run a command inside a pseudo‑terminal so it emits colored output, which is then converted to HTML:
+
+```shell
+$ ansi2html git log -p > git-log.html
+```
+
+- Everything after the first non-option token is treated as the command and its arguments.
+- To avoid ambiguity with `ansi2html` options, you can separate with `--`:
+
+```shell
+$ ansi2html --inline -- git log -p > inline-git-log.html
+```
+
+For embeddable snippets, use `--standalone` (or `-S`) to wrap the converted output in a
+`<code>` element without the full HTML template:
+
+```shell
+$ echo $'\e[31mRED\e[0m' | ansi2html --standalone
+```
+
 See the list of full options with:
 
 ```shell

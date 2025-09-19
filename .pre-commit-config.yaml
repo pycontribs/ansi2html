@@ -81,7 +81,6 @@ repos:
         additional_dependencies:
           - pytest
           - types-setuptools
-          - types-pkg_resources
           - types-mock
         exclude: >
           (?x)^(
