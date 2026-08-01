@@ -229,7 +229,7 @@ SCHEME = {
 }
 
 # to be filled in runtime, when truecolor found
-truecolor_rules: List[Rule] = []
+truecolor_rules: Dict[str, Rule] = {}
 
 
 def intensify(color: str, dark_bg: bool, amount: int = 64) -> str:
@@ -352,7 +352,7 @@ def get_styles(
         css.append(Rule(".ansi48-%s" % index2(grey), background=level(grey)))
         css.append(Rule(".inv48-%s" % index2(grey), color=level(grey)))
 
-    css.extend(truecolor_rules)
+    css.extend(truecolor_rules.values())
 
     return css
 
@@ -367,11 +367,11 @@ def add_truecolor_style_rule(  # pylint: disable=too-many-positional-arguments
         rule = Rule(rule_name, color=color)
     else:
         rule = Rule(rule_name, background_color=color)
-    truecolor_rules.append(rule)
+    truecolor_rules[rule_name.strip(".")] = rule
 
 
 def pop_truecolor_styles() -> Dict[str, Rule]:
     global truecolor_rules  # pylint: disable=global-statement
-    styles = dict([(item.klass.strip("."), item) for item in truecolor_rules])
-    truecolor_rules = []
+    styles = truecolor_rules
+    truecolor_rules = {}
     return styles
