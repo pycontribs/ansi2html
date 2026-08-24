@@ -37,14 +37,14 @@ jobs:
     steps:
       - name: Determine matrix
         id: generate_matrix
-        uses: coactions/dynamic-matrix@v1
+        uses: ansible/actions/matrix@v1
         with:
           min_python: "3.7"
           max_python: "3.12"
           other_names: |
             lint
             pkg,docs
-          platforms: linux,macos
+          platforms: linux:ubuntu-22.04,macos:macos-15-intel # py3.7 too old for just linux,macos
 
   build:
     name: ${{ matrix.name }}
@@ -64,11 +64,11 @@ jobs:
 
       - name: Set pre-commit cache
         uses: actions/cache@v4
-        if: ${{ matrix.passed_name == 'lint' }}
+        if: ${{ matrix.name == 'lint' }}
         with:
           path: |
             ~/.cache/pre-commit
-          key: pre-commit-${{ matrix.name || matrix.passed_name }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          key: pre-commit-${{ matrix.name || '?' }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Set up Python ${{ matrix.python_version || '3.9' }}
         uses: actions/setup-python@v5
@@ -84,24 +84,24 @@ jobs:
       - name: Log installed dists
         run: python3 -m pip freeze --all
 
-      - name: Initialize tox envs ${{ matrix.passed_name }}
-        run: python3 -m tox --notest --skip-missing-interpreters false -vv -e ${{ matrix.passed_name }}
+      - name: Initialize tox env ${{ matrix.name }}
+        run: ${{ matrix.command }} --notest --skip-missing-interpreters false -vv
         timeout-minutes: 5 # average is under 1, but macos can be over 3
 
       # sequential run improves browsing experience (almost no speed impact)
-      - name: tox -e ${{ matrix.passed_name }}
-        run: python3 -m tox -e ${{ matrix.passed_name }}
+      - name: ${{ matrix.name }}
+        run: ${{ matrix.command }}
 
       - name: Combine coverage data
-        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        if: ${{ startsWith(matrix.name, 'py') }}
         # produce a single .coverage file at repo root
         run: tox -e py
 
       - name: Upload coverage data
-        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        if: ${{ startsWith(matrix.name, 'py') }}
         uses: codecov/codecov-action@v4
         with:
-          name: ${{ matrix.passed_name }}
+          name: ${{ matrix.name }}
           fail_ci_if_error: false # see https://github.com/codecov/codecov-action/issues/598
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true # optional (default = false)
