@@ -133,7 +133,7 @@ class TestAnsi2HTML:
     def test_inline_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
-        test_input = textwrap.dedent(
+        test_input = textwrap.dedent(  # noqa: BLK100
             """
         this is
         a test

@@ -7,9 +7,14 @@ try:
     from ansi2html._version import __version__  # mypy: disable
 except ImportError:  # pragma: no branch
     try:
-        import pkg_resources
+        import sys
 
-        __version__ = pkg_resources.get_distribution("ansi2html").version
+        if sys.version_info >= (3, 8):
+            from importlib.metadata import version
+        else:
+            from importlib_metadata import version
+
+        __version__ = version("ansi2html")
     except Exception:  # pylint: disable=broad-except
         # this is the fallback SemVer version picked by setuptools_scm when tag
         # information is not available.
