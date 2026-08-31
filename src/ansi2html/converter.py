@@ -331,6 +331,9 @@ class Ansi2HTMLConverter:
             r"(mailto:|news:))(%[0-9A-Fa-f]{2}|[-()_.!~*"
             r"\';/?#:@&=+$,A-Za-z0-9])+)([).!\';/?:,][\s])?)"
         )
+        self._url_matcher_broad = re.compile(
+            r"(((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:)).*))"
+        )
         self.osc_link_re = re.compile("\033\\]8;;(.*?)\007(.*?)\033\\]8;;\007")
 
     def do_linkify(self, line: str) -> str:
@@ -345,6 +348,9 @@ class Ansi2HTMLConverter:
         if self.latex:
             self.hyperref = True
             return """\\href{%s}{%s}""" % (part.url, part.text)
+        if not self._url_matcher_broad.match(part.url):
+            part.url = "#"
+        part.url = part.url.replace('"', "&quot;")
         return """<a href="%s">%s</a>""" % (part.url, part.text)
 
     def apply_regex(self, ansi: str) -> Tuple[str, Set[str]]:
