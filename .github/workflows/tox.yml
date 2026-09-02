@@ -40,7 +40,7 @@ jobs:
         uses: ansible/actions/matrix@v1
         with:
           min_python: "3.7"
-          max_python: "3.12"
+          max_python: "3.14"
           other_names: |
             lint
             pkg,docs
