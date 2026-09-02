@@ -15,5 +15,6 @@ updates:
     schedule:
       interval: daily
     labels:
+      - "chore"
       - "dependencies"
       - "skip-changelog"
