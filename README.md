@@ -1,4 +1,4 @@
-[![Build Status - main branch](https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=main)](https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Amain)
+[![tox](https://github.com/pycontribs/ansi2html/actions/workflows/tox.yml/badge.svg?branch=main)](https://github.com/pycontribs/ansi2html/actions/workflows/tox.yml)
 
 # ansi2html
 
