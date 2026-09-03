@@ -151,12 +151,10 @@ class TestAnsi2HTML:
     def test_inline_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
-        test_input = textwrap.dedent(  # noqa: BLK100
-            """
+        test_input = textwrap.dedent("""
         this is
         a test
-        """
-        )
+        """)  # noqa: BLK100
 
         with patch("sys.stdin", new_callable=lambda: StringIO(test_input)):
             main()
