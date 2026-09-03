@@ -1,4 +1,4 @@
-[![Build Status - main branch](https://github.com/pycontribs/ansi2html/workflows/tox/badge.svg?branch=main)](https://github.com/pycontribs/ansi2html/actions?query=workflow%3Atox+branch%3Amain)
+[![tox](https://github.com/pycontribs/ansi2html/actions/workflows/tox.yml/badge.svg?branch=main)](https://github.com/pycontribs/ansi2html/actions/workflows/tox.yml)
 
 # ansi2html
 
@@ -52,3 +52,12 @@ pypi: <https://pypi.org/project/ansi2html/>
 
 - Author: [Ralph Bean](mailto:rbean@redhat.com)
 - Contributor: [Robin Schneider](mailto:ypid23@aol.de)
+- Contributor: [Sebastian Pipping](mailto:sebastian@pipping.org)
+- Contributor: [Jens Timmerman](mailto:jens.timmerman@gmail.com)
+- Contributor: [Sorin Sbarnea](mailto:ssbarnea@redhat.com)
+- Contributor: [Daniel Ziegenberg](mailto:daniel@ziegenberg.at)
+- Contributor: [Kuno Woudt](mailto:kuno@frob.nl)
+- Contributor: [Robin Schneider](mailto:ypid23@aol.de)
+- Contributor: [Martin Zimmermann](mailto:info@posativ.org)
+- Contributor: [Paul Sherratt](mailto:paul.sherratt@gamma.co.uk)
+- Contributor: [Arusekk](mailto:floss@arusekk.pl)

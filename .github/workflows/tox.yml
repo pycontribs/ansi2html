@@ -58,12 +58,12 @@ jobs:
       matrix: ${{ fromJson(needs.pre.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # needed by setuptools-scm
 
       - name: Set pre-commit cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         if: ${{ matrix.name == 'lint' }}
         with:
           path: |
@@ -71,7 +71,7 @@ jobs:
           key: pre-commit-${{ matrix.name || '?' }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Set up Python ${{ matrix.python_version || '3.9' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           cache: pip
           python-version: ${{ matrix.python_version || '3.9' }}
@@ -107,7 +107,7 @@ jobs:
           verbose: true # optional (default = false)
 
       - name: Archive logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: logs.zip
           path: .tox/**/log/
@@ -141,7 +141,7 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
       - name: Check out src from Git
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Notify repository owners about lint change affecting them
         uses: sourcegraph/codenotify@v0.6.4
