@@ -289,7 +289,7 @@ class Ansi2HTMLConverter:
     >>> html = conv.convert(ansi)
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         latex: bool = False,
         inline: bool = False,
