@@ -75,6 +75,24 @@ class TestAnsi2HTML:
         html = Ansi2HTMLConverter(latex=True).convert(ansi)
         assert target in html
 
+    def test_osc_link_scheme(self) -> None:
+        ansi = "\x1b]8;;x-unknown-scheme://something\x07Click me\x1b]8;;\x07\n"
+        target = '<a href="#">Click me</a>'
+        html = Ansi2HTMLConverter().convert(ansi)
+        assert target in html
+
+    def test_osc_link_quote_escaped(self) -> None:
+        ansi = '\x1b]8;;https://example.com/#"quoted"\x07Click me\x1b]8;;\x07\n'
+        target = '<a href="https://example.com/#&quot;quoted&quot;">Click me</a>'
+        html = Ansi2HTMLConverter(escaped=True).convert(ansi)
+        assert target in html
+
+    def test_osc_link_quote_unescaped(self) -> None:
+        ansi = '\x1b]8;;https://example.com/#"quoted"\x07Click me\x1b]8;;\x07\n'
+        target = '<a href="https://example.com/#&quot;quoted&quot;">Click me</a>'
+        html = Ansi2HTMLConverter(escaped=False).convert(ansi)
+        assert target in html
+
     def test_conversion(self) -> None:
         for input_filename, expected_output_filename in (
             ("ansicolor.txt", "ansicolor.html"),
@@ -133,12 +151,10 @@ class TestAnsi2HTML:
     def test_inline_as_command(
         self, mock_stdout: StringIO, mock_argv: List[str]
     ) -> None:
-        test_input = textwrap.dedent(
-            """
+        test_input = textwrap.dedent("""
         this is
         a test
-        """
-        )
+        """)  # noqa: BLK100
 
         with patch("sys.stdin", new_callable=lambda: StringIO(test_input)):
             main()

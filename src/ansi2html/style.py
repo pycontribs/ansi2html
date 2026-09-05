@@ -358,7 +358,7 @@ def get_styles(
 
 
 # as truecolor encoding has 16 millions colors, adding only used colors during parsing
-def add_truecolor_style_rule(
+def add_truecolor_style_rule(  # pylint: disable=too-many-positional-arguments
     is_foreground: bool, ansi_code: int, r: int, g: int, b: int, parameter: str
 ) -> None:
     rule_name = ".ansi{}-{}".format(ansi_code, parameter)

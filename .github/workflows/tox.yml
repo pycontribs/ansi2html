@@ -37,14 +37,14 @@ jobs:
     steps:
       - name: Determine matrix
         id: generate_matrix
-        uses: coactions/dynamic-matrix@v1
+        uses: ansible/actions/matrix@v1
         with:
-          min_python: "3.7"
-          max_python: "3.12"
+          min_python: "3.10"
+          max_python: "3.14"
+          default_python: "3.14"
           other_names: |
             lint
             pkg,docs
-          platforms: linux,macos
 
   build:
     name: ${{ matrix.name }}
@@ -58,23 +58,23 @@ jobs:
       matrix: ${{ fromJson(needs.pre.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # needed by setuptools-scm
 
       - name: Set pre-commit cache
-        uses: actions/cache@v4
-        if: ${{ matrix.passed_name == 'lint' }}
+        uses: actions/cache@v6
+        if: ${{ matrix.name == 'lint' }}
         with:
           path: |
             ~/.cache/pre-commit
-          key: pre-commit-${{ matrix.name || matrix.passed_name }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          key: pre-commit-${{ matrix.name || '?' }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
-      - name: Set up Python ${{ matrix.python_version || '3.9' }}
-        uses: actions/setup-python@v5
+      - name: Set up Python ${{ matrix.python_version || '3.10' }}
+        uses: actions/setup-python@v7
         with:
           cache: pip
-          python-version: ${{ matrix.python_version || '3.9' }}
+          python-version: ${{ matrix.python_version || '3.10' }}
 
       - name: Install tox
         run: |
@@ -84,30 +84,30 @@ jobs:
       - name: Log installed dists
         run: python3 -m pip freeze --all
 
-      - name: Initialize tox envs ${{ matrix.passed_name }}
-        run: python3 -m tox --notest --skip-missing-interpreters false -vv -e ${{ matrix.passed_name }}
+      - name: Initialize tox env ${{ matrix.name }}
+        run: ${{ matrix.command }} --notest --skip-missing-interpreters false -vv
         timeout-minutes: 5 # average is under 1, but macos can be over 3
 
       # sequential run improves browsing experience (almost no speed impact)
-      - name: tox -e ${{ matrix.passed_name }}
-        run: python3 -m tox -e ${{ matrix.passed_name }}
+      - name: ${{ matrix.name }}
+        run: ${{ matrix.command }}
 
       - name: Combine coverage data
-        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        if: ${{ startsWith(matrix.name, 'py') }}
         # produce a single .coverage file at repo root
         run: tox -e py
 
       - name: Upload coverage data
-        if: ${{ startsWith(matrix.passed_name, 'py') }}
+        if: ${{ startsWith(matrix.name, 'py') }}
         uses: codecov/codecov-action@v4
         with:
-          name: ${{ matrix.passed_name }}
+          name: ${{ matrix.name }}
           fail_ci_if_error: false # see https://github.com/codecov/codecov-action/issues/598
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true # optional (default = false)
 
       - name: Archive logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: logs.zip
           path: .tox/**/log/
@@ -141,7 +141,7 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
       - name: Check out src from Git
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Notify repository owners about lint change affecting them
         uses: sourcegraph/codenotify@v0.6.4

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 # https://peps.python.org/pep-0621/#readme
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 dynamic = ["version"]
 name = "ansi2html"
 description = "Convert text with ANSI color codes to HTML or to LaTeX"
@@ -21,12 +21,11 @@ classifiers = [
   "Operating System :: POSIX",
   "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python",
   "Topic :: Software Development :: Quality Assurance",
@@ -38,10 +37,6 @@ classifiers = [
   "Topic :: Utilities",
 ]
 keywords = ["ansi", "html", "color"]
-dependencies = [
-  'importlib-metadata; python_version<"3.8"',
-  'typing_extensions; python_version<"3.8"'
-]
 
 [project.urls]
 homepage = "https://github.com/pycontribs/ansi2html"
