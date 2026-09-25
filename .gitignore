@@ -6,6 +6,7 @@ dist
 *.egg*
 README.pdf
 .tox
+.venv
 coverage_html_report
 .coverage
 docs/source/_build
