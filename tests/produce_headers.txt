@@ -8,8 +8,9 @@
 .ansi2 { font-weight: lighter; }
 .ansi3 { font-style: italic; }
 .ansi4 { text-decoration: underline; }
-.ansi5 { text-decoration: blink; }
-.ansi6 { text-decoration: blink; }
+.ansi5 { animation: ansi-blink 1s step-end infinite; }
+.ansi6 { animation: ansi-blink 0.5s step-end infinite; }
+@keyframes ansi-blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
 .ansi8 { visibility: hidden; }
 .ansi9 { text-decoration: line-through; }
 .ansi30 { color: #000316; }

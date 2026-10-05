@@ -238,6 +238,15 @@ class TestAnsi2HTML:
 
         assert expected == html
 
+    def test_blink_keyframes_emitted_only_when_used(self) -> None:
+        # The @keyframes block the blink classes animate with is included in
+        # the full document only when a blink class is actually used (#257).
+        html = Ansi2HTMLConverter().convert("\x1b[5mblink\x1b[0m")
+        assert ".ansi5 { animation: ansi-blink 1s step-end infinite; }" in html
+        assert "@keyframes ansi-blink {" in html
+        html = Ansi2HTMLConverter().convert("\x1b[1mbold\x1b[0m")
+        assert "@keyframes" not in html
+
     def test_produce_headers(self) -> None:
         conv = Ansi2HTMLConverter()
         headers = conv.produce_headers()
@@ -325,7 +334,11 @@ class TestAnsi2HTML:
         )
 
         html = Ansi2HTMLConverter(inline=True).convert(sample, full=False)
-        expected = '<span style="text-decoration: blink">555</span><span style="text-decoration: blink">666</span>NOBLINK'
+        expected = (
+            '<span style="animation: ansi-blink 1s step-end infinite">555</span>'
+            '<span style="animation: ansi-blink 0.5s step-end infinite">666</span>'
+            "NOBLINK"
+        )
         assert expected == html
 
         html = Ansi2HTMLConverter(inline=False).convert(sample, full=False)

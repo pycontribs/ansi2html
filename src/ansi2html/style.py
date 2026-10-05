@@ -32,6 +32,23 @@ class Rule:
         return "%s { %s; }" % (self.klass, self.kw)
 
 
+class Keyframes(Rule):
+    """
+    A ``@keyframes`` block that some other rules depend on.
+
+    ``needed_by`` lists the CSS classes (without the leading dot) whose
+    animation refers to it, so it is only emitted when one of them is used.
+    """
+
+    def __init__(self, name: str, frames: str, needed_by: List[str]) -> None:
+        super().__init__("@keyframes " + name)
+        self.frames = frames
+        self.needed_by = needed_by
+
+    def __str__(self) -> str:
+        return "%s { %s }" % (self.klass, self.frames)
+
+
 def index(r: int, g: int, b: int) -> str:
     """
     Implements the 6x6x6 color cube location of 8bit mode described at
@@ -261,8 +278,15 @@ def get_styles(
         Rule(".ansi2", font_weight="lighter"),
         Rule(".ansi3", font_style="italic"),
         Rule(".ansi4", text_decoration="underline"),
-        Rule(".ansi5", text_decoration="blink"),
-        Rule(".ansi6", text_decoration="blink"),
+        # text-decoration: blink is ignored by every current browser, so
+        # blink (5) and rapid blink (6) use an opacity animation instead.
+        Rule(".ansi5", animation="ansi-blink 1s step-end infinite"),
+        Rule(".ansi6", animation="ansi-blink 0.5s step-end infinite"),
+        Keyframes(
+            "ansi-blink",
+            "0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; }",
+            needed_by=["ansi5", "ansi6"],
+        ),
         Rule(".ansi8", visibility="hidden"),
         Rule(".ansi9", text_decoration="line-through"),
     ]
