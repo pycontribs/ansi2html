@@ -267,6 +267,21 @@ def _needs_extra_newline(text: str) -> bool:
     return True
 
 
+def _css_font_size(value: str) -> str:
+    """Turn a user-supplied font size into a valid CSS ``font-size`` value.
+
+    ``normal`` (the historic default) is not a valid CSS font-size and browsers
+    drop it, so it maps to the CSS default ``medium``. A bare number such as
+    ``12`` is treated as pixels. Anything else is passed through unchanged.
+    """
+    value = value.strip()
+    if value == "normal":
+        return "medium"
+    if re.fullmatch(r"\d+(?:\.\d+)?", value):
+        return value + "px"
+    return value
+
+
 class CursorMoveUp:
     pass
 
@@ -295,7 +310,7 @@ class Ansi2HTMLConverter:
         inline: bool = False,
         dark_bg: bool = True,
         line_wrap: bool = True,
-        font_size: str = "normal",
+        font_size: str = "medium",
         linkify: bool = False,
         escaped: bool = True,
         markup_lines: bool = False,
@@ -307,7 +322,7 @@ class Ansi2HTMLConverter:
         self.inline = inline
         self.dark_bg = dark_bg
         self.line_wrap = line_wrap
-        self.font_size = font_size
+        self.font_size = _css_font_size(font_size)
         self.linkify = linkify
         self.escaped = escaped
         self.markup_lines = markup_lines
@@ -710,8 +725,11 @@ def main() -> None:
         "--font-size",
         dest="font_size",
         metavar="SIZE",
-        default="normal",
-        help="Set the global font size in the output.",
+        default="medium",
+        help=(
+            "Set the font size of the full HTML document, e.g. 12px, 12 "
+            "(pixels) or x-large. Ignored with --inline and --partial."
+        ),
     )
     parser.add_argument(
         "-l",

@@ -238,6 +238,21 @@ class TestAnsi2HTML:
 
         assert expected == html
 
+    def test_font_size_default_is_valid_css(self) -> None:
+        # "normal" is not a valid CSS font-size and browsers drop it (#215).
+        html = Ansi2HTMLConverter().convert("")
+        assert 'style="font-size: medium;"' in html
+
+    def test_font_size_bare_number_is_pixels(self) -> None:
+        html = Ansi2HTMLConverter(font_size="12").convert("")
+        assert 'style="font-size: 12px;"' in html
+
+    def test_font_size_keyword_and_unit_pass_through(self) -> None:
+        assert Ansi2HTMLConverter(font_size="x-large").font_size == "x-large"
+        assert Ansi2HTMLConverter(font_size="1.5em").font_size == "1.5em"
+        # The historic default keeps working for existing callers.
+        assert Ansi2HTMLConverter(font_size="normal").font_size == "medium"
+
     def test_produce_headers(self) -> None:
         conv = Ansi2HTMLConverter()
         headers = conv.produce_headers()
