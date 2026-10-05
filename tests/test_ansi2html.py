@@ -71,7 +71,7 @@ class TestAnsi2HTML:
 
     def test_osc_link_latex(self) -> None:
         ansi = "[\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits\x07-Wtype-limits\x1b]8;;\x07\x1b[m\x1b[K]\n"
-        target = "[\\textcolor{ansi1 ansi35}{\\href{https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits}{-Wtype-limits}}]"
+        target = "[{\\bfseries\\color{ansi35}\\href{https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits}{-Wtype-limits}}]"
         html = Ansi2HTMLConverter(latex=True).convert(ansi)
         assert target in html
 
@@ -411,6 +411,26 @@ class TestAnsi2HTML:
         )
         expected = '<span style="color: #cdcd00">YELLOW/BROWN</span>'
         assert expected == html
+
+    def test_latex_color_and_bold(self) -> None:
+        # Bold used to be jammed into the colour name as
+        # \textcolor{ansi1 ansi32}{...}, and the colour was never defined (#77).
+        ansi = "\x1b[1;32mbold green\x1b[0m"
+        latex = Ansi2HTMLConverter(latex=True).convert(ansi)
+        assert "{\\bfseries\\color{ansi32}bold green}" in latex
+        assert "\\definecolor{ansi32}{HTML}{00AA00}" in latex
+        # only colours that are actually used get defined
+        assert "\\definecolor{ansi31}" not in latex
+
+    def test_latex_attributes_without_color(self) -> None:
+        # With no colour, an empty group terminates the last control word so
+        # it cannot swallow the text that follows.
+        latex = Ansi2HTMLConverter(latex=True).convert("\x1b[1mbold\x1b[0m")
+        assert "{\\bfseries{}bold}" in latex
+        latex = Ansi2HTMLConverter(latex=True).convert("\x1b[3mitalic\x1b[0m")
+        assert "{\\itshape{}italic}" in latex
+        latex = Ansi2HTMLConverter(latex=True).convert("\x1b[1;3mboth\x1b[0m")
+        assert "{\\bfseries\\itshape{}both}" in latex
 
     def test_latex_inline(self) -> None:
         ansi = "\x1b[33mYELLOW/BROWN"

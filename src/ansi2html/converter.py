@@ -96,7 +96,7 @@ _latex_template = """\\documentclass{scrartcl}
 \\usepackage[utf8]{inputenc}
 \\usepackage{fancyvrb}
 \\usepackage[usenames,dvipsnames]{xcolor}
-%% \\definecolor{red-sd}{HTML}{7ed2d2}
+%(definecolors)s
 %(hyperref)s
 \\title{%(title)s}
 
@@ -316,13 +316,12 @@ class Ansi2HTMLConverter:
         self.title = title
         self._attrs: Attributes
         self.hyperref = False
-        if inline:
-            self.styles = dict(
-                [
-                    (item.klass.strip("."), item)
-                    for item in get_styles(self.dark_bg, self.line_wrap, self.scheme)
-                ]
-            )
+        self.styles = dict(
+            [
+                (item.klass.strip("."), item)
+                for item in get_styles(self.dark_bg, self.line_wrap, self.scheme)
+            ]
+        )
 
         self.vt100_box_codes_prog = re.compile("\033\\(([B0])")
         self.ansi_codes_prog = re.compile("\033\\[([\\d;:]*)([a-zA-z])")
@@ -565,11 +564,41 @@ class Ansi2HTMLConverter:
                     yield '<span style="%s">' % "; ".join(style)
             else:
                 if self.latex:
-                    yield "\\textcolor{%s}{" % " ".join(css_classes)
+                    yield self._latex_group_open(css_classes)
                 else:
                     yield '<span class="%s">' % " ".join(css_classes)
             state.inside_span = True
         yield ansi[last_end:]
+
+    def _latex_group_open(self, css_classes: List[str]) -> str:
+        """
+        Open a LaTeX group for the given classes (non-inline mode).
+
+        Bold and italic become font declarations and the first class that
+        carries a colour becomes ``\\color``. Everything lives in a single
+        group so the caller's closing brace stays balanced. The colour comes
+        last because its argument braces terminate the preceding control
+        words; without a colour an empty group does that job.
+        """
+        declarations = []
+        if "ansi1" in css_classes:
+            declarations.append("\\bfseries")
+        if "ansi3" in css_classes:
+            declarations.append("\\itshape")
+        color = next(
+            (
+                klass
+                for klass in css_classes
+                if klass in self.styles
+                and any(prop == "color" for prop, _ in self.styles[klass].kwl)
+            ),
+            None,
+        )
+        if color is not None:
+            declarations.append("\\color{%s}" % color)
+        elif declarations:
+            declarations.append("{}")
+        return "{" + "".join(declarations)
 
     def _collapse_cursor(
         self, parts: Iterator[Union[str, OSC_Link, CursorMoveUp]]
@@ -639,12 +668,19 @@ class Ansi2HTMLConverter:
             _template = _html_template
         all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
         backgrounds = all_styles[:5]
-        used_styles = filter(
-            lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
+        used_styles = [
+            rule for rule in all_styles if rule.klass.lstrip(".") in attrs["styles"]
+        ]
+        definecolors = "\n".join(
+            "\\definecolor{%s}{HTML}{%s}" % (rule.klass.lstrip("."), value.upper())
+            for rule in used_styles
+            for prop, value in rule.kwl
+            if prop == "color"
         )
 
         return _template % {
-            "style": "\n".join(list(map(str, backgrounds + list(used_styles)))),
+            "style": "\n".join(map(str, backgrounds + used_styles)),
+            "definecolors": definecolors,
             "title": self.title,
             "font_size": self.font_size,
             "content": attrs["body"],
