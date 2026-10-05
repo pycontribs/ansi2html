@@ -550,12 +550,21 @@ class Ansi2HTMLConverter:
             if self.inline:
                 self.styles.update(pop_truecolor_styles())
                 if self.latex:
-                    style = [
-                        self.styles[klass].kwl[0][1]
+                    colors = [
+                        value
                         for klass in css_classes
-                        if self.styles[klass].kwl[0][0] == "color"
+                        if klass in self.styles
+                        for prop, value in self.styles[klass].kwl
+                        if prop == "color"
                     ]
-                    yield "\\textcolor[HTML]{%s}{" % style[0]
+                    if colors:
+                        yield "\\textcolor[HTML]{%s}{" % colors[0]
+                    else:
+                        # Nothing to colour (e.g. italic only, or a
+                        # foreground code without a parameter): open a
+                        # plain group so the closing brace emitted later
+                        # stays balanced.
+                        yield "{"
                 else:
                     style = [
                         self.styles[klass].kw

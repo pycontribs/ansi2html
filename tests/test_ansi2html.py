@@ -418,6 +418,19 @@ class TestAnsi2HTML:
         latex = Ansi2HTMLConverter(latex=True, inline=True).convert(ansi)
         assert target in latex
 
+    def test_latex_inline_without_color(self) -> None:
+        # Italic has no colour rule; used to raise IndexError (#127).
+        ansi = "\x1b[3mI am italic\x1b[0m"
+        latex = Ansi2HTMLConverter(latex=True, inline=True).convert(ansi)
+        assert "{I am italic}" in latex
+
+    def test_latex_inline_foreground_without_parameter(self) -> None:
+        # A bare "38" produces the class "ansi38", which has no style
+        # rule; used to raise KeyError (#252).
+        ansi = "\x1b[38mno colour\x1b[0m"
+        latex = Ansi2HTMLConverter(latex=True, inline=True).convert(ansi)
+        assert "{no colour}" in latex
+
     def test_latex_title(self) -> None:
         ansi = ""
         title = "testing"
