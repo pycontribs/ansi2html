@@ -302,6 +302,8 @@ class Ansi2HTMLConverter:
         output_encoding: str = "utf-8",
         scheme: str = "ansi2html",
         title: str = "",
+        foreground_color: Optional[str] = None,
+        background_color: Optional[str] = None,
     ) -> None:
         self.latex = latex
         self.inline = inline
@@ -314,13 +316,21 @@ class Ansi2HTMLConverter:
         self.output_encoding = output_encoding
         self.scheme = scheme
         self.title = title
+        self.foreground_color = foreground_color
+        self.background_color = background_color
         self._attrs: Attributes
         self.hyperref = False
         if inline:
             self.styles = dict(
                 [
                     (item.klass.strip("."), item)
-                    for item in get_styles(self.dark_bg, self.line_wrap, self.scheme)
+                    for item in get_styles(
+                        self.dark_bg,
+                        self.line_wrap,
+                        self.scheme,
+                        self.foreground_color,
+                        self.background_color,
+                    )
                 ]
             )
 
@@ -637,7 +647,13 @@ class Ansi2HTMLConverter:
             _template = _latex_template
         else:
             _template = _html_template
-        all_styles = get_styles(self.dark_bg, self.line_wrap, self.scheme)
+        all_styles = get_styles(
+            self.dark_bg,
+            self.line_wrap,
+            self.scheme,
+            self.foreground_color,
+            self.background_color,
+        )
         backgrounds = all_styles[:5]
         used_styles = filter(
             lambda e: e.klass.lstrip(".") in attrs["styles"], all_styles
@@ -655,7 +671,16 @@ class Ansi2HTMLConverter:
     def produce_headers(self) -> str:
         return '<style type="text/css">\n%(style)s\n</style>\n' % {
             "style": "\n".join(
-                map(str, get_styles(self.dark_bg, self.line_wrap, self.scheme))
+                map(
+                    str,
+                    get_styles(
+                        self.dark_bg,
+                        self.line_wrap,
+                        self.scheme,
+                        self.foreground_color,
+                        self.background_color,
+                    ),
+                )
             )
         }
 
@@ -720,6 +745,26 @@ def main() -> None:
         default=False,
         action="store_true",
         help="Set output to 'light background' mode.",
+    )
+    parser.add_argument(
+        "--foreground-color",
+        dest="foreground_color",
+        metavar="COLOR",
+        default=None,
+        help=(
+            "Override the page text colour, e.g. #000000. "
+            "Any CSS colour value works. Full HTML output only."
+        ),
+    )
+    parser.add_argument(
+        "--background-color",
+        dest="background_color",
+        metavar="COLOR",
+        default=None,
+        help=(
+            "Override the page background colour, e.g. #ffffff. "
+            "Any CSS colour value works. Full HTML output only."
+        ),
     )
     parser.add_argument(
         "-W",
@@ -797,6 +842,8 @@ def main() -> None:
         output_encoding=opts.output_encoding,
         scheme=opts.scheme,
         title=opts.output_title,
+        foreground_color=opts.foreground_color,
+        background_color=opts.background_color,
     )
 
     if hasattr(sys.stdin, "detach") and not isinstance(

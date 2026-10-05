@@ -238,6 +238,17 @@ class TestAnsi2HTML:
 
         assert expected == html
 
+    def test_custom_page_colors(self) -> None:
+        # Light mode used to be locked to a grey #AAAAAA background (#153).
+        html = Ansi2HTMLConverter(dark_bg=False, background_color="#ffffff").convert(
+            "\x1b[7minverse\x1b[0m"
+        )
+        assert ".body_foreground { color: #000000; }" in html
+        assert ".body_background { background-color: #ffffff; }" in html
+        # inverse video swaps the (overridden) page colours
+        assert ".inv_foreground { color: #ffffff; }" in html
+        assert ".inv_background { background-color: #000000; }" in html
+
     def test_produce_headers(self) -> None:
         conv = Ansi2HTMLConverter()
         headers = conv.produce_headers()

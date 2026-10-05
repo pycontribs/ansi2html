@@ -17,7 +17,7 @@
 #    Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class Rule:
@@ -243,7 +243,18 @@ def get_styles(
     dark_bg: bool = True,
     line_wrap: bool = True,
     scheme: str = "ansi2html",
+    foreground_color: Optional[str] = None,
+    background_color: Optional[str] = None,
 ) -> List[Rule]:
+    """
+    Build the stylesheet.
+
+    ``foreground_color`` and ``background_color`` override the page's default
+    text and background colours (which otherwise follow ``dark_bg``); any CSS
+    colour value works, e.g. ``#ffffff``. Inverse video (SGR 7) swaps the two.
+    """
+    foreground = foreground_color or ("#000000", "#AAAAAA")[dark_bg]
+    background = background_color or ("#AAAAAA", "#000000")[dark_bg]
     css = [
         Rule(
             ".ansi2html-content",
@@ -251,10 +262,10 @@ def get_styles(
             word_wrap="break-word",
             display="inline",
         ),
-        Rule(".body_foreground", color=("#000000", "#AAAAAA")[dark_bg]),
-        Rule(".body_background", background_color=("#AAAAAA", "#000000")[dark_bg]),
-        Rule(".inv_foreground", color=("#000000", "#AAAAAA")[not dark_bg]),
-        Rule(".inv_background", background_color=("#AAAAAA", "#000000")[not dark_bg]),
+        Rule(".body_foreground", color=foreground),
+        Rule(".body_background", background_color=background),
+        Rule(".inv_foreground", color=background),
+        Rule(".inv_background", background_color=foreground),
         # These effects are "SGR (Select Graphic Rendition) parameters"
         # https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
         Rule(".ansi1", font_weight="bold"),
