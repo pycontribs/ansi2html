@@ -607,6 +607,12 @@ class Ansi2HTMLConverter:
     ) -> Attributes:
         """Load the contents of 'ansi' into this object"""
 
+        if not isinstance(ansi, str):
+            raise TypeError(
+                "ansi must be a str, not %s; join an iterable of lines first, "
+                "e.g. ''.join(lines)" % type(ansi).__name__
+            )
+
         body, styles = self.apply_regex(ansi)
 
         if ensure_trailing_newline and _needs_extra_newline(body):

@@ -29,6 +29,8 @@ from subprocess import PIPE, Popen, run
 from typing import List
 from unittest.mock import patch
 
+import pytest
+
 from ansi2html import Ansi2HTMLConverter
 from ansi2html.converter import (
     ANSI_BLINK_FAST,
@@ -56,6 +58,12 @@ class TestAnsi2HTML:
         target = '<a href="http://threebean.org#foobar">http://threebean.org#foobar</a>'
         html = Ansi2HTMLConverter(linkify=True).convert(ansi)
         assert target in html
+
+    def test_convert_rejects_non_str_input(self) -> None:
+        # Passing a list of lines used to surface as an unhelpful
+        # AttributeError deep inside apply_regex (see #242).
+        with pytest.raises(TypeError, match="must be a str, not list"):
+            Ansi2HTMLConverter().convert(["a", "b"])  # type: ignore[arg-type]
 
     def test_not_linkify(self) -> None:
         ansi = "http://threebean.org"
