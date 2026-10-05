@@ -489,6 +489,45 @@ class TestAnsi2HTML:
         result = run(["ansi2html", "--version"], check=True)
         assert result.returncode == 0
 
+    def test_carriage_return_overwrites_line(self) -> None:
+        # Text before the last \r on a line is overwritten, as in a terminal
+        # (#79). Other lines are untouched.
+        ansi = "ONE\nTHREEEEEE\rFOUR\rFIVE\nSIX\n"
+        assert Ansi2HTMLConverter().convert(ansi, full=False) == "ONE\nFIVE\nSIX\n"
+
+    def test_carriage_return_as_line_ending(self) -> None:
+        # \r\n is a plain line ending; a trailing \r has no visible effect.
+        assert Ansi2HTMLConverter().convert("a\r\nb\r\n", full=False) == "a\nb\n"
+        assert Ansi2HTMLConverter().convert("abc\r", full=False) == "abc"
+
+    def test_carriage_return_keeps_styling(self) -> None:
+        # Escape sequences in the overwritten part still apply to what is
+        # visible afterwards.
+        ansi = "\x1b[31m10%\r20%\x1b[0m"
+        html = Ansi2HTMLConverter().convert(ansi, full=False)
+        assert html == '<span class="ansi31">20%</span>'
+        # A link that is still open when the line is rewritten applies to
+        # the new text; a link that was wholly overwritten leaves nothing.
+        ansi = "\x1b]8;;https://x.y\x07old\rnew\x1b]8;;\x07"
+        assert Ansi2HTMLConverter().convert(ansi, full=False) == (
+            '<a href="https://x.y">new</a>'
+        )
+        ansi = "\x1b]8;;https://x.y\x07link\x1b]8;;\x07 old\rnew"
+        assert Ansi2HTMLConverter().convert(ansi, full=False) == "new"
+
+    def test_command_carriage_return(self) -> None:
+        # The CLI must hand carriage returns through untranslated so the
+        # converter, not the stdin wrapper, decides what they mean.
+        with Popen(["ansi2html", "--partial"], stdin=PIPE, stdout=PIPE) as process:
+            assert process.stdin  # for mypy
+            assert process.stdout  # for mypy
+            process.stdin.write(b"10%\r20%\r100%\n")
+            process.stdin.close()
+            stdout_bytes = process.stdout.read()
+
+        assert stdout_bytes == b"100%\n"
+        assert process.returncode == 0
+
     def test_command_input_output_encoding(self) -> None:
         input_encoding = "utf-16"
         input_bytes = "regular \033[31mred\033[0m regular".encode(input_encoding)

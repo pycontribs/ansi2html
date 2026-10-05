@@ -267,6 +267,49 @@ def _needs_extra_newline(text: str) -> bool:
     return True
 
 
+# Escape sequences that change state without producing visible output: CSI
+# (colours, cursor movement), the VT100 box-drawing switch, and OSC 8 links.
+_ESCAPE_SEQUENCE_RE = re.compile(
+    "\033\\[[\\d;:]*[a-zA-Z]|\033\\([B0]|\033\\]8;;[^\007]*\007"
+)
+# An OSC 8 link whose text was entirely overwritten: open immediately
+# followed by close. Nothing is left to link, so drop the pair.
+_EMPTY_OSC_LINK_RE = re.compile("\033\\]8;;[^\007]+\007\033\\]8;;\007")
+
+
+def _apply_carriage_returns(text: str) -> str:
+    """
+    Emulate what a terminal shows for carriage returns.
+
+    ``\\r\\n`` is a plain line ending and a ``\\r`` at the end of the input has
+    no visible effect. A ``\\r`` followed by more text on the same line moves
+    the cursor back to the start of the line, so the text written before it
+    is overwritten: keep only the text after the last ``\\r`` on each line.
+    Escape sequences in the overwritten part are kept, because they change
+    the styling state that the visible text is rendered with.
+
+    This is an approximation: when the new text is shorter than what it
+    replaces, a terminal would still show the tail of the old text. The
+    common case (progress bars, spinners, status lines rewriting the whole
+    line) renders as the terminal would.
+    """
+    if "\r" not in text:
+        return text
+    lines = []
+    for line in text.split("\n"):
+        line = line.rstrip("\r")
+        if "\r" in line:
+            *overwritten, visible = line.split("\r")
+            escapes = "".join(
+                match
+                for segment in overwritten
+                for match in _ESCAPE_SEQUENCE_RE.findall(segment)
+            )
+            line = _EMPTY_OSC_LINK_RE.sub("", escapes) + visible
+        lines.append(line)
+    return "\n".join(lines)
+
+
 class CursorMoveUp:
     pass
 
@@ -355,6 +398,7 @@ class Ansi2HTMLConverter:
 
     def apply_regex(self, ansi: str) -> Tuple[str, Set[str]]:
         styles_used: Set[str] = set()
+        ansi = _apply_carriage_returns(ansi)
         all_parts = self._apply_regex(ansi, styles_used)
         no_cursor_parts = self._collapse_cursor(all_parts)
         no_cursor_parts = list(no_cursor_parts)
@@ -803,7 +847,11 @@ def main() -> None:
         sys.stdin, io.StringIO
     ):  # e.g. during tests
         input_buffer = sys.stdin.detach()
-        sys.stdin = io.TextIOWrapper(input_buffer, opts.input_encoding, "replace")
+        # newline="" keeps carriage returns as-is so the converter can apply
+        # terminal semantics to them instead of having them turned into "\n".
+        sys.stdin = io.TextIOWrapper(
+            input_buffer, opts.input_encoding, "replace", newline=""
+        )
 
     def _print(output_unicode: str, end: str = "\n") -> None:
         if hasattr(sys.stdout, "buffer"):
